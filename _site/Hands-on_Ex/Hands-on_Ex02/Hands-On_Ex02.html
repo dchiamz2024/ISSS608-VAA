@@ -176,6 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#using-themes-packages-in-plots-ggtheme-packages" id="toc-using-themes-packages-in-plots-ggtheme-packages" class="nav-link" data-scroll-target="#using-themes-packages-in-plots-ggtheme-packages">3.3 Using Themes Packages in Plots: ggtheme packages</a></li>
   <li><a href="#working-with-hrbthemes-packages" id="toc-working-with-hrbthemes-packages" class="nav-link" data-scroll-target="#working-with-hrbthemes-packages">3.4 Working with hrbthemes Packages</a></li>
   <li><a href="#composing-plots-with-multiple-graphs" id="toc-composing-plots-with-multiple-graphs" class="nav-link" data-scroll-target="#composing-plots-with-multiple-graphs">3.5 Composing Plots with Multiple Graphs</a></li>
+  <li><a href="#extra-practice-using-patchwork-and-ggtheme" id="toc-extra-practice-using-patchwork-and-ggtheme" class="nav-link" data-scroll-target="#extra-practice-using-patchwork-and-ggtheme"><strong>3.6 Extra Practice using patchwork and ggtheme</strong></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -632,15 +633,16 @@ dbl (3): ENGLISH, MATHS, SCIENCE
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Hands-On_Ex02_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Hands-On_Ex02_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 <hr>
 </section>
-<section id="extra-practice-using-patchwork-and-ggtheme" class="level4">
-<h4 class="anchored" data-anchor-id="extra-practice-using-patchwork-and-ggtheme"><strong>3.5.7 Extra Practice using patchwork and ggtheme</strong></h4>
+</section>
+<section id="extra-practice-using-patchwork-and-ggtheme" class="level3">
+<h3 class="anchored" data-anchor-id="extra-practice-using-patchwork-and-ggtheme"><strong>3.6 Extra Practice using patchwork and ggtheme</strong></h3>
 <p>Self drew a few more plots p4 to p6 and updated p3 to p3a:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>exam_data, </span>
@@ -741,17 +743,19 @@ dbl (3): ENGLISH, MATHS, SCIENCE
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the bar chart</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gender_counts, <span class="fu">aes</span>(<span class="at">x =</span> CLASS, <span class="at">y =</span> count, <span class="at">fill =</span> GENDER)) <span class="sc">+</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>p7 <span class="ot">&lt;-</span>  <span class="fu">ggplot</span>(gender_counts, <span class="fu">aes</span>(<span class="at">x =</span> CLASS, <span class="at">y =</span> count, <span class="at">fill =</span> GENDER)) <span class="sc">+</span></span>
 <span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
 <span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Gender Distribution by Class"</span>,</span>
 <span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Class"</span>,</span>
 <span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Students"</span>) <span class="sc">+</span></span>
 <span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Male"</span> <span class="ot">=</span> <span class="st">"#1f77b4"</span>, <span class="st">"Female"</span> <span class="ot">=</span> <span class="st">"pink"</span>)) <span class="sc">+</span></span>
 <span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_wsj</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Hands-On_Ex02_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="Hands-On_Ex02_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -771,7 +775,7 @@ dbl (3): ENGLISH, MATHS, SCIENCE
 <span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
 <span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot stacked bar chart</span></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(race_counts, <span class="fu">aes</span>(<span class="at">x =</span> CLASS, <span class="at">y =</span> count, <span class="at">fill =</span> RACE)) <span class="sc">+</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>p8 <span class="ot">&lt;-</span>  <span class="fu">ggplot</span>(race_counts, <span class="fu">aes</span>(<span class="at">x =</span> CLASS, <span class="at">y =</span> count, <span class="at">fill =</span> RACE)) <span class="sc">+</span></span>
 <span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
 <span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
 <span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Chinese"</span> <span class="ot">=</span> <span class="st">"#1f77b4"</span>,  <span class="co"># blue (bottom)</span></span>
@@ -782,19 +786,34 @@ dbl (3): ENGLISH, MATHS, SCIENCE
 <span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Racial Distribution by Class"</span>,</span>
 <span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Class"</span>,</span>
 <span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Students"</span>,</span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Race"</span>) <span class="sc">+</span></span>
-<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Race"</span>,</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">axis_title_size =</span> <span class="dv">18</span>) <span class="sc">+</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Hands-On_Ex02_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="Hands-On_Ex02_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Combine both plots above into a single figure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>patchwork <span class="ot">&lt;-</span> (p7 <span class="sc">/</span> p8)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>patchwork <span class="sc">&amp;</span> <span class="fu">theme_economist</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex02_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 
 
-</section>
 </section>
 </section>
 

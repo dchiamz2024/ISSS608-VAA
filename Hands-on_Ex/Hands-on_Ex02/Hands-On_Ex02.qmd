@@ -404,14 +404,14 @@ p3 + inset_element(p2,
 
 Figure below is created by combining patchwork and theme_economist() of ggthemes package discussed earlier.
 
-```{r}
+```{r fig.width=10}
 patchwork <- (p1 / p2) | p3
 patchwork & theme_economist()
 ```
 
 ------------------------------------------------------------------------
 
-#### **3.5.7 Extra Practice using patchwork and ggtheme**
+### **3.6 Extra Practice using patchwork and ggtheme**
 
 Self drew a few more plots p4 to p6 and updated p3 to p3a:
 
@@ -508,9 +508,10 @@ Conclusion from the extra practice plots:
 
 **It was found that "`Student036`" appeared in all 3 graphs in the Top 3 category and therefore we can postulate that he/she is likely the top student for the Primary 3 cohort.**
 
--------------
+------------------------------------------------------------------------
 
-Draw the plot to illustrate the Gender distribution across the Primary 3 Classes. 
+Draw the plot to illustrate the Gender distribution across the Primary 3 Classes.
+
 ```{r fig.width=10}
 # Load required libraries
 library(dplyr)
@@ -521,7 +522,7 @@ gender_counts <- exam_data %>%
   summarise(count = n(), .groups = "drop")
 
 # Plot the bar chart
-ggplot(gender_counts, aes(x = CLASS, y = count, fill = GENDER)) +
+p7 <-  ggplot(gender_counts, aes(x = CLASS, y = count, fill = GENDER)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Gender Distribution by Class",
        x = "Class",
@@ -530,9 +531,15 @@ ggplot(gender_counts, aes(x = CLASS, y = count, fill = GENDER)) +
   theme_wsj()
 
 ```
--------------
+
+```{r, echo=FALSE, fig.width=10}
+p7 
+```
+
+------------------------------------------------------------------------
 
 Draw the plot to illustrate the Racial distribution across the Primary 3 Classes.
+
 ```{r fig.width=10}
 # Load libraries
 library(dplyr)
@@ -546,7 +553,7 @@ race_counts <- exam_data %>%
   summarise(count = n(), .groups = "drop")
 
 # Plot stacked bar chart
-ggplot(race_counts, aes(x = CLASS, y = count, fill = RACE)) +
+p8 <-  ggplot(race_counts, aes(x = CLASS, y = count, fill = RACE)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = c(
     "Chinese" = "#1f77b4",  # blue (bottom)
@@ -557,7 +564,21 @@ ggplot(race_counts, aes(x = CLASS, y = count, fill = RACE)) +
   labs(title = "Racial Distribution by Class",
        x = "Class",
        y = "Number of Students",
-       fill = "Race") +
-  theme_minimal()
+       fill = "Race",
+       axis_title_size = 18) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
 
+```
+
+```{r, echo=FALSE, fig.width=10}
+p8 
+
+```
+
+Combine both plots above into a single figure.
+
+```{r fig.height=16, fig.width=10}
+patchwork <- (p7 / p8)
+patchwork & theme_economist()
 ```
