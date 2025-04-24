@@ -340,7 +340,7 @@ p2 <- ggplot(data=exam_data,
 ```{r, warning=FALSE}
 p3 <- ggplot(data=exam_data, 
              aes(x= MATHS, 
-                 y=ENGLISH)) +
+                 y= ENGLISH)) +
   geom_point() +
   geom_smooth(method=lm, 
               size=0.5) +  
@@ -407,4 +407,157 @@ Figure below is created by combining patchwork and theme_economist() of ggthemes
 ```{r}
 patchwork <- (p1 / p2) | p3
 patchwork & theme_economist()
+```
+
+------------------------------------------------------------------------
+
+#### **3.5.7 Extra Practice using patchwork and ggtheme**
+
+Self drew a few more plots p4 to p6 and updated p3 to p3a:
+
+```{r, warning=FALSE}
+p4 <- ggplot(data=exam_data, 
+             aes(x = SCIENCE)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of Science scores")
+
+```
+
+```{r, warning=FALSE}
+
+# Top 10 for Maths vs Science
+top10_p5 <- exam_data %>%
+  arrange(desc(MATHS + SCIENCE)) %>%
+  slice_head(n = 10)
+
+# Top 3 for Maths vs Science (with)
+top3_p5 <- top10_p5 %>%
+  arrange(desc(MATHS + SCIENCE)) %>%
+  slice_head(n = 3)
+
+p5 <- ggplot(exam_data, aes(x = MATHS, y = SCIENCE)) +
+  geom_point() +
+  geom_point(data = top10_p5, aes(x = MATHS, y = SCIENCE), color = "blue", size = 2) +
+  geom_text_repel(data = top3_p5, aes(label = ID), color = "orange", fontface = "bold", size = 4) +
+  geom_smooth(method = lm, size = 0.5) +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +
+  ggtitle("Science scores versus Maths scores for Primary 3")
+
+
+```
+
+```{r, warning=FALSE}
+
+# Top 10 for English vs Science
+top10_p6 <- exam_data %>%
+  arrange(desc(ENGLISH + SCIENCE)) %>%
+  slice_head(n = 10)
+
+# Top 3 for English vs Science
+top3_p6 <- top10_p6 %>%
+  arrange(desc(ENGLISH + SCIENCE)) %>%
+  slice_head(n = 3)
+
+p6 <- ggplot(exam_data, aes(x = ENGLISH, y = SCIENCE)) +
+  geom_point() +
+  geom_point(data = top10_p6, aes(x = ENGLISH, y = SCIENCE), color = "blue", size = 2) +
+  geom_text_repel(data = top3_p6, aes(label = ID), color = "orange", fontface = "bold", size = 4) +
+  geom_smooth(method = lm, size = 0.5) +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +
+  ggtitle("Science scores versus English scores for Primary 3")
+
+
+```
+
+```{r, warning=FALSE}
+
+# Top 10 for English vs Maths
+top10_p3a <- exam_data %>%
+  arrange(desc(ENGLISH + MATHS)) %>%
+  slice_head(n = 10)
+
+# Top 3 for English vs Maths
+top3_p3a <- top10_p3a %>%
+  arrange(desc(ENGLISH + MATHS)) %>%
+  slice_head(n = 3)
+
+p3a <- ggplot(exam_data, aes(x = MATHS, y = ENGLISH)) +
+  geom_point() +
+  geom_point(data = top10_p3a, aes(x = MATHS, y = ENGLISH), color = "blue", size = 2) +
+  geom_text_repel(data = top3_p3a, aes(label = ID), color = "orange", fontface = "bold", size = 4) +
+  geom_smooth(method = lm, size = 0.5) +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+
+```
+
+Figure below is created by combining patchwork and theme_economist() of ggthemes package discussed earlier.
+
+The Top 10 students from each plot are highlighted in *Blue* with the Top students labelled in *Orange*.
+
+```{r fig.height=12, fig.width=10}
+patchwork <- p3a / p5 / p6
+patchwork & theme_economist()
+```
+
+Conclusion from the extra practice plots:
+
+**It was found that "`Student036`" appeared in all 3 graphs in the Top 3 category and therefore we can postulate that he/she is likely the top student for the Primary 3 cohort.**
+
+-------------
+
+Draw the plot to illustrate the Gender distribution across the Primary 3 Classes. 
+```{r fig.width=10}
+# Load required libraries
+library(dplyr)
+
+# Count gender per class
+gender_counts <- exam_data %>%
+  group_by(CLASS, GENDER) %>%
+  summarise(count = n(), .groups = "drop")
+
+# Plot the bar chart
+ggplot(gender_counts, aes(x = CLASS, y = count, fill = GENDER)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Gender Distribution by Class",
+       x = "Class",
+       y = "Number of Students") +
+  scale_fill_manual(values = c("Male" = "#1f77b4", "Female" = "pink")) +
+  theme_wsj()
+
+```
+-------------
+
+Draw the plot to illustrate the Racial distribution across the Primary 3 Classes.
+```{r fig.width=10}
+# Load libraries
+library(dplyr)
+
+# Ensure RACE is in the desired stacking order
+exam_data$RACE <- factor(exam_data$RACE, levels = c("Others", "Indian", "Malay", "Chinese"))
+
+# Summarize counts of each race per class
+race_counts <- exam_data %>%
+  group_by(CLASS, RACE) %>%
+  summarise(count = n(), .groups = "drop")
+
+# Plot stacked bar chart
+ggplot(race_counts, aes(x = CLASS, y = count, fill = RACE)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c(
+    "Chinese" = "#1f77b4",  # blue (bottom)
+    "Malay"   = "#2ca02c",  # green
+    "Indian"  = "yellow",   # yellow
+    "Others"  = "brown"     # brown
+  )) +
+  labs(title = "Racial Distribution by Class",
+       x = "Class",
+       y = "Number of Students",
+       fill = "Race") +
+  theme_minimal()
+
 ```
