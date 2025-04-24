@@ -1,1 +1,14 @@
 /* css styles */
+
+/* Make the navbar dropdown white with orange text */
+.navbar .dropdown-menu {
+  background-color: white !important;
+}
+.navbar .dropdown-menu .dropdown-item {
+  color: #FF5722 !important;
+}
+.navbar .dropdown-menu .dropdown-item:hover,
+.navbar .dropdown-menu .dropdown-item:focus {
+  background-color: #FF5722 !important;
+  color: white !important;
+}
