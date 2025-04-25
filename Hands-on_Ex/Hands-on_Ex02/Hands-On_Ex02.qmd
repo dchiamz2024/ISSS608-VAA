@@ -575,10 +575,100 @@ p8 <-  ggplot(race_counts, aes(x = CLASS, y = count, fill = RACE)) +
 p8 
 
 ```
-
-Combine both plots above into a single figure.
+Combine both plots (Bar Charts) above into a single figure.
 
 ```{r fig.height=16, fig.width=10}
+
 patchwork <- (p7 / p8)
 patchwork & theme_economist()
 ```
+
+Plot the Racial Composition for entire Primary 3 Cohort
+
+```{r fig.width=10}
+# Calculate race proportion
+library(dplyr)
+
+race_totals <- exam_data %>%
+  count(RACE) %>%
+  mutate(
+    prop = n / sum(n),
+    label = paste0(RACE, "\n", scales::percent(prop))
+  )
+
+ggplot(race_totals, aes(x = "", y = prop, fill = RACE)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5), size = 4) +
+  scale_fill_manual(values = c(
+    "Chinese" = "#1f77b4",
+    "Malay"   = "#2ca02c",
+    "Indian"  = "yellow",
+    "Others"  = "brown"
+  )) +
+  labs(title = "Race Composition (Pie Chart)", fill = "Race") +
+  theme_void() +
+  theme(plot.title = element_text(size = 20, face = "bold", hjust = 0.5))
+
+```
+
+Adjusted to remove the *Legend* and use *Labels* (through `ggrepel`) to point to the "Race" colour and also to state the percentage of each race composition for better specificity.
+
+```{r fig.width=10}
+
+# Load libraries
+library(dplyr)
+library(scales)
+
+# Calculate race proportions
+race_totals <- exam_data %>%
+  count(RACE) %>%
+  mutate(
+    prop = n / sum(n),
+    label = paste0(RACE, "\n", percent(prop))
+  ) %>%
+  arrange(desc(RACE)) %>%  # Ensure consistent stacking order
+  mutate(ypos = cumsum(prop) - 0.5 * prop)
+
+# Plot pie chart with external labels using ggrepel and no legend
+p9 <- ggplot(race_totals, aes(x = "", y = prop, fill = RACE)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar("y") +
+  geom_label_repel(
+    aes(y = ypos, label = label),
+    nudge_x = 1.0,
+    direction = "y",
+    size = 4.5,
+    show.legend = FALSE,
+    segment.color = "grey30"
+  ) +
+  scale_fill_manual(values = c(
+    "Chinese" = "#1f77b4",
+    "Malay"   = "#2ca02c",
+    "Indian"  = "yellow",
+    "Others"  = "brown"
+  )) +
+  labs(title = "Primary 3 Cohort Race Composition") +
+  theme_void() +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    legend.position = "none"  # <-- removes the legend
+  )
+
+
+```
+
+```{r, echo=FALSE, fig.width=10}
+p9 
+
+```
+
+Combine all three plots above into a single figure.
+
+```{r fig.height=10, fig.width=18}
+
+patchwork <- p9 | (p7 / p8)
+patchwork & theme_economist()
+```
+
+Afternote: The "axis-lines" shows while the "legend" reappears on the Pie Chart (not sure why, suspect it is some coding error or settings), hence I would need to find a way to remove them for aesthetics point of view.
