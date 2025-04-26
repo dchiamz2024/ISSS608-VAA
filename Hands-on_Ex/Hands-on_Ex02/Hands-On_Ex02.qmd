@@ -1,7 +1,16 @@
 ---
 title: "Hands-on Exercise 2"
+description: ""
 author: "David Chiam"
 date: "24 April 2025"
+date-modified: "Last Modified"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
 ---
 
 ## Step 1. Installing and loading the required libraries
@@ -575,6 +584,7 @@ p8 <-  ggplot(race_counts, aes(x = CLASS, y = count, fill = RACE)) +
 p8 
 
 ```
+
 Combine both plots (Bar Charts) above into a single figure.
 
 ```{r fig.height=16, fig.width=10}
