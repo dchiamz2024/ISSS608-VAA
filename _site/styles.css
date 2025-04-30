@@ -12,3 +12,29 @@
   background-color: #FF5722 !important;
   color: white !important;
 }
+
+
+.How-Does-it-Work {
+  border: 2px #2d4acb;
+  border-radius: 10px;
+  background-color: #def0fa;
+  padding: 1.5em;
+  margin-top: 1em;
+  position: relative;
+  font-size: 0.95em;
+  box-shadow: 0 0 4px;
+}
+
+.teacher-icon {
+  width: 512px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+code {
+  background-color: #f2f2f2; /* Light grey or change to #eaf4fc for pastel blue */
+  color: #333;
+  border-radius: 4px;
+  padding: 0.15em 0.3em;
+}

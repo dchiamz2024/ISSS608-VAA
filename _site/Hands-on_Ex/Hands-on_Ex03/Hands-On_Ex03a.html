@@ -184,6 +184,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#learning-outcome" id="toc-learning-outcome" class="nav-link" data-scroll-target="#learning-outcome"><strong>3.1 Learning Outcome</strong></a></li>
   <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started"><strong>3.2 Getting Started</strong></a></li>
   <li><a href="#importing-data" id="toc-importing-data" class="nav-link" data-scroll-target="#importing-data"><strong>3.3 Importing Data</strong></a></li>
+  <li><a href="#interactive-data-visualisation---ggiraph-methods" id="toc-interactive-data-visualisation---ggiraph-methods" class="nav-link" data-scroll-target="#interactive-data-visualisation---ggiraph-methods"><strong>3.4 Interactive Data Visualisation - ggiraph methods</strong></a>
+  <ul class="collapse">
+  <li><a href="#tooltip-effect-with-tooltip-aesthetic" id="toc-tooltip-effect-with-tooltip-aesthetic" class="nav-link" data-scroll-target="#tooltip-effect-with-tooltip-aesthetic"><strong>3.4.1 Tooltip effect with <em>tooltip</em> aesthetic</strong></a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -257,8 +261,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>exam_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"chap03/data/Exam_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="interactive-data-visualisation---ggiraph-methods" class="level2">
+<h2 class="anchored" data-anchor-id="interactive-data-visualisation---ggiraph-methods"><strong>3.4 Interactive Data Visualisation - ggiraph methods</strong></h2>
+<p><a href="https://davidgohel.github.io/ggiraph/index.html">ggiraph</a> is an htmlwidget and a ggplot2 extension. It allows ggplot graphics to be interactive.</p>
+<p>Interactive is made with <a href="https://davidgohel.github.io/ggiraph/reference/index.html#section-interactive-geometries"><strong>ggplot geometries</strong></a> that can understand three arguments:</p>
+<ul>
+<li><code>Tooltip</code>: a column of data-sets that contain tooltips to be displayed when the mouse is over elements.</li>
+<li><code>Onclick</code>: a column of data-sets that contain a JavaScript function to be executed when elements are clicked.</li>
+<li><code>Data_id</code>: a column of data-sets that contain an id to be associated with elements.</li>
+</ul>
+<p>If it used within a shiny application, elements associated with an id (data_id) can be selected and manipulated on client and server sides. Refer to this <a href="https://www.ardata.fr/ggiraph-book/selections.html">article</a> for more detail explanation.</p>
+<div class="How-Does-it-Work">
+<p><img src="../..\Images/teacher.png" class="img-fluid" width="42"> <span style="font-size: 30px; vertical-align: middle;"><strong>How does it work?</strong></span></p>
+<p>It extends <strong>ggplot2</strong> with:</p>
+<ul>
+<li>interactive geom functions: <code>geom_point_interactive()</code>, <code>geom_col_interactive()</code>, etc.</li>
+<li>interactive scale functions: <code>scale_color_continuous_interactive()</code>, <code>scale_fill_manual_interactive()</code>, etc.</li>
+<li>interactive facet functions: <code>facet_wrap_interactive()</code>, <code>facet_grid_interactive()</code> with <code>labeller_interactive()</code>.</li>
+<li>interactive guide functions: <code>guide_colorbar_interactive()</code>, <code>guide_legend_interactive()</code>.</li>
+<li>interactive theme elements: <code>element_line_interactive()</code>, <code>element_rect_interactive()</code>, <code>label_interactive()</code>.</li>
+</ul>
+</div>
+<section id="tooltip-effect-with-tooltip-aesthetic" class="level3">
+<h3 class="anchored" data-anchor-id="tooltip-effect-with-tooltip-aesthetic"><strong>3.4.1 Tooltip effect with <em>tooltip</em> aesthetic</strong></h3>
+<p>Below shows a typical code chunk to plot an interactive statistical graph by using <strong>ggiraph</strong> package. Notice that the code chunk consists of two parts. First, an ggplot object will be created. Next, <a href="https://davidgohel.github.io/ggiraph/reference/girafe.html"><code>girafe()</code></a> of <strong>ggiraph</strong> will be used to create an interactive svg object.</p>
 
 
+</section>
 </section>
 </section>
 
