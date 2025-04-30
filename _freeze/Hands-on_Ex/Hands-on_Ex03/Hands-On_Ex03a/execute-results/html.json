@@ -1,0 +1,15 @@
+{
+  "hash": "7bf1ce31a360910e5ba9a7672a05c857",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Hands-on Exercise 3A\"\ndescription: \"\"\nauthor: \"David Chiam\"\ndate: \"30 April 2025\"\ndate-modified: \"30 April 2025\"\nformat: html\neditor: visual\nexecute: \n  eval: true\n  echo: true\n  warning: false\n  freeze: true\n---\n\n# **3A - Programming Interactive Data Visualisation with R**\n\n## **3.1 Learning Outcome**\n\nIn this hands-on exercise, we will learn how to create interactive data visualisation by using functions provided by **ggiraph** and **plotlyr** packages.\n\n## **3.2 Getting Started**\n\nFirst, write a code chunk to check, install and launch the following R packages:\n\n-   [**ggiraph**](https://davidgohel.github.io/ggiraph/) for making ‘ggplot’ graphics interactive.\n-   [**plotly**](https://plotly.com/r/), R library for plotting interactive statistical graphs.\n-   [**DT**](https://rstudio.github.io/DT/) provides an R interface to the JavaScript library [DataTables](https://datatables.net/) that create interactive table on html page.\n-   [**tidyverse**](https://www.tidyverse.org/), a family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs.\n-   [**patchwork**](https://patchwork.data-imaginist.com/) for combining multiple ggplot2 graphs into one figure.\n\nThe code chunk below will be used to accomplish the task.\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(ggiraph, plotly, \n               patchwork, DT, tidyverse) \n```\n:::\n\n\n## **3.3 Importing Data** \n\nIn this section, *Exam_data.csv* provided will be used. Using [*read_csv()*](https://readr.tidyverse.org/reference/read_delim.html) of **readr** package, import *Exam_data.csv* into R.\n\nThe code chunk below `read_csv()` of **readr** package is used to import *Exam_data.csv* data file into R and save it as an tibble data frame called `exam_data`.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nexam_data <- read_csv(\"chap03/data/Exam_data.csv\")\n```\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

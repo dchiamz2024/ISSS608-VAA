@@ -1,0 +1,47 @@
+---
+title: "Hands-on Exercise 3A"
+description: ""
+author: "David Chiam"
+date: "30 April 2025"
+date-modified: "30 April 2025"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# **3A - Programming Interactive Data Visualisation with R**
+
+## **3.1 Learning Outcome**
+
+In this hands-on exercise, we will learn how to create interactive data visualisation by using functions provided by **ggiraph** and **plotlyr** packages.
+
+## **3.2 Getting Started**
+
+First, write a code chunk to check, install and launch the following R packages:
+
+-   [**ggiraph**](https://davidgohel.github.io/ggiraph/) for making ‘ggplot’ graphics interactive.
+-   [**plotly**](https://plotly.com/r/), R library for plotting interactive statistical graphs.
+-   [**DT**](https://rstudio.github.io/DT/) provides an R interface to the JavaScript library [DataTables](https://datatables.net/) that create interactive table on html page.
+-   [**tidyverse**](https://www.tidyverse.org/), a family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs.
+-   [**patchwork**](https://patchwork.data-imaginist.com/) for combining multiple ggplot2 graphs into one figure.
+
+The code chunk below will be used to accomplish the task.
+
+```{r eval=FALSE}
+pacman::p_load(ggiraph, plotly, 
+               patchwork, DT, tidyverse) 
+```
+
+## **3.3 Importing Data**
+
+In this section, *Exam_data.csv* provided will be used. Using [*read_csv()*](https://readr.tidyverse.org/reference/read_delim.html) of **readr** package, import *Exam_data.csv* into R.
+
+The code chunk below `read_csv()` of **readr** package is used to import *Exam_data.csv* data file into R and save it as an tibble data frame called `exam_data`.
+
+```{r eval=FALSE}
+exam_data <- read_csv("chap03/data/Exam_data.csv")
+```
