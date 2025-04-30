@@ -34,7 +34,8 @@ The code chunk below will be used to accomplish the task.
 ```{r }
 
 pacman::p_load(ggiraph, plotly, 
-               patchwork, DT, tidyverse) 
+               patchwork, DT, tidyverse,
+               ggplot2) 
 ```
 
 ## **3.3 Importing Data**
@@ -476,6 +477,12 @@ girafe(
 
 ```
 
+::: callout-warning
+## Warning ⚠️
+
+Note that click actions must be a string column in the dataset containing valid JavaScript instructions.
+:::
+
 ### **3.6.7 Coordinated Multiple Views with ggiraph**
 
 Coordinated multiple views methods has been implemented in the data visualisation below.
@@ -527,59 +534,6 @@ The patchwork package was used to stack multiple ggplot objects vertically using
 Custom styling was applied using opts_hover() and opts_hover_inv() inside girafe() to enhance interactivity. When a student is selected, their dot turns dark, while other points fade slightly in the background. Additionally, the colour of the tooltip background was customised to blue and the font colour as black and bold.
 
 The final result is an integrated view where interactivity in one plot automatically updates the display across all other plots, allowing for rich comparative analysis across subjects.
-
-```{r}
-
-# Create 3 interactive ggplots with the same structure
-p1 <- ggplot(exam_data, aes(x = MATHS)) +
-  geom_dotplot_interactive(
-    aes(data_id = ID, tooltip = ID),
-    stackgroups = TRUE,
-    binwidth = 1,
-    method = "histodot"
-  ) +
-  coord_cartesian(xlim = c(0, 100)) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  ggtitle("Maths")
-
-p2 <- ggplot(exam_data, aes(x = ENGLISH)) +
-  geom_dotplot_interactive(
-    aes(data_id = ID, tooltip = ID),
-    stackgroups = TRUE,
-    binwidth = 1,
-    method = "histodot"
-  ) +
-  coord_cartesian(xlim = c(0, 100)) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  ggtitle("English")
-
-p3 <- ggplot(exam_data, aes(x = SCIENCE)) +
-  geom_dotplot_interactive(
-    aes(data_id = ID, tooltip = ID),
-    stackgroups = TRUE,
-    binwidth = 1,
-    method = "histodot"
-  ) +
-  coord_cartesian(xlim = c(0, 100)) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  ggtitle("Science")
-
-
-# Use patchwork's vertical stacking with /
-combined_plot <- p1 / p2 / p3
-
-# Render interactive stacked plots
-girafe(
-  ggobj = combined_plot,
-  width_svg = 6,
-  height_svg = 8,  # Increase height for stacked layout
-  options = list(
-    opts_hover(css = "fill: #202020;"),
-    opts_hover_inv(css = "opacity:0.2;")
-  )
-)
-
-```
 
 ```{r}
 
@@ -643,3 +597,286 @@ girafe(
 )
 
 ```
+
+## **3.7 Interactive Data Visualisation - plotly methods!**
+
+Plotly’s R graphing library create interactive web graphics from **ggplot2** graphs and/or a custom interface to the (MIT-licensed) JavaScript library [**plotly.js**](https://plotly.com/javascript/) inspired by the grammar of graphics. Different from other plotly platform, plot.R is free and open source.
+
+There are two ways to create interactive graph by using plotly, they are:
+
+-   by using *plot_ly()*, and
+-   by using *ggplotly()*
+
+### **3.7.1 Creating an interactive scatter plot: plot_ly() method**
+
+The tabset below shows an example a basic interactive plot created by using *plot_ly()*.
+
+::: panel-tabset
+## The Plot
+
+```{r, echo=FALSE}
+
+plot_ly(data = exam_data, 
+        x = ~MATHS, 
+        y = ~ENGLISH,
+        type = 'scatter',
+        mode = 'markers') %>%
+  layout(
+    title = list(
+      text = "<b>English vs. Maths</b>",
+      x = 0.5,           # center the title
+      xanchor = "center"
+    )
+  )
+
+```
+
+## The Code Chunk
+
+```{r, echo=TRUE, results='hide'}
+
+plot_ly(data = exam_data, 
+        x = ~MATHS, 
+        y = ~ENGLISH,
+        type = 'scatter',
+        mode = 'markers') %>%
+  layout(
+    title = list(
+      text = "<b>English vs. Maths</b>",
+      x = 0.5,           # center the title
+      xanchor = "center"
+    )
+  )
+
+```
+:::
+
+### **3.7.2 Working with visual variable: plot_ly() method**
+
+In the code chunk below, *color* argument is mapped to a qualitative visual variable (i.e. RACE).
+
+::: panel-tabset
+## The Plot
+
+```{r, echo=FALSE}
+
+plot_ly(data = exam_data, 
+        x = ~MATHS, 
+        y = ~ENGLISH,
+        color = ~RACE,
+        type = 'scatter',
+        mode = 'markers') %>%
+  layout(
+    title = list(
+      text = "<b>English vs. Maths</b>",
+      x = 0.5,           # center the title
+      xanchor = "center"
+    )
+  )
+
+```
+
+## The Code Chunk
+
+```{r, echo=TRUE, results='hide'}
+
+plot_ly(data = exam_data, 
+        x = ~MATHS, 
+        y = ~ENGLISH,
+        color = ~RACE,
+        type = 'scatter',
+        mode = 'markers') %>%
+  layout(
+    title = list(
+      text = "<b>English vs. Maths</b>",
+      x = 0.5,           # center the title
+      xanchor = "center"
+    )
+  )
+
+```
+:::
+
+### **3.7.3 Creating an interactive scatter plot: ggplotly() method**
+
+The code chunk below plots an interactive scatter plot by using *ggplotly()*.
+
+::: panel-tabset
+## The Plot
+
+```{r, echo=FALSE}
+
+p <- ggplot(data=exam_data, 
+            aes(x = MATHS,
+                y = ENGLISH)) +
+  geom_point(size=1) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English vs. Maths") +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))  # bold & centered title
+  
+ggplotly(p)
+
+```
+
+## The Code Chunk
+
+```{r, echo=TRUE, results='hide'}
+
+p <- ggplot(data=exam_data, 
+            aes(x = MATHS,
+                y = ENGLISH)) +
+  geom_point(size=1) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English vs. Maths") +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))  # bold & centered title
+  
+ggplotly(p)
+
+```
+:::
+
+### **3.7.4 Coordinated Multiple Views with plotly**
+
+The creation of a coordinated linked plot by using plotly involves three steps:
+
+-   [`highlight_key()`](https://www.rdocumentation.org/packages/plotly/versions/4.9.2/topics/highlight_key) of **plotly** package is used as shared data.
+
+-   two scatterplots will be created by using ggplot2 functions.
+
+-   lastly, [*subplot()*](https://plotly.com/r/subplots/) of **plotly** package is used to place them next to each other side-by-side.
+
+Thing to learn from the code chunk:
+
+highlight_key() simply creates an object of class crosstalk::SharedData. Visit this link to learn more about crosstalk.
+
+::: panel-tabset
+## The Plot
+
+```{r, echo=FALSE}
+
+library(crosstalk)
+
+# Use crosstalk to enable linking
+d <- highlight_key(exam_data)
+
+# Plot 1: English vs. Maths
+p1 <- ggplot(data = d, aes(x = MATHS, y = ENGLISH)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +
+  labs(x = "Maths", y = "English")
+
+# Plot 2: Science vs. Maths
+p2 <- ggplot(data = d, aes(x = MATHS, y = SCIENCE)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +
+  labs(x = "Maths", y = "Science")
+
+# Combine into interactive subplot
+subplot(
+  ggplotly(p1), 
+  ggplotly(p2), 
+  nrows = 1,         # Side-by-side layout
+  margin = 0.06, 
+  shareX = FALSE, 
+  shareY = FALSE,
+  titleX = TRUE, 
+  titleY = TRUE
+) %>%
+  layout(
+    font = list(size = 10),  # Axis font size
+    margin = list(t = 80),   # Add top margin (in pixels) to prevent title cutoff
+    annotations = list(
+      list(  # Title for left plot
+        text = "<b>English vs. Maths</b>",
+        x = 0.1, xref = "paper",
+        y = 1.1, yref = "paper",
+        showarrow = FALSE,
+        font = list(size = 20)  # 2x axis font size
+      ),
+      list(  # Title for right plot
+        text = "<b>Science vs. Maths</b>",
+        x = 0.9, xref = "paper",
+        y = 1.1, yref = "paper",
+        showarrow = FALSE,
+        font = list(size = 20)  # 2x axis font size
+      )
+    )
+  )
+
+```
+
+## The Code Chunk
+
+```{r, echo=TRUE, results='hide'}
+
+library(crosstalk)
+
+# Use crosstalk to enable linking
+d <- highlight_key(exam_data)
+
+# Plot 1: English vs. Maths
+p1 <- ggplot(data = d, aes(x = MATHS, y = ENGLISH)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +
+  labs(x = "Maths", y = "English")
+
+# Plot 2: Science vs. Maths
+p2 <- ggplot(data = d, aes(x = MATHS, y = SCIENCE)) +
+  geom_point(size = 1) +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +
+  labs(x = "Maths", y = "Science")
+
+# Combine into interactive subplot
+subplot(
+  ggplotly(p1), 
+  ggplotly(p2), 
+  nrows = 1,         # Side-by-side layout
+  margin = 0.06, 
+  shareX = FALSE, 
+  shareY = FALSE,
+  titleX = TRUE, 
+  titleY = TRUE
+) %>%
+  layout(
+    font = list(size = 10),  # Axis font size
+    margin = list(t = 80),   # Add top margin (in pixels) to prevent title cutoff
+    annotations = list(
+      list(  # Title for left plot
+        text = "<b>English vs. Maths</b>",
+        x = 0.1, xref = "paper",
+        y = 1.05, yref = "paper",
+        showarrow = FALSE,
+        font = list(size = 20)  # 2x axis font size
+      ),
+      list(  # Title for right plot
+        text = "<b>Science vs. Maths</b>",
+        x = 0.9, xref = "paper",
+        y = 1.05, yref = "paper",
+        showarrow = FALSE,
+        font = list(size = 20)  # 2x axis font size
+      )
+    )
+  )
+
+```
+:::
+
+## **3.8 Interactive Data Visualisation - crosstalk methods!**
+
+[Crosstalk](https://rstudio.github.io/crosstalk/index.html) is an add-on to the htmlwidgets package. It extends htmlwidgets with a set of classes, functions, and conventions for implementing cross-widget interactions (currently, linked brushing and filtering).
+
+### **3.8.1 Interactive Data Table: DT package**
+
+-   A wrapper of the JavaScript Library [DataTables](https://datatables.net/)
+
+-   Data objects in R can be rendered as HTML tables using the JavaScript library ‘DataTables’ (typically via R Markdown or Shiny).
+
+```{r}
+DT::datatable(exam_data, class= "compact")
+```
+
+
+
+
