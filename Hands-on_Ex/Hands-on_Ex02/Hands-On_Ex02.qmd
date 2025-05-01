@@ -682,3 +682,13 @@ patchwork & theme_economist()
 ```
 
 Afternote: The "axis-lines" shows while the "legend" reappears on the Pie Chart (not sure why, suspect it is some coding error or settings), hence I would need to find a way to remove them for aesthetics point of view.
+
+## **Reference**
+
+-   [Patchwork R package goes nerd viral](https://www.littlemissdata.com/blog/patchwork)
+-   [ggrepel](https://ggrepel.slowkow.com/)
+-   [ggthemes](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+-   [hrbrthemes](https://cinc.rud.is/web/packages/hrbrthemes/)
+-   [ggplot tips: Arranging plots](https://albert-rapp.de/post/2021-10-28-extend-plot-variety/)
+-   [ggplot2 Theme Elements Demonstration](https://henrywang.nl/ggplot2-theme-elements-demonstration/)
+-   [ggplot2 Theme Elements Reference Sheet](https://isabella-b.com/blog/ggplot2-theme-elements-reference/)

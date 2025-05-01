@@ -3,7 +3,14 @@ title: "ISSS608-David's Visual Analytics Portfolio"
 description: ""
 author: "David Chiam"
 date: "14 April 2025"
-date-modified: "1 May 2025"
 ---
 
 Welcome to **ISSS609 Visual Analytics and Applications**. In this website, you will find my coursework prepared for this course.
+
+I hope that over the journey of this course, I will turn from this:
+
+![](Images/DreadVAA.png){fig-align="center"}
+
+To enjoying what I have learn from this course and applying it to my future work.
+
+![](Images/EnjoyingVAA.png){fig-align="center"}

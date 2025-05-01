@@ -1,5 +1,15 @@
 /* css styles */
 
+
+/* Style the main title */
+h1.title {
+  font-size: 48px;          /* increase title size */
+  font-family: "Cambria", serif;  /* change font style */
+  font-weight: bold;
+  color: #158CBA;
+}
+
+
 /* Make the navbar dropdown white with orange text */
 .navbar .dropdown-menu {
   background-color: white !important;
