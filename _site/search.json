@@ -187,5 +187,12 @@
     "title": "Hands-on Exercise 3B",
     "section": "",
     "text": "Getting Started\nVisit this link for a very interesting implementation of gganimate by your senior.\nBuilding an animation step-by-step with gganimate.\nCreating a composite gif with multiple gganimate panels"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-On_Ex02.html#reference",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-On_Ex02.html#reference",
+    "title": "Hands-on Exercise 2",
+    "section": "Reference",
+    "text": "Reference\n\nPatchwork R package goes nerd viral\nggrepel\nggthemes\nhrbrthemes\nggplot tips: Arranging plots\nggplot2 Theme Elements Demonstration\nggplot2 Theme Elements Reference Sheet"
   }
 ]
