@@ -1,0 +1,18 @@
+---
+title: "Take-Home Exercise 1"
+author: "David Chiam"
+description: ""
+date: "1 May 2025"
+date-modified: "N.A."
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+![](/Images/Under%20Construction.jpg)
+
+This page will be filled soon, come check it out in time to come.
