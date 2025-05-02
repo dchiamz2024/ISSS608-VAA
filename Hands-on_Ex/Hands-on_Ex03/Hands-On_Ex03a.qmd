@@ -3,7 +3,7 @@ title: "Hands-on Exercise 3A"
 description: ""
 author: "David Chiam"
 date: "30 April 2025"
-date-modified: "1 May 2025"
+date-modified: "2 May 2025"
 format: html
 editor: visual
 execute: 
@@ -1033,7 +1033,7 @@ p10 / p20 / p30 / p40 + plot_layout(heights = c(15, 15, 15, 15))
 
 ```
 
-**Step 3: Plot Visuals all into single graph (Interactive)**
+**Step 3: Plot Visuals all into combined graph (Interactive)**
 
 ```{r}
 
@@ -1061,11 +1061,61 @@ girafe(ggobj = p9)
 
 
 ```
-From here, we note that the readability is not as good, hence I would plot them as individual graphs as below. 
+
+From here, we note that the readability is not as good, hence I would plot them as individual graphs as below with interactive option.
+
+```{r}
+# Define consistent colors for each category
+item_colors <- c(
+  "Food" = "#E41A1C",       # red
+  "Health" = "#377EB8",     # blue
+  "Transport" = "#4DAF4A",  # green
+  "Education" = "#984EA3"   # purple
+)
+
+# Define shared hover effect
+shared_hover_css <- "stroke: black; stroke-width: 3px; fill-opacity: 1;"
+
+# Function to generate each interactive plot
+make_interactive_plot <- function(category_name) {
+  ggplot(cpi_long %>% filter(Item == category_name),
+         aes(x = Year, y = CPI,
+             tooltip = paste0("Year: ", Year, "<br>CPI: ", round(CPI, 1)),
+             data_id = Year)) +
+    geom_line_interactive(color = item_colors[category_name], size = 1.2) +
+    geom_point_interactive(color = item_colors[category_name], size = 2) +
+    labs(title = paste("CPI Trend:", category_name),
+         x = "Year", y = "CPI Index (Base = 2024 = 100)") +
+    theme_minimal() +
+    theme(plot.title = element_text(face = "bold", size = rel(1.8)))
+}
+
+# Generate and display each plot one by one
+girafe(ggobj = make_interactive_plot("Food"),
+       width = "100%", width_svg = 14, height_svg = 5,
+       options = list(opts_hover(css = shared_hover_css)))
+
+girafe(ggobj = make_interactive_plot("Health"),
+       width = "100%", width_svg = 14, height_svg = 5,
+       options = list(opts_hover(css = shared_hover_css)))
+
+girafe(ggobj = make_interactive_plot("Transport"),
+       width = "100%", width_svg = 14, height_svg = 5,
+       options = list(opts_hover(css = shared_hover_css)))
+
+girafe(ggobj = make_interactive_plot("Education"),
+       width = "100%", width_svg = 14, height_svg = 5,
+       options = list(opts_hover(css = shared_hover_css)))
+
+```
+
+**Step 4: Plot Visuals all into combined graph (Interactive)**
+
+This code builds 4 vertically stacked interactive CPI plots and is able to show tooltips and hover highlights.
 
 ```{r}
 
-# Define consistent colors for each category
+# Define category colors
 item_colors <- c(
   "Food" = "#E41A1C",
   "Health" = "#377EB8",
@@ -1073,36 +1123,166 @@ item_colors <- c(
   "Education" = "#984EA3"
 )
 
-# Function to build styled CPI plot
-make_cpi_plot <- function(category_name) {
+# Custom tooltip style
+tooltip_css <- "background-color: white; color: black; border: 1px solid black; padding: 5px; font-size: 13px;"
+
+# Create a reusable function for each static panel with interactivity
+make_interactive_panel <- function(category_name) {
   ggplot(cpi_long %>% filter(Item == category_name),
          aes(x = Year, y = CPI,
-             tooltip = paste("Year:", Year, "<br>CPI:", round(CPI, 1)),
+             tooltip = paste0("Year: ", Year, "<br>CPI: ", round(CPI, 1)),
              data_id = Year)) +
     geom_line_interactive(color = item_colors[category_name], size = 1.2) +
     geom_point_interactive(color = item_colors[category_name], size = 2) +
-    labs(title = paste("CPI Trend:", category_name), x = "Year", y = "CPI Index") +
+    labs(title = category_name, x = "Year", y = "CPI Index") +
     theme_minimal() +
-    theme(
-      plot.title = element_text(face = "bold", size = rel(2))
-    )
+    theme(plot.title = element_text(face = "bold", size = rel(1.5)))
 }
 
-# Generate wide interactive plots (stretch width + reasonable height)
-p10 <- girafe(ggobj = make_cpi_plot("Food"), width = "100%", width_svg = 14, height_svg = 5)
-p20 <- girafe(ggobj = make_cpi_plot("Health"), width = "100%", width_svg = 14, height_svg = 5)
-p30 <- girafe(ggobj = make_cpi_plot("Transport"), width = "100%", width_svg = 14, height_svg = 5)
-p40 <- girafe(ggobj = make_cpi_plot("Education"), width = "100%", width_svg = 14, height_svg = 5)
-
-# Stack them in full-width layout
-htmltools::tags$div(
-  style = "display: grid; grid-template-columns: 1fr 1fr; gap: 20px;",
-  p10, p20, p30, p40
+# Combine all plots into one patchwork layout
+combined_plot <- (
+  make_interactive_panel("Food") /
+  make_interactive_panel("Health") /
+  make_interactive_panel("Transport") /
+  make_interactive_panel("Education")
 )
+
+# Render the full interactive stacked plot
+girafe(
+  ggobj = combined_plot,
+  width_svg = 10,
+  height_svg = 14,
+  options = list(
+    opts_hover(css = "fill: #ff9305; stroke: black;"),
+    opts_hover_inv(css = "opacity:0.2;"),
+    opts_tooltip(css = tooltip_css)
+  )
+)
+
 
 ```
 
+Next, I combine back the graphs into a single plot to have a synchronised hoever behavious where hovering on one category (e.g., Food) displays the corresponding values for all other categories (Transport, Health, Education) at that same Year
 
 
+::: panel-tabset
+## The Plot
+```{r, echo=FALSE}
 
+# Define consistent colors
+item_colors <- c(
+  "Food" = "#E41A1C",
+  "Health" = "#377EB8",
+  "Transport" = "#4DAF4A",
+  "Education" = "#984EA3"
+)
 
+# Custom tooltip CSS
+tooltip_css <- "background-color: white; color: black; border: 1px solid black; padding: 5px; font-size: 13px;"
+
+# Step 1: Create a tooltip dataset that includes all values by year
+tooltip_data <- cpi_long %>%
+  filter(Item %in% names(item_colors)) %>%
+  pivot_wider(names_from = Item, values_from = CPI) %>%
+  mutate(tooltip = paste0(
+    "Year: ", Year, "<br>",
+    "Food: ", round(Food, 1), "<br>",
+    "Health: ", round(Health, 1), "<br>",
+    "Transport: ", round(Transport, 1), "<br>",
+    "Education: ", round(Education, 1)
+  ))
+
+# Step 2: Join the tooltip text back to original long format
+cpi_joined <- cpi_long %>%
+  inner_join(tooltip_data %>% select(Year, tooltip), by = "Year") %>%
+  filter(Item %in% names(item_colors))
+
+# Step 3: Create unified ggplot with interactive layers
+combined_plot <- ggplot(cpi_joined, aes(x = Year, y = CPI, group = Item)) +
+  geom_line_interactive(aes(color = Item, data_id = Year, tooltip = tooltip), size = 1.2) +
+  geom_point_interactive(aes(color = Item, data_id = Year, tooltip = tooltip), size = 2) +
+  scale_color_manual(values = item_colors) +
+  labs(title = "CPI Trends by Category (1961–2024)",
+       x = "Year", y = "CPI Index (Base = 2024 = 100)") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = rel(1.8)),
+    legend.title = element_blank()
+  )
+
+# Step 4: Render with synchronized hover + rich tooltip
+girafe(
+  ggobj = combined_plot,
+  width_svg = 12,
+  height_svg = 7,
+  options = list(
+    opts_hover(css = "stroke: black; stroke-width: 2px;"),
+    opts_hover_inv(css = "opacity: 0.2;"),
+    opts_tooltip(css = tooltip_css)
+  )
+)
+
+```
+Interactive:
+
+Hover on the point to get the CPI index of the 4 categories for each year.
+
+## The Code Chunk
+
+```{r, echo=TRUE, results='hide'}
+
+# Define consistent colors
+item_colors <- c(
+  "Food" = "#E41A1C",
+  "Health" = "#377EB8",
+  "Transport" = "#4DAF4A",
+  "Education" = "#984EA3"
+)
+
+# Custom tooltip CSS
+tooltip_css <- "background-color: white; color: black; border: 1px solid black; padding: 5px; font-size: 13px;"
+
+# Step 1: Create a tooltip dataset that includes all values by year
+tooltip_data <- cpi_long %>%
+  filter(Item %in% names(item_colors)) %>%
+  pivot_wider(names_from = Item, values_from = CPI) %>%
+  mutate(tooltip = paste0(
+    "Year: ", Year, "<br>",
+    "Food: ", round(Food, 1), "<br>",
+    "Health: ", round(Health, 1), "<br>",
+    "Transport: ", round(Transport, 1), "<br>",
+    "Education: ", round(Education, 1)
+  ))
+
+# Step 2: Join the tooltip text back to original long format
+cpi_joined <- cpi_long %>%
+  inner_join(tooltip_data %>% select(Year, tooltip), by = "Year") %>%
+  filter(Item %in% names(item_colors))
+
+# Step 3: Create unified ggplot with interactive layers
+combined_plot <- ggplot(cpi_joined, aes(x = Year, y = CPI, group = Item)) +
+  geom_line_interactive(aes(color = Item, data_id = Year, tooltip = tooltip), size = 1.2) +
+  geom_point_interactive(aes(color = Item, data_id = Year, tooltip = tooltip), size = 2) +
+  scale_color_manual(values = item_colors) +
+  labs(title = "CPI Trends by Category (1961–2024)",
+       x = "Year", y = "CPI Index (Base = 2024 = 100)") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = rel(1.8)),
+    legend.title = element_blank()
+  )
+
+# Step 4: Render with synchronized hover + rich tooltip
+girafe(
+  ggobj = combined_plot,
+  width_svg = 12,
+  height_svg = 7,
+  options = list(
+    opts_hover(css = "stroke: black; stroke-width: 2px;"),
+    opts_hover_inv(css = "opacity: 0.2;"),
+    opts_tooltip(css = tooltip_css)
+  )
+)
+
+```
+:::
