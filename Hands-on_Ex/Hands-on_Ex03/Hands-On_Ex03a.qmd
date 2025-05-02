@@ -971,3 +971,138 @@ This [link](https://davidgohel.github.io/ggiraph/index.html) provides online ver
 -   [Building an animation step-by-step with gganimate](https://www.alexcookson.com/post/2020-10-18-building-an-animation-step-by-step-with-gganimate/).
 
 -   [Creating a composite gif with multiple gganimate panels](https://solarchemist.se/2021/08/02/composite-gif-gganimate/)
+
+## **4 Self Hands-on Practice on the codes in this section**
+
+![](/Images/Hands-on-Practice.png){fig-align="center"}
+
+**Step 1: Data Import and Cleaning**
+
+```{r}
+
+# Load CPI data
+cpi_raw <- read_csv("DataEx03/CPI_editedRaw.csv", show_col_types = FALSE)
+
+# Filter for required categories
+cpi_filtered <- cpi_raw %>%
+  filter(`Data Series` %in% c("Food", "Health", "Transport", "Education"))
+
+# Pivot longer from wide to long format
+cpi_long <- cpi_filtered %>%
+  pivot_longer(cols = -`Data Series`, names_to = "Year", values_to = "CPI") %>%
+  mutate(
+    Year = as.integer(Year),
+    CPI = as.numeric(CPI),
+    Item = `Data Series`
+  ) %>%
+  select(Item, Year, CPI)
+
+
+```
+
+**Step 2: Plot Visuals all into single graph (Static)**
+
+```{r, fig.height=25}
+
+# Define color scheme
+item_colors <- c(
+  "Food" = "#E41A1C",
+  "Health" = "#377EB8",
+  "Transport" = "#4DAF4A",
+  "Education" = "#984EA3"
+)
+
+# Build static plot
+make_static_plot <- function(category_name) {
+  ggplot(cpi_long %>% filter(Item == category_name),
+         aes(x = Year, y = CPI)) +
+    geom_line(color = item_colors[category_name], size = 1.2) +
+    geom_point(color = item_colors[category_name], size = 2) +
+    labs(title = paste("CPI Trend:", category_name), x = "Year", y = "CPI Index") +
+    theme_minimal() +
+    theme(plot.title = element_text(face = "bold", size = rel(3.5)))
+}
+
+# Combine static plots using patchwork
+p10 <- make_static_plot("Food")
+p20 <- make_static_plot("Health")
+p30 <- make_static_plot("Transport")
+p40 <- make_static_plot("Education")
+
+p10 / p20 / p30 / p40 + plot_layout(heights = c(15, 15, 15, 15))
+
+```
+
+**Step 3: Plot Visuals all into single graph (Interactive)**
+
+```{r}
+
+# Define consistent colors for each category
+item_colors <- c(
+  "Food" = "#E41A1C",       # red
+  "Health" = "#377EB8",     # blue
+  "Transport" = "#4DAF4A",  # green
+  "Education" = "#984EA3"   # purple
+)
+
+# Build interactive line chart with manual color scale
+p9 <- ggplot(cpi_long, aes(x = Year, y = CPI, color = Item,
+                           group = Item,
+                           tooltip = paste0(Item, "<br>Year: ", Year, "<br>CPI: ", round(CPI, 1)),
+                           data_id = paste(Item, Year))) +
+  geom_line_interactive(size = 1.2) +
+  geom_point_interactive(size = 2) +
+  scale_color_manual(values = item_colors) +  # <- apply custom color scheme
+  labs(title = "CPI Trend (1961–2024): Food, Health, Transport, Education",
+       x = "Year", y = "CPI Index (Base = 2024 = 100)") +
+  theme_minimal()
+
+girafe(ggobj = p9)
+
+
+```
+From here, we note that the readability is not as good, hence I would plot them as individual graphs as below. 
+
+```{r}
+
+# Define consistent colors for each category
+item_colors <- c(
+  "Food" = "#E41A1C",
+  "Health" = "#377EB8",
+  "Transport" = "#4DAF4A",
+  "Education" = "#984EA3"
+)
+
+# Function to build styled CPI plot
+make_cpi_plot <- function(category_name) {
+  ggplot(cpi_long %>% filter(Item == category_name),
+         aes(x = Year, y = CPI,
+             tooltip = paste("Year:", Year, "<br>CPI:", round(CPI, 1)),
+             data_id = Year)) +
+    geom_line_interactive(color = item_colors[category_name], size = 1.2) +
+    geom_point_interactive(color = item_colors[category_name], size = 2) +
+    labs(title = paste("CPI Trend:", category_name), x = "Year", y = "CPI Index") +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(face = "bold", size = rel(2))
+    )
+}
+
+# Generate wide interactive plots (stretch width + reasonable height)
+p10 <- girafe(ggobj = make_cpi_plot("Food"), width = "100%", width_svg = 14, height_svg = 5)
+p20 <- girafe(ggobj = make_cpi_plot("Health"), width = "100%", width_svg = 14, height_svg = 5)
+p30 <- girafe(ggobj = make_cpi_plot("Transport"), width = "100%", width_svg = 14, height_svg = 5)
+p40 <- girafe(ggobj = make_cpi_plot("Education"), width = "100%", width_svg = 14, height_svg = 5)
+
+# Stack them in full-width layout
+htmltools::tags$div(
+  style = "display: grid; grid-template-columns: 1fr 1fr; gap: 20px;",
+  p10, p20, p30, p40
+)
+
+```
+
+
+
+
+
