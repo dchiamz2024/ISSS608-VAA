@@ -976,6 +976,10 @@ This [link](https://davidgohel.github.io/ggiraph/index.html) provides online ver
 
 ![](/Images/Hands-on-Practice.png){fig-align="center"}
 
+Downloaded the Consumer Price Index (CPI), 2024 As Base Year Dataset from SingStat.
+
+link: <https://tablebuilder.singstat.gov.sg/table/TS/M213801>
+
 **Step 1: Data Import and Cleaning**
 
 ```{r}
@@ -1164,9 +1168,9 @@ girafe(
 
 Next, I combine back the graphs into a single plot to have a synchronised hoever behavious where hovering on one category (e.g., Food) displays the corresponding values for all other categories (Transport, Health, Education) at that same Year
 
-
 ::: panel-tabset
 ## The Plot
+
 ```{r, echo=FALSE}
 
 # Define consistent colors
@@ -1223,6 +1227,7 @@ girafe(
 )
 
 ```
+
 Interactive:
 
 Hover on the point to get the CPI index of the 4 categories for each year.
