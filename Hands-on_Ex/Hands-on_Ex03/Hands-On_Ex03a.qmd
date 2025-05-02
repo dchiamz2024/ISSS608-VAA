@@ -1091,7 +1091,7 @@ make_interactive_plot <- function(category_name) {
     labs(title = paste("CPI Trend:", category_name),
          x = "Year", y = "CPI Index (Base = 2024 = 100)") +
     theme_minimal() +
-    theme(plot.title = element_text(face = "bold", size = rel(1.8)))
+    theme(plot.title = element_text(face = "bold", size = rel(1.3)))
 }
 
 # Generate and display each plot one by one
