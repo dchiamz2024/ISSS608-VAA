@@ -13,6 +13,535 @@ execute:
   freeze: true
 ---
 
-![](/Images/Under%20Construction.jpg)
+# **1. Overview**
 
-This page will be filled soon, come check it out in time to come.
+## **Setting the scene**
+
+A local online media company that publishes daily content on digital platforms is planning to release an article on **demographic structures and distribution of Singapore in 2024**.
+
+## **Our task**
+
+In this exercise, Exploratory Data Analysis (EDA) methods and ggplot functions are used to explore:
+
+1.  Need to write something here
+
+2.  and here
+
+## **2. Getting started, Data Loading and Preparation**
+
+This section documents the process of preparing the dataset for analysis and visualization. It covers the loading of R packages, initial inspection of the dataset, and the necessary wrangling and transformation steps applied.
+
+### **2.1 Load required packages 📦**
+
+Before importing the data, we load several R packages from the **tidyverse** ecosystem and supporting libraries for data wrangling and visualization. These packages streamline data processing and produce publication-ready plots using `ggplot2`. This setup ensure that we have both the flexibility and power to craft expressive, publication-quality demographic visualizations for the report.
+
+📌 **Summary of Package Roles**
+
+| Library | Description |
+|---------------------|---------------------------------------------------|
+| [**tidyverse**](https://www.tidyverse.org/) | A collection of core packages designed for data science, used extensively for data preparation and wrangling |
+| [**knitr**](https://yihui.org/knitr/) | Generates dynamic R markdown or Quarto reports |
+| [**patchwork**](https://patchwork.data-imaginist.com/) | Combine multiple ggplots into a single layout |
+| [**ggthemes**](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/) | Provides extra themes (e.g. economist, wsj) |
+| [**scales**](https://scales.r-lib.org/) | For data/axes label formatting and annotations for ggplot2 |
+| [**ggtext**](https://wilkelab.org/ggtext/) | Supports improved and rich text rendering for ggplot2 |
+| [**ggalt**](https://yonicd.github.io/ggalt/) | A compendium of ‘geoms’, ‘coords’, ‘stats’, scales and fonts for ggplots2 |
+| [**ggridges**](https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html) | For ridgeline plots that create the impression of a mountain range. They can be useful for visualising changes in distributions over time or space. |
+| [**ggpubr**](https://github.com/kassambara/ggpubr) | For publication-ready plots. |
+| [**ggextra**](https://github.com/daattali/ggExtra) | For adding marginal plots to ggplot2 |
+| [**cowplot**](https://github.com/wilkelab/cowplot) | Provides precise figure alignment and plot annotation |
+| [**ggnewscale**](https://eliocamp.github.io/ggnewscale/) | Enables multiple fill/colour scales in a single plot. For defining scales in ggplot2. |
+
+We load the following R packages using the `pacman::p_load()` :
+
+```{r}
+
+pacman::p_load(
+  tidyverse,     # Core data manipulation and ggplot2 plotting
+  knitr,         # Dynamic report generation and rendering
+  patchwork,     # Combines multiple ggplot2 plots
+  ggthemes,      # Additional themes and visual styles
+  scales,        # Formatting axes, scales, and labels
+  ggtext,        # Rich text formatting in ggplot titles/labels
+  ggalt,         # Dumbbell, lollipop, and other advanced geoms
+  ggridges,      # Ridgeline plots to visualize distributions
+  ggpubr,        # Publication-ready ggplot2 enhancements
+  ggExtra,       # Marginal plots for added insight
+  cowplot,       # Publication-quality figure alignment
+  ggnewscale     # Allows multiple color/fill scales in one ggplot
+)
+```
+
+### **2.2** Loading the Data and Taking a Glimpse of the Dataset **📂**
+
+The dataset, *Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex, June 2024*, published by the [Department of Statistics, Singapore (DOS)](https://www.singstat.gov.sg/) was loaded using the `read_csv()` function from the `readr` package in the tidyverse collection.
+
+```{r}
+
+# Load the dataset
+df <- read_csv("Dataset/respopagesex2024.csv")
+
+```
+
+The dataset contains **60,424 rows** and **6 columns**. Each row represents the count of residents for a specific combination of planning area, subzone, age, sex, and year.
+
+```{r}
+
+glimpse(df)
+```
+
+🧾 **Variable Descriptions**
+
+| Column | Type | Description |
+|-----------|---------------------------|----------------------------------|
+| `PA` | Categorical | Planning Area (e.g., Ang Mo Kio, Bedok) |
+| `SZ` | Categorical | Subzone within each Planning Area |
+| `Age` | Categorical (to be converted) | Age in single years (e.g., 0–100+) |
+| `Sex` | Categorical | Gender: Male / Female |
+| `Pop` | Continuous (Integer) | Number of residents (rounded to nearest 10) |
+| `Time` | Identifier / Constant | Time period (always 2024 in this dataset) |
+
+### **2.3** **Wrangling, Cleaning & Transformation 🧹**
+
+To ensure the data is ready for exploratory visualization and demographic analysis, a series of wrangling and transformation steps are applied. These steps are logically grouped and reusable across multiple visualization tasks.
+
+#### ✅ Convert **`Age`** to Integer 
+
+The `Age` column is stored as a character string (e.g., `"100+"`), which can prevent proper sorting, numeric comparisons, and calculations. I converted it to an integer, coercing `"100+"` to `100`, and remove any missing or malformed entries.
+
+This step ensures that age values are usable in:
+
+-   Population pyramids
+-   Median age calculations
+-   Age band groupings
+
+```{r}
+
+df <- df %>%
+  mutate(Age = as.integer(Age)) %>%  # Convert to numeric (100+ becomes NA)
+  drop_na(Age)                       # Remove missing values caused by conversion
+
+
+```
+
+#### ✅ Create `AgeBand` for Grouped Analysis
+
+Working with 101 separate age values (0–100) may clutter visualizations and dilute insight. Therefore, I bin the ages into meaningful age bands for easier demographic comparison and comparative visualization. These age bands are especially helpful for:
+
+-   Grouped bar charts
+-   Age structure comparisons across planning areas
+
+```{r}
+
+df <- df %>%
+  mutate(AgeBand = cut(Age,
+    breaks = c(0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55,
+               60, 65, 70, 75, 80, 85, 90, 95, 100, Inf),
+    labels = c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29",
+               "30-34", "35-39", "40-44", "45-49", "50-54",
+               "55-59", "60-64", "65-69", "70-74", "75-79",
+               "80-84", "85-89", "90-94", "95-99", "100+"),
+    right = FALSE))
+
+```
+
+#### ✅ Aggregate for Exploratory Plots & Key Insights
+
+The data was group by Planning Area, Sex, and Age Band to prepare for visual comparisons across demographic segments. Using the code below, we can compute the **aggregated population totals** across:
+
+-   **Age × Sex**: for national pyramids
+-    **Planning Area**: for ranking and spatial comparisons
+
+```{r}
+
+# For population pyramid (Age-Sex)
+pyramid_data <- df %>%
+  group_by(Age, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = "drop")
+
+# For top 5 planning areas
+top5_pa <- df %>%
+  group_by(PA) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  slice_max(order_by = Pop, n = 5)
+
+```
+
+#### ✅ Add Region Classification Based on Planning Area
+
+To enhance geographical analysis, we classify each Planning Area (`PA`) into one of Singapore’s five official regions (1) Central, (2) East, (3) North, (4) North-East, and (5) West. This grouping follows Singapore’s **Urban Redevelopment Authority (URA) Master Plan** and allows for cleaner regional comparisons, faceted plots, and high-level demographic summaries.
+
+```{r}
+
+# Updated region mapping
+region_classifier <- tribble(
+  ~PA, ~Region,
+  # Central
+  "BISHAN", "Central",
+  "BUKIT MERAH", "Central",
+  "BUKIT TIMAH", "Central",
+  "CENTRAL AREA", "Central",
+  "DOWNTOWN CORE", "Central",
+  "GEYLANG", "Central",
+  "KALLANG", "Central",
+  "MARINA EAST", "Central",
+  "MARINA SOUTH", "Central",
+  "MUSEUM", "Central",
+  "NEWTON", "Central",
+  "NOVENA", "Central",
+  "ORCHARD", "Central",
+  "OUTRAM", "Central",
+  "PAYA LEBAR", "Central",
+  "QUEENSTOWN", "Central",
+  "RIVER VALLEY", "Central",
+  "ROCHOR", "Central",
+  "SINGAPORE RIVER", "Central",
+  "SOUTHERN ISLANDS", "Central",
+  "STRAITS VIEW", "Central",
+  "TANGLIN", "Central",
+  "TOA PAYOH", "Central",
+
+  # East
+  "BEDOK", "East",
+  "CHANGI", "East",
+  "CHANGI BAY", "East",
+  "PASIR RIS", "East",
+  "TAMPINES", "East",
+
+  # North
+  "CENTRAL WATER CATCHMENT", "North",
+  "MANDAI", "North",
+  "SEMBABWANG", "North",
+  "SIMPANG", "North",
+  "SUNGEI KADUT", "North",
+  "WOODLANDS", "North",
+  "YISHUN", "North",
+
+  # North-East
+  "ANG MO KIO", "North-East",
+  "HOUGANG", "North-East",
+  "NORTH-EASTERN ISLANDS", "North-East",
+  "PUNGGOL", "North-East",
+  "SELETAR", "North-East",
+  "SENGKANG", "North-East",
+  "SERANGOON", "North-East",
+
+  # West
+  "BOON LAY", "West",
+  "BUKIT BATOK", "West",
+  "BUKIT PANJANG", "West",
+  "CHOA CHU KANG", "West",
+  "CLEMENTI", "West",
+  "JURONG EAST", "West",
+  "JURONG WEST", "West",
+  "LIM CHU KANG", "West",
+  "PIONEER", "West",
+  "TENGAH", "West",
+  "TUAS", "West",
+  "WESTERN ISLANDS", "West",
+  "WESTERN WATER CATCHMENT", "West"
+)
+
+# Join with main dataset
+df <- df %>%
+  mutate(PA = str_trim(str_to_upper(PA))) %>%
+  left_join(region_classifier, by = "PA")
+
+```
+
+#### ✅ Compute the Weighted Median Age
+
+As the simple median of the `Age` column would be misleading, as it treats each age as equally populated. Instead, we calculate a **weighted median** that reflects **actual population counts** per age to give a statistically more accurate median age for the **entire Singapore resident population**..
+
+```{r}
+
+df_median <- df %>%
+  arrange(Age) %>%
+  mutate(
+    cum_pop = cumsum(Pop),
+    total_pop = sum(Pop)
+  ) %>%
+  filter(cum_pop >= total_pop / 2) %>%
+  slice(1)
+
+median_age <- df_median$Age
+
+```
+
+This `df_summary` table forms the basis for multiple exploratory visualizations in the next section.
+
+### 🔍 **3.1 What is the age and gender structure in selected planning areas?**
+
+**Goal**: Understand whether the population skews young or old, and whether the gender balance is even.
+
+**Method**: Population pyramids using mirrored horizontal bar charts, grouped by sex and age band.
+
+```{r}
+# Example structure (actual filtering by PA can be added)
+ggplot(df_summary %>% filter(PA == "Ang Mo Kio"), 
+       aes(x = AgeBand, y = ifelse(Sex == "Males", -Total, Total), fill = Sex)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_fill_brewer(palette = "Set2") +
+  labs(title = "Population Pyramid: Ang Mo Kio", y = "Population", x = "Age Band") +
+  theme_minimal()
+
+```
+
+### 🔍 **3.2 How are age groups distributed across top 5 planning areas?**
+
+**Goal**: Compare how each planning area’s population is composed in terms of youth, working-age, and elderly.
+
+**Method**: Grouped bar plots faceted by planning area.
+
+```{r}
+top_5_areas <- df_summary %>%
+  group_by(PA) %>%
+  summarise(Pop = sum(Total)) %>%
+  slice_max(order_by = Pop, n = 5) %>%
+  pull(PA)
+
+df_summary %>% 
+  filter(PA %in% top_5_areas) %>%
+  ggplot(aes(x = AgeBand, y = Total, fill = Sex)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ PA) +
+  theme_minimal() +
+  labs(title = "Age Band Composition Across Top 5 Planning Areas")
+
+```
+
+### 🔍 **3.3 Where are children (age 0–14) most concentrated?**
+
+**Goal**: Identify family-oriented areas for policy planning (schools, childcare).
+
+**Method**: Heatmap across Planning Area and Subzone using child population totals.
+
+```{r}
+df_children <- df %>%
+  filter(Age < 15) %>%
+  group_by(PA, SZ) %>%
+  summarise(Children = sum(Pop), .groups = "drop")
+
+ggplot(df_children, aes(x = reorder(SZ, Children), y = PA, fill = Children)) +
+  geom_tile() +
+  scale_fill_viridis_c() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Child Population Density by Subzone",
+       x = "Subzone", y = "Planning Area")
+
+```
+
+###  🔍 **3.4 What is the elderly dependency ratio across planning areas?**
+
+**Goal**: Show where ageing populations might place pressure on the working-age base.
+
+**Method**: Compute and plot the ratio of elderly (65+) to working-age (20–64) residents.
+
+```{r}
+
+df_ratio <- df %>%
+  mutate(AgeGroup = case_when(
+    Age >= 65 ~ "Elderly",
+    Age >= 20 & Age < 65 ~ "Working",
+    TRUE ~ "Other"
+  )) %>%
+  group_by(PA, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  pivot_wider(names_from = AgeGroup, values_from = Pop) %>%
+  mutate(DependencyRatio = Elderly / Working)
+
+ggplot(df_ratio, aes(x = reorder(PA, DependencyRatio), y = DependencyRatio)) +
+  geom_col(fill = "darkred") +
+  coord_flip() +
+  labs(title = "Elderly Dependency Ratio by Planning Area",
+       x = "Planning Area", y = "Elderly per Working-age Resident") +
+  theme_minimal()
+
+
+```
+
+### 🔍 **3.5 Are there sex imbalances across age bands?**
+
+**Goal**: Detect unusual gender differences by age.
+
+**Method**: Line plots or bar charts of sex ratios by age band, faceted by region or large planning area.
+
+```{r}
+df_ratio_by_age <- df %>%
+  group_by(AgeBand, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  pivot_wider(names_from = Sex, values_from = Pop) %>%
+  mutate(SexRatio = Males / Females)
+
+ggplot(df_ratio_by_age, aes(x = AgeBand, y = SexRatio, group = 1)) +
+  geom_line(color = "steelblue") +
+  geom_point() +
+  labs(title = "Sex Ratio by Age Band (Males per Female)",
+       x = "Age Band", y = "Sex Ratio") +
+  theme_minimal()
+
+```
+
+### 🔍 **3.6 Which subzones are the most densely populated?**
+
+**Goal**: Identify where population pressure may be most intense.
+
+**Method**: Bar chart or (if spatial data available) choropleth map of total population.
+
+```         
+r
+```
+
+CopyEdit
+
+```{r}
+
+df_subzone_pop <- df %>%
+  group_by(SZ) %>%
+  summarise(Pop = sum(Pop)) %>%
+  arrange(desc(Pop)) %>%
+  slice_head(n = 20)
+
+ggplot(df_subzone_pop, aes(x = reorder(SZ, Pop), y = Pop)) +
+  geom_col(fill = "darkblue") +
+  coord_flip() +
+  labs(title = "Top 20 Most Populated Subzones", x = "Subzone", y = "Population") +
+  theme_minimal()
+
+```
+
+### 🔍 **3.7 What are the youngest vs oldest subzones?**
+
+**Goal**: Compare zones with the youngest and oldest resident median ages.
+
+**Method**: Dumbbell plot using median age per subzone.
+
+```{r}
+
+df_median_age <- df %>%
+  group_by(SZ) %>%
+  summarise(MedianAge = median(Age, na.rm = TRUE)) %>%
+  arrange(MedianAge)
+
+youngest <- df_median_age %>% slice_head(n = 10)
+oldest <- df_median_age %>% slice_tail(n = 10)
+
+combined <- bind_rows(youngest, oldest)
+
+ggplot(combined, aes(x = reorder(SZ, MedianAge), y = MedianAge)) +
+  geom_point(color = "darkgreen", size = 3) +
+  coord_flip() +
+  labs(title = "Top 10 Youngest and Oldest Subzones",
+       x = "Subzone", y = "Median Age") +
+  theme_minimal()
+
+```
+
+```{r}
+
+# Load spatial packages
+pacman::p_load(sf, ggplot2, tidyverse, viridis)
+
+# Read the planning area shapefile (GeoPackage or GeoJSON recommended)
+planning_areas <- st_read("Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml")  # or .shp/.geojson
+
+# Prepare population data: total by PA
+pa_pop <- df %>%
+  group_by(PA) %>%
+  summarise(Pop = sum(Pop))
+
+# Ensure both PA names match exactly (some cleaning may be needed)
+# Join spatial and population data
+map_data <- planning_areas %>%
+  left_join(pa_pop, by = c("Name" = "PA"))  # Adjust column name if different
+
+# Plot
+ggplot(map_data) +
+  geom_sf(aes(fill = Pop), color = "white") +
+  scale_fill_viridis_c(option = "plasma", trans = "log") +
+  labs(title = "Population Distribution by Planning Area, Singapore (2024)",
+       fill = "Population") +
+  theme_minimal()
+
+```
+
+```{r}
+
+# Load required packages
+pacman::p_load(sf, ggplot2, tidyverse, viridis)
+
+# Read + fix shapefile
+planning_areas <- st_read("Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml") %>%
+  mutate(Name = str_trim(toupper(Name))) %>%
+  st_make_valid()
+
+# Join and calculate density
+map_data <- planning_areas %>%
+  left_join(pa_pop, by = c("Name" = "PA")) %>%
+  mutate(area_km2 = as.numeric(st_area(geometry)) / 10^6,
+         density = Pop / area_km2)
+
+# Plot
+map_plot <- ggplot(map_data) +
+  geom_sf(aes(fill = density), color = "white") +
+  geom_sf_text(aes(label = Name), size = 3) +
+  scale_fill_viridis_c(option = "plasma", trans = "log", na.value = "grey90") +
+  labs(title = "Population Density by Planning Area (2024)",
+       subtitle = "Residents per square kilometre",
+       fill = "Density\n(per km²)") +
+  theme_void()
+
+
+```
+
+```{r}
+
+
+
+
+# Compute median age (weighted)
+df_ordered <- df %>%
+  arrange(Age) %>%
+  mutate(cum_pop = cumsum(Pop),
+         total_pop = sum(Pop)) %>%
+  filter(cum_pop >= total_pop / 2) %>%
+  slice(1)
+
+median_age <- df_ordered$Age
+
+# Population Pyramid Data
+pyramid_data <- df %>%
+  group_by(Age, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  mutate(Pop = if_else(Sex == "Males", -Pop, Pop))
+
+# Top 5 Planning Areas
+top5_pa <- df %>%
+  group_by(PA) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  slice_max(order_by = Pop, n = 5)
+
+# Plot 1: Population Pyramid
+p1 <- ggplot(pyramid_data, aes(x = Pop, y = Age, fill = Sex)) +
+  geom_col(width = 1) +
+  geom_hline(yintercept = median_age, linetype = "dashed", color = "black", linewidth = 1) +
+  scale_x_continuous(labels = abs, name = "Population") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(title = "Singapore Population Pyramid (2024)",
+       subtitle = paste("Median Age:", median_age)) +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+# Plot 2: Top 5 Planning Areas
+p2 <- ggplot(top5_pa, aes(x = reorder(PA, Pop), y = Pop)) +
+  geom_col(fill = "orchid") +
+  coord_flip() +
+  labs(title = "Top 5 Planning Areas by Population",
+       x = "Planning Area", y = "Population") +
+  theme_minimal()
+
+# Combine using patchwork
+p1 + p2 + plot_layout(widths = c(2, 1))
+```
