@@ -3,7 +3,7 @@ title: "Take-Home Exercise 1"
 author: "David Chiam"
 description: ""
 date: "1 May 2025"
-date-modified: "N.A."
+date-modified: "3 May 2025"
 format: html
 editor: visual
 execute: 
@@ -27,7 +27,7 @@ In this exercise, Exploratory Data Analysis (EDA) methods and ggplot functions a
 
 2.  and here
 
-## **2. Getting started, Data Loading and Preparation**
+# **2. Getting started, Data Loading and Preparation**
 
 This section documents the process of preparing the dataset for analysis and visualization. It covers the loading of R packages, initial inspection of the dataset, and the necessary wrangling and transformation steps applied.
 
@@ -38,7 +38,7 @@ Before importing the data, we load several R packages from the **tidyverse** eco
 📌 **Summary of Package Roles**
 
 | Library | Description |
-|---------------------|---------------------------------------------------|
+|-------------------------|----------------------------------------------|
 | [**tidyverse**](https://www.tidyverse.org/) | A collection of core packages designed for data science, used extensively for data preparation and wrangling |
 | [**knitr**](https://yihui.org/knitr/) | Generates dynamic R markdown or Quarto reports |
 | [**patchwork**](https://patchwork.data-imaginist.com/) | Combine multiple ggplots into a single layout |
@@ -93,7 +93,7 @@ glimpse(df)
 🧾 **Variable Descriptions**
 
 | Column | Type | Description |
-|-----------|---------------------------|----------------------------------|
+|------------------|------------------------|------------------------------|
 | `PA` | Categorical | Planning Area (e.g., Ang Mo Kio, Bedok) |
 | `SZ` | Categorical | Subzone within each Planning Area |
 | `Age` | Categorical (to be converted) | Age in single years (e.g., 0–100+) |
@@ -105,7 +105,7 @@ glimpse(df)
 
 To ensure the data is ready for exploratory visualization and demographic analysis, a series of wrangling and transformation steps are applied. These steps are logically grouped and reusable across multiple visualization tasks.
 
-#### ✅ Convert **`Age`** to Integer 
+#### ✅ Convert **`Age`** to Integer
 
 The `Age` column is stored as a character string (e.g., `"100+"`), which can prevent proper sorting, numeric comparisons, and calculations. I converted it to an integer, coercing `"100+"` to `100`, and remove any missing or malformed entries.
 
@@ -150,7 +150,7 @@ df <- df %>%
 The data was group by Planning Area, Sex, and Age Band to prepare for visual comparisons across demographic segments. Using the code below, we can compute the **aggregated population totals** across:
 
 -   **Age × Sex**: for national pyramids
--    **Planning Area**: for ranking and spatial comparisons
+-   **Planning Area**: for ranking and spatial comparisons
 
 ```{r}
 
@@ -173,79 +173,27 @@ To enhance geographical analysis, we classify each Planning Area (`PA`) into one
 
 ```{r}
 
-# Updated region mapping
-region_classifier <- tribble(
-  ~PA, ~Region,
-  # Central
-  "BISHAN", "Central",
-  "BUKIT MERAH", "Central",
-  "BUKIT TIMAH", "Central",
-  "CENTRAL AREA", "Central",
-  "DOWNTOWN CORE", "Central",
-  "GEYLANG", "Central",
-  "KALLANG", "Central",
-  "MARINA EAST", "Central",
-  "MARINA SOUTH", "Central",
-  "MUSEUM", "Central",
-  "NEWTON", "Central",
-  "NOVENA", "Central",
-  "ORCHARD", "Central",
-  "OUTRAM", "Central",
-  "PAYA LEBAR", "Central",
-  "QUEENSTOWN", "Central",
-  "RIVER VALLEY", "Central",
-  "ROCHOR", "Central",
-  "SINGAPORE RIVER", "Central",
-  "SOUTHERN ISLANDS", "Central",
-  "STRAITS VIEW", "Central",
-  "TANGLIN", "Central",
-  "TOA PAYOH", "Central",
-
-  # East
-  "BEDOK", "East",
-  "CHANGI", "East",
-  "CHANGI BAY", "East",
-  "PASIR RIS", "East",
-  "TAMPINES", "East",
-
-  # North
-  "CENTRAL WATER CATCHMENT", "North",
-  "MANDAI", "North",
-  "SEMBABWANG", "North",
-  "SIMPANG", "North",
-  "SUNGEI KADUT", "North",
-  "WOODLANDS", "North",
-  "YISHUN", "North",
-
-  # North-East
-  "ANG MO KIO", "North-East",
-  "HOUGANG", "North-East",
-  "NORTH-EASTERN ISLANDS", "North-East",
-  "PUNGGOL", "North-East",
-  "SELETAR", "North-East",
-  "SENGKANG", "North-East",
-  "SERANGOON", "North-East",
-
-  # West
-  "BOON LAY", "West",
-  "BUKIT BATOK", "West",
-  "BUKIT PANJANG", "West",
-  "CHOA CHU KANG", "West",
-  "CLEMENTI", "West",
-  "JURONG EAST", "West",
-  "JURONG WEST", "West",
-  "LIM CHU KANG", "West",
-  "PIONEER", "West",
-  "TENGAH", "West",
-  "TUAS", "West",
-  "WESTERN ISLANDS", "West",
-  "WESTERN WATER CATCHMENT", "West"
-)
-
-# Join with main dataset
 df <- df %>%
-  mutate(PA = str_trim(str_to_upper(PA))) %>%
-  left_join(region_classifier, by = "PA")
+  mutate(
+    PA = str_trim(str_to_upper(PA)),
+    Region = case_when(
+      PA %in% c("BISHAN", "BUKIT MERAH", "BUKIT TIMAH", "CENTRAL AREA", "DOWNTOWN CORE",
+                "GEYLANG", "KALLANG", "MARINA EAST", "MARINA SOUTH", "MUSEUM", "NEWTON",
+                "NOVENA", "ORCHARD", "OUTRAM", "PAYA LEBAR", "QUEENSTOWN", "RIVER VALLEY",
+                "ROCHOR", "SINGAPORE RIVER", "SOUTHERN ISLANDS", "STRAITS VIEW", "TANGLIN",
+                "TOA PAYOH", "MARINE PARADE") ~ "Central",
+      PA %in% c("BEDOK", "CHANGI", "CHANGI BAY", "PASIR RIS", "TAMPINES") ~ "East",
+      PA %in% c("CENTRAL WATER CATCHMENT", "MANDAI", "SEMBABWANG", "SIMPANG",
+                "SUNGEI KADUT", "WOODLANDS", "YISHUN", "SEMBAWANG") ~ "North",
+      PA %in% c("ANG MO KIO", "HOUGANG", "NORTH-EASTERN ISLANDS", "PUNGGOL",
+                "SELETAR", "SENGKANG", "SERANGOON") ~ "North-East",
+      PA %in% c("BOON LAY", "BUKIT BATOK", "BUKIT PANJANG", "CHOA CHU KANG",
+                "CLEMENTI", "JURONG EAST", "JURONG WEST", "LIM CHU KANG",
+                "PIONEER", "TENGAH", "TUAS", "WESTERN ISLANDS",
+                "WESTERN WATER CATCHMENT") ~ "West",
+      TRUE ~ NA_character_
+    )
+  )
 
 ```
 
@@ -268,46 +216,704 @@ median_age <- df_median$Age
 
 ```
 
-This `df_summary` table forms the basis for multiple exploratory visualizations in the next section.
+#### ✅ Create Aggregated Summary Table
 
-### 🔍 **3.1 What is the age and gender structure in selected planning areas?**
+```{r}
+
+df_summary <- df %>%
+  group_by(Region, PA, AgeBand, Sex) %>%
+  summarise(Total = sum(Pop), .groups = "drop")
+
+```
+
+# 3. Exploratory Data Analysis (EDA) 📊
+
+### 🔍 **3.1 What is the age and gender structure in the Singapore resident population?**
 
 **Goal**: Understand whether the population skews young or old, and whether the gender balance is even.
 
 **Method**: Population pyramids using mirrored horizontal bar charts, grouped by sex and age band.
 
-```{r}
-# Example structure (actual filtering by PA can be added)
-ggplot(df_summary %>% filter(PA == "Ang Mo Kio"), 
-       aes(x = AgeBand, y = ifelse(Sex == "Males", -Total, Total), fill = Sex)) +
+::: panel-tabset
+## The Plot
+
+```{r, echo=FALSE}
+
+# Build national_pyramid with label fields
+total_pop <- sum(df_summary$Total)
+
+national_pyramid <- df_summary %>%
+  mutate(Sex = factor(Sex, levels = c("Males", "Females"))) %>%
+  group_by(AgeBand, Sex) %>%
+  summarise(Total = sum(Total), .groups = "drop") %>%
+  mutate(
+    Perc = Total / total_pop * 100,
+    Total = if_else(Sex == "Males", -Total, Total),
+    Label = paste0(round(Perc, 1), "%"),
+    hjust_pos = if_else(Sex == "Males", 1.1, -0.1)
+  )
+
+
+# Plot
+ggplot(national_pyramid, 
+       aes(x = AgeBand, y = Total, fill = Sex)) +
   geom_bar(stat = "identity") +
+  geom_hline(yintercept = 0, color = "black") +
   coord_flip() +
-  scale_fill_brewer(palette = "Set2") +
-  labs(title = "Population Pyramid: Ang Mo Kio", y = "Population", x = "Age Band") +
-  theme_minimal()
+  scale_fill_manual(
+    values = c("Males" = "#ADD8E6", "Females" = "#FFC0CB"),
+    breaks = c("Males", "Females")
+  ) +
+  scale_y_continuous(
+    labels = function(x) comma(abs(x)),
+    breaks = scales::pretty_breaks(n = 6)
+  ) +
+  # Percentage labels with grey background
+  geom_label(aes(label = Label, y = 0, hjust = hjust_pos),
+             fill = "grey90", color = "grey30", size = 2, alpha = 0.65,
+             label.size = NA) +
+  labs(
+    title = "Singapore Resident Population Pyramid (2024)",
+    subtitle = "Mirrored by Gender, Aggregated by Age Bands (with %)",
+    y = "Population", x = "Age Band",
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "top",
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 9),
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 11)
+  )
 
 ```
 
-### 🔍 **3.2 How are age groups distributed across top 5 planning areas?**
+## The Code Chunk
 
-**Goal**: Compare how each planning area’s population is composed in terms of youth, working-age, and elderly.
+```{r, echo=TRUE, eval=FALSE}
 
-**Method**: Grouped bar plots faceted by planning area.
+# Build national_pyramid with label fields
+total_pop <- sum(df_summary$Total)
+
+national_pyramid <- df_summary %>%
+  mutate(Sex = factor(Sex, levels = c("Males", "Females"))) %>%
+  group_by(AgeBand, Sex) %>%
+  summarise(Total = sum(Total), .groups = "drop") %>%
+  mutate(
+    Perc = Total / total_pop * 100,
+    Total = if_else(Sex == "Males", -Total, Total),
+    Label = paste0(round(Perc, 1), "%"),
+    hjust_pos = if_else(Sex == "Males", 1.1, -0.1)
+  )
+
+
+# Plot
+ggplot(national_pyramid, 
+       aes(x = AgeBand, y = Total, fill = Sex)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = 0, color = "black") +
+  coord_flip() +
+  scale_fill_manual(
+    values = c("Males" = "#ADD8E6", "Females" = "#FFC0CB"),
+    breaks = c("Males", "Females")
+  ) +
+  scale_y_continuous(
+    labels = function(x) comma(abs(x)),
+    breaks = scales::pretty_breaks(n = 6)
+  ) +
+  # Percentage labels with grey background
+  geom_label(aes(label = Label, y = 0, hjust = hjust_pos),
+             fill = "grey90", color = "grey30", size = 2, alpha = 0.65,
+             label.size = NA) +
+  labs(
+    title = "Singapore Resident Population Pyramid (2024)",
+    subtitle = "Mirrored by Gender, Aggregated by Age Bands (with %)",
+    y = "Population", x = "Age Band",
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "top",
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 9),
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 10)
+  )
+
+```
+:::
+
+::: How-Does-it-Work
+![](/Images/Insights.png){width="42"} [<strong>Insights gleamed from this plot</strong>]{style="font-size: 30px; vertical-align: middle;"}
+
+This population pyramid reveals the demographic structure of Singapore’s resident population as of June 2024. The mirrored horizontal bars clearly show that the population is ageing — with a substantial share concentrated in the 40–64 age bands. The gender distribution is broadly balanced across most age groups, although a higher proportion of females is observed in older age bands, reflecting longer female life expectancy. Younger cohorts (under 25) form a smaller share of the population, suggesting lower birth rates and potential long-term shrinkage of the working-age base. This age imbalance, combined with rising median age, has strategic implications for healthcare planning, social security, and labour force renewal. The pyramid’s symmetry and visual labeling facilitate quick interpretation, while the grey-backed percentage markers offer contextual understanding without clutter. Overall, the chart underscores the demographic transition toward an ageing population — a trend aligned with those of other developed urban nations.
+:::
+
+### 🔍 **3.2 How are age groups distributed across the five regions?**
+
+**Goal**: To explore the demographic composition across Singapore’s five regions using meaningful generational groupings, this visualisation compares the proportion of residents by age cohort. It addresses how youth, workforce, and senior populations differ geographically.
+
+**Method**: Using the 2024 DOS dataset, residents are grouped by region and classified into six age bands based on Singapore’s social-policy generations: *Alpha & Gen Z (0–24), Young Adults (25–34), Working Adults (35–54), Silver Generation (55–64), Merdeka Generation (65–74), and Pioneer Generation (75+)*. Percentages are calculated within each region and plotted using a colour-safe, perceptually consistent palette to enhance visual clarity and accessibility.
+
+::: panel-tabset
+## The Combined Plot
+
+```{r, echo=FALSE, fig.width=12, fig.height=8}
+
+# Data prep with generation bands
+df_generations <- df %>%
+  mutate(
+    AgeGroup = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0-24)",
+      Age <= 34 ~ "Young Adults (25-34)",
+      Age <= 54 ~ "Working Adults (35-54)",
+      Age <= 64 ~ "Silver Generation (55-64)",
+      Age <= 74 ~ "Merdeka Generation (65-74)",
+      TRUE ~ "Pioneer Generation (>75)"
+    ),
+    AgeGroup = factor(AgeGroup, levels = c(
+      "Alpha & Gen Z (0-24)",
+      "Young Adults (25-34)",
+      "Working Adults (35-54)",
+      "Silver Generation (55-64)",
+      "Merdeka Generation (65-74)",
+      "Pioneer Generation (>75)"
+    ))
+  ) %>%
+  group_by(Region, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(Region) %>%
+  mutate(Perc = Pop / sum(Pop) * 100)
+
+# --- Plot A: Count-based ---
+plot_counts <- ggplot(df_generations, aes(x = Region, y = Pop, fill = AgeGroup)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = comma(Pop)), position = position_stack(vjust = 0.5),
+            size = 3, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = NULL, breaks = NULL) +  # Remove y-axis labels
+  labs(
+    title = "Population Count by Generation",
+    subtitle = "Total residents of each generation by region",
+    x = NULL, y = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.subtitle = element_text(size = 8)
+  )
+
+
+# --- Plot B: Percentage-based ---
+plot_perc <- ggplot(df_generations, aes(x = Region, y = Perc, fill = AgeGroup)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(Perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size =3, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = NULL, breaks = NULL) +  # Remove y-axis labels
+  labs(
+    title = "Population Share by Generation",
+    subtitle = "Proportion of each generation by region",
+    x = NULL, y = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    plot.subtitle = element_text(size = 8),
+    legend.text = element_text(size = rel(0.7))  # 30% smaller
+  )
+
+# Combine plots
+plot_counts + plot_perc + plot_layout(guides = "collect") & 
+  theme(legend.position = "bottom", legend.text = element_text(size = rel(0.7)))
+```
+Toggle to the other tabs to view the clearer version of each plot.
+
+## The Code Chunk
+
+```{r, echo=TRUE, eval=FALSE}
+
+# Data prep with generation bands
+df_generations <- df %>%
+  mutate(
+    AgeGroup = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0-24)",
+      Age <= 34 ~ "Young Adults (25-34)",
+      Age <= 54 ~ "Working Adults (35-54)",
+      Age <= 64 ~ "Silver Generation (55-64)",
+      Age <= 74 ~ "Merdeka Generation (65-74)",
+      TRUE ~ "Pioneer Generation (>75)"
+    ),
+    AgeGroup = factor(AgeGroup, levels = c(
+      "Alpha & Gen Z (0-24)",
+      "Young Adults (25-34)",
+      "Working Adults (35-54)",
+      "Silver Generation (55-64)",
+      "Merdeka Generation (65-74)",
+      "Pioneer Generation (>75)"
+    ))
+  ) %>%
+  group_by(Region, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(Region) %>%
+  mutate(Perc = Pop / sum(Pop) * 100)
+
+# --- Plot A: Count-based ---
+plot_counts <- ggplot(df_generations, aes(x = Region, y = Pop, fill = AgeGroup)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = comma(Pop)), position = position_stack(vjust = 0.5),
+            size = 2.2, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = NULL, breaks = NULL) +  # Remove y-axis labels
+  labs(
+    title = "Population Count by Generation",
+    subtitle = "Total residents of each generation by region",
+    x = NULL, y = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.subtitle = element_text(size = 8)
+  )
+
+
+# --- Plot B: Percentage-based ---
+plot_perc <- ggplot(df_generations, aes(x = Region, y = Perc, fill = AgeGroup)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(Perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size =2.2, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = NULL, breaks = NULL) +  # Remove y-axis labels
+  labs(
+    title = "Population Share by Generation",
+    subtitle = "Proportion of each generation by region",
+    x = NULL, y = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    plot.subtitle = element_text(size = 8),
+    legend.text = element_text(size = rel(0.7))  # 30% smaller
+  )
+
+# Combine plots
+plot_counts + plot_perc + plot_layout(guides = "collect") & 
+  theme(legend.position = "bottom", legend.text = element_text(size = rel(0.7)))
+
+```
+## Population Count by Generation
+
+```{r, echo=FALSE, fig.width=12, fig.height=8}
+
+# Data preparation
+df_generations <- df %>%
+  mutate(
+    AgeGroup = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0-24)",
+      Age <= 34 ~ "Young Adults (25-34)",
+      Age <= 54 ~ "Working Adults (35-54)",
+      Age <= 64 ~ "Silver Generation (55-64)",
+      Age <= 74 ~ "Merdeka Generation (65-74)",
+      TRUE ~ "Pioneer Generation (>75)"
+    ),
+    AgeGroup = factor(AgeGroup, levels = c(
+      "Alpha & Gen Z (0-24)",
+      "Young Adults (25-34)",
+      "Working Adults (35-54)",
+      "Silver Generation (55-64)",
+      "Merdeka Generation (65-74)",
+      "Pioneer Generation (>75)"
+    ))
+  ) %>%
+  group_by(Region, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop")
+
+# Plot A only
+plot_counts <- ggplot(df_generations, aes(x = Region, y = Pop, fill = AgeGroup)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = comma(Pop)),
+            position = position_stack(vjust = 0.5),
+            size = 3.5, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = NULL, breaks = NULL) +  # remove y-axis ticks
+  labs(
+    title = "Population Count by Generation",
+    subtitle = "Total residents of each generation by region",
+    x = NULL, y = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold", size = 18),
+    plot.subtitle = element_text(size = 10),
+    legend.text = element_text(size = rel(0.8))  # 30% smaller
+  )
+
+# Display Plot A
+plot_counts
+
+
+```
+
+## Population Percentage by Generation
+
+```{r, echo=FALSE, fig.width=12, fig.height=8}
+
+# Data preparation
+df_generations <- df %>%
+  mutate(
+    AgeGroup = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0-24)",
+      Age <= 34 ~ "Young Adults (25-34)",
+      Age <= 54 ~ "Working Adults (35-54)",
+      Age <= 64 ~ "Silver Generation (55-64)",
+      Age <= 74 ~ "Merdeka Generation (65-74)",
+      TRUE ~ "Pioneer Generation (>75)"
+    ),
+    AgeGroup = factor(AgeGroup, levels = c(
+      "Alpha & Gen Z (0-24)",
+      "Young Adults (25-34)",
+      "Working Adults (35-54)",
+      "Silver Generation (55-64)",
+      "Merdeka Generation (65-74)",
+      "Pioneer Generation (>75)"
+    ))
+  ) %>%
+  group_by(Region, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(Region) %>%
+  mutate(Perc = Pop / sum(Pop) * 100)
+
+# Plot B only
+plot_perc <- ggplot(df_generations, aes(x = Region, y = Perc, fill = AgeGroup)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(Perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3.5, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = NULL, breaks = NULL) +  # Remove y-axis ticks
+  labs(
+    title = "Population Percentage by Generation",
+    subtitle = "Proportion of each generation by region",
+    x = NULL, y = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold", size = 18),
+    plot.subtitle = element_text(size = 10),
+    legend.text = element_text(size = rel(0.8))  # 30% smaller
+  )
+
+# Display Plot B
+plot_perc
+
+
+```
+
+:::
+
+
+
+
+
+
+
+
+
+
+
 
 ```{r}
-top_5_areas <- df_summary %>%
-  group_by(PA) %>%
-  summarise(Pop = sum(Total)) %>%
-  slice_max(order_by = Pop, n = 5) %>%
-  pull(PA)
 
-df_summary %>% 
-  filter(PA %in% top_5_areas) %>%
-  ggplot(aes(x = AgeBand, y = Total, fill = Sex)) +
-  geom_col(position = "dodge") +
-  facet_wrap(~ PA) +
+library(viridis)
+
+df_generations <- df %>%
+  mutate(
+    AgeGroup = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0-24)",
+      Age <= 34 ~ "Young Adults (25-34)",
+      Age <= 54 ~ "Working Adults (35-54)",
+      Age <= 64 ~ "Silver Generation (55-64)",
+      Age <= 74 ~ "Merdeka Generation (65-74)",
+      TRUE ~ "Pioneer Generation (75+)"
+    ),
+    AgeGroup = factor(AgeGroup, levels = c(
+      "Alpha & Gen Z (0-24)",
+      "Young Adults (25-34)",
+      "Working Adults (35-54)",
+      "Silver Generation (55-64)",
+      "Merdeka Generation (65-74)",
+      "Pioneer Generation (75+)"
+    ))
+  ) %>%
+  group_by(Region, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(Region) %>%
+  mutate(Perc = Pop / sum(Pop) * 100)
+
+# Plot - Use ColorBrewer's 'Set3' for soft pastel colors
+ggplot(df_generations, aes(x = Region, y = Perc, fill = AgeGroup)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = paste0(round(Perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 2.8, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  labs(
+    title = "Population Composition by Generation Across Singapore Regions (2024)",
+    subtitle = "Using Generational Bands: Alpha to Pioneer",
+    x = "Region", y = "Percentage of Population",
+    fill = NULL
+  ) +
   theme_minimal() +
-  labs(title = "Age Band Composition Across Top 5 Planning Areas")
+  theme(legend.position = "top")
+
+```
+
+```{r}
+library(viridis)
+library(scales)
+
+df_generations_count <- df %>%
+  mutate(
+    AgeGroup = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0-24)",
+      Age <= 34 ~ "Young Adults (25-34)",
+      Age <= 54 ~ "Working Adults (35-54)",
+      Age <= 64 ~ "Silver Generation (55-64)",
+      Age <= 74 ~ "Merdeka Generation (65-74)",
+      TRUE ~ "Pioneer Generation (75+)"
+    ),
+    AgeGroup = factor(AgeGroup, levels = c(
+      "Alpha & Gen Z (0-24)",
+      "Young Adults (25-34)",
+      "Working Adults (35-54)",
+      "Silver Generation (55-64)",
+      "Merdeka Generation (65-74)",
+      "Pioneer Generation (75+)"
+    ))
+  ) %>%
+  group_by(Region, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop")
+
+# Plot using count instead of percentage
+ggplot(df_generations_count, aes(x = Region, y = Pop, fill = AgeGroup)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = comma(Pop)),
+            position = position_stack(vjust = 0.5), size = 2.8, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Resident Population by Generation Across Singapore Regions (2024)",
+    subtitle = "Counts grouped by generational bands from Alpha to Pioneer",
+    x = "Region", y = "Population Count",
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+```
+
+```{r}
+library(tidyverse)
+library(scales)
+library(patchwork)
+
+# Prepare data with both counts and percentages
+df_generations <- df %>%
+  mutate(
+    AgeGroup = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0-24)",
+      Age <= 34 ~ "Young Adults (25-34)",
+      Age <= 54 ~ "Working Adults (35-54)",
+      Age <= 64 ~ "Silver Generation (55-64)",
+      Age <= 74 ~ "Merdeka Generation (65-74)",
+      TRUE ~ "Pioneer Generation (75+)"
+    ),
+    AgeGroup = factor(AgeGroup, levels = c(
+      "Alpha & Gen Z (0-24)",
+      "Young Adults (25-34)",
+      "Working Adults (35-54)",
+      "Silver Generation (55-64)",
+      "Merdeka Generation (65-74)",
+      "Pioneer Generation (75+)"
+    ))
+  ) %>%
+  group_by(Region, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(Region) %>%
+  mutate(Perc = Pop / sum(Pop) * 100)
+
+# --- Plot A: Count-based ---
+plot_counts <- ggplot(df_generations, aes(x = Region, y = Pop, fill = AgeGroup)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = comma(Pop)),
+            position = position_stack(vjust = 0.5), size = 2.8, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Population Count by Generation",
+    subtitle = "Total residents per generation by region",
+    x = "Region", y = "Population",
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# --- Plot B: Percentage-based ---
+plot_perc <- ggplot(df_generations, aes(x = Region, y = Perc, fill = AgeGroup)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = paste0(round(Perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 2.8, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = function(x) paste0(x, "%")) +
+  labs(
+    title = "Population Share by Generation",
+    subtitle = "Relative proportion of each generation in each region",
+    x = "Region", y = "Percentage",
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+# Combine plots with unified bottom legend
+final_plot <- plot_counts + plot_perc + 
+  plot_layout(guides = "collect") & 
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = rel(0.7))  # Reduce font size by 30%
+  )
+
+# Print the final plot
+final_plot
+
+```
+
+```{r}
+
+# Data prep with generation bands
+df_generations <- df %>%
+  mutate(
+    AgeGroup = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0-24)",
+      Age <= 34 ~ "Young Adults (25-34)",
+      Age <= 54 ~ "Working Adults (35-54)",
+      Age <= 64 ~ "Silver Generation (55-64)",
+      Age <= 74 ~ "Merdeka Generation (65-74)",
+      TRUE ~ "Pioneer Generation (>75)"
+    ),
+    AgeGroup = factor(AgeGroup, levels = c(
+      "Alpha & Gen Z (0-24)",
+      "Young Adults (25-34)",
+      "Working Adults (35-54)",
+      "Silver Generation (55-64)",
+      "Merdeka Generation (65-74)",
+      "Pioneer Generation (>75)"
+    ))
+  ) %>%
+  group_by(Region, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(Region) %>%
+  mutate(Perc = Pop / sum(Pop) * 100)
+
+# --- Plot A: Count-based ---
+plot_counts <- ggplot(df_generations, aes(x = Region, y = Pop, fill = AgeGroup)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = comma(Pop)), position = position_stack(vjust = 0.5),
+            size = 2.2, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = NULL, breaks = NULL) +  # Remove y-axis labels
+  labs(
+    title = "Population Count by Generation",
+    subtitle = "Total residents of each generation by region",
+    x = NULL, y = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.subtitle = element_text(size = 8)
+  )
+
+
+# --- Plot B: Percentage-based ---
+plot_perc <- ggplot(df_generations, aes(x = Region, y = Perc, fill = AgeGroup)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(Perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size =2.2, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_y_continuous(labels = NULL, breaks = NULL) +  # Remove y-axis labels
+  labs(
+    title = "Population Share by Generation",
+    subtitle = "Proportion of each generation by region",
+    x = NULL, y = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    plot.subtitle = element_text(size = 8),
+    legend.text = element_text(size = rel(0.7))  # 30% smaller
+  )
+
+# Combine plots
+plot_counts + plot_perc + plot_layout(guides = "collect") & 
+  theme(legend.position = "bottom", legend.text = element_text(size = rel(0.7)))
+
+```
+
+```{r}
+# Load required packages
+pacman::p_load(ggplot2, dplyr, ggridges, stringr)
+
+# Step 1: Add Generation Band
+df_gen <- df %>%
+  filter(!is.na(Region)) %>%
+  mutate(
+    Generation = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0–24)",
+      Age <= 34 ~ "Young Adults (25–34)",
+      Age <= 54 ~ "Working Adults (35–54)",
+      Age <= 64 ~ "Silver Generation (55–64)",
+      Age <= 74 ~ "Merdeka Gen (65–74)",
+      TRUE ~ "Pioneer Gen (75+)"
+    ),
+    Generation = factor(Generation, levels = c(
+      "Alpha & Gen Z (0–24)", "Young Adults (25–34)", "Working Adults (35–54)",
+      "Silver Generation (55–64)", "Merdeka Gen (65–74)", "Pioneer Gen (75+)"
+    ))
+  )
+
+# Step 2: Expand the population to simulate density (approximation)
+df_ridge <- df_gen[rep(1:nrow(df_gen), df_gen$Pop %/% 10), ]
+
+# Step 3: Ridge plot – Age distribution per region, coloured by generation
+ggplot(df_ridge, aes(x = Age, y = Region, fill = Generation)) +
+  geom_density_ridges(scale = 2, alpha = 0.8, rel_min_height = 0.01, color = "white") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Age Distribution Across Regions (Ridge Plot)",
+    subtitle = "Population segments coloured by generation bands (2024)",
+    x = "Age", y = "Region", fill = "Generation"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 10),
+    legend.position = "top"
+  )
+
+```
+
+```{r}
+
+
+
 
 ```
 
@@ -333,7 +939,7 @@ ggplot(df_children, aes(x = reorder(SZ, Children), y = PA, fill = Children)) +
 
 ```
 
-###  🔍 **3.4 What is the elderly dependency ratio across planning areas?**
+### 🔍 **3.4 What is the elderly dependency ratio across planning areas?**
 
 **Goal**: Show where ageing populations might place pressure on the working-age base.
 
@@ -389,12 +995,6 @@ ggplot(df_ratio_by_age, aes(x = AgeBand, y = SexRatio, group = 1)) +
 **Goal**: Identify where population pressure may be most intense.
 
 **Method**: Bar chart or (if spatial data available) choropleth map of total population.
-
-```         
-r
-```
-
-CopyEdit
 
 ```{r}
 
