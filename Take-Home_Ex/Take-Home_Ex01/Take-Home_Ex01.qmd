@@ -220,7 +220,7 @@ median_age <- df_median$Age
 
 ```
 
-#### ✅ Generation Band Mapping 
+#### ✅ Generation Band Mapping
 
 Create Generation bands based on categories.
 
@@ -495,7 +495,7 @@ ggplot() +
     annotate("rect",
              xmin = -Inf, xmax = Inf,
              ymin = generation_bands$Start[i], ymax = generation_bands$End[i],
-             fill = generation_bands$Fill[i], alpha = 0.4)
+             fill = generation_bands$Fill[i], alpha = 0.25)
   }) +
   # Boxplot
   geom_boxplot(data = df_expanded, aes(x = Region, y = Age),
@@ -526,7 +526,9 @@ ggplot() +
 
 ```
 
-*Toggle to the other tabs to view the clearer version of each plot.*
+\^*For the visuals on the Age Distribution Across Regions, the plot's background has been coloured to show the Generation Bands across age spectrum of the X-axis.*
+
+\>\>\> *Toggle to the other tabs to view the clearer version of each plot.*
 
 This visualisation examines the generational distribution of Singapore’s resident population across the five main planning regions, using both absolute population counts and proportional shares. The left panel highlights the total number of residents in each generation, while the right panel normalises these figures to show the internal demographic mix within each region.
 
@@ -1161,6 +1163,130 @@ final_plot_55 <- (wrap_plots(pie_list_55, ncol = 5)) / wrap_elements(shared_lege
   )
 
 final_plot_55
+
+```
+
+## Sample Code Chunk (Age 25-54)
+
+This code generates the visuals for the dataset on 25- 54 year old group.
+
+```{r, echo=TRUE, eval=FALSE}
+
+# Prepare data: Total population aged 25–54 per Planning Area
+df_ywa_total <- df %>%
+  filter(Age >= 25, Age <= 54, !is.na(PA)) %>%
+  group_by(PA) %>%
+  summarise(Pop_25_54 = sum(Pop), .groups = "drop")
+
+# Get total population per PA
+df_total_pa <- df %>%
+  filter(!is.na(PA)) %>%
+  group_by(PA) %>%
+  summarise(TotalPop = sum(Pop), .groups = "drop")
+
+# Join and compute percentage
+df_ywa_total <- df_ywa_total %>%
+  left_join(df_total_pa, by = "PA") %>%
+  mutate(
+    Perc = Pop_25_54 / TotalPop * 100
+  ) %>%
+  arrange(desc(Pop_25_54)) %>%
+  slice(1:15) %>%
+  mutate(PA = factor(PA, levels = rev(PA)))  # Reverse order for plotting
+
+# Plot
+ggplot(df_ywa_total, aes(x = PA, y = Pop_25_54)) +
+  geom_bar(stat = "identity", fill = "#bcaef5", color = "grey40", width = 0.7) +
+  
+  # Percentage outside the bar
+  geom_text(aes(label = paste0(round(Perc, 1), "%")), 
+            hjust = -0.1, size = 3.2, color = "black") +
+  
+  # Raw count inside the bar
+  geom_text(aes(label = scales::comma(Pop_25_54)),
+            hjust = 1.05, size = 3.1, color = "white") +
+  
+  labs(
+    title = "Top 15 Planning Areas by Population Count Aged 25–54",
+    subtitle = "With population count and percent proportion of that PA",
+    x = NULL, y = "Population"
+  ) +
+  scale_y_continuous(
+    limits = c(0, 130000),
+    breaks = seq(0, 130000, by = 20000),
+    labels = scales::comma
+  ) +
+  coord_flip() +
+  theme_minimal(base_size = 11)
+
+
+```
+
+```{r, echo=TRUE, eval=FALSE}
+
+# Step 1: Identify top 15 planning areas by 25–54 age group
+df_ywa_single <- df %>%
+  filter(Age >= 25, Age <= 54) %>%
+  group_by(PA) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  arrange(desc(Pop)) %>%
+  slice_head(n = 15)
+
+# Step 2: Filter and summarise gender data
+df_gender_pie <- df %>%
+  filter(Age >= 25, Age <= 54, PA %in% df_ywa_single$PA) %>%
+  group_by(PA, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(PA) %>%
+  mutate(Percent = Pop / sum(Pop) * 100)
+
+# Step 3: Define color mapping
+gender_colors <- c("Males" = "#ADD8E6", "Females" = "#FFC0CB")
+
+# Step 4: Create pie charts per PA
+pie_list <- df_gender_pie %>%
+  group_split(PA) %>%
+  map(~ {
+    this_pa <- unique(.x$PA)
+    ggplot(.x, aes(x = "", y = Pop, fill = Sex)) +
+      geom_bar(stat = "identity", width = 1, color = "white") +
+      coord_polar("y") +
+      geom_text(aes(label = paste0(round(Percent), "%")),
+                position = position_stack(vjust = 0.5),
+                size = 3, color = "grey20") +
+      scale_fill_manual(values = gender_colors) +
+      labs(title = this_pa, x = NULL, y = NULL) +
+      theme_void() +
+      theme(
+        plot.title = element_text(size = 10, hjust = 0.5),
+        legend.position = "none"
+      )
+  })
+
+# Step 5: Legend (separate dummy plot)
+legend_plot <- ggplot(df_gender_pie, aes(x = "", y = Pop, fill = Sex)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = gender_colors, name = "Gender") +
+  theme_void() +
+  theme(legend.position = "top")
+
+# Step 6: Extract legend
+shared_legend <- cowplot::get_legend(legend_plot)
+
+# Step 7: Combine pies + legend
+final_plot <- (wrap_plots(pie_list, ncol = 5)) / wrap_elements(shared_legend) +
+  plot_layout(heights = c(1, 0.1)) +
+  plot_annotation(
+    title = "Gender Proportion in Top 15 Planning Areas",
+    subtitle = "Age group 25–54: Each pie shows male vs female composition",
+    theme = theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(size = 10)
+    )
+  )
+
+final_plot
+
 
 ```
 :::
