@@ -19,13 +19,15 @@ execute:
 
 A local online media company that publishes daily content on digital platforms is planning to release an article on **demographic structures and distribution of Singapore in 2024**.
 
-## **Our task**
+## **The task**
 
-In this exercise, Exploratory Data Analysis (EDA) methods and ggplot functions are used to explore:
+Assuming the role of the graphical editor of the media company, the task was to prepare **at most three data visualisation** for the exercise.
 
-1.  Need to write something here
+Hence in this exercise, I curated three key visualisations as part of dats exploration:
 
-2.  and here
+-   **Generational Distribution by Region:** A paired bar chart highlights both absolute and relative generational makeup across Singapore’s five planning regions, revealing the Central and East as home to proportionally older populations.
+-   **Age Demographics by Planning Area:** A boxplot with overlaid generation bands showcases median age and interquartile ranges, emphasising regions with mature population profiles like Central and West Singapore.
+-   **Top Planning Areas by Age Band:** A set of ranked bar charts and accompanying pie charts depict the top 15 planning areas by population size in three age segments—youth (0–24), adults (25–54), and seniors (55+). These are complemented with gender breakdowns to visualise demographic imbalances.
 
 # **2. Getting started, Data Loading and Preparation**
 
@@ -215,6 +217,30 @@ df_median <- df %>%
   slice(1)
 
 median_age <- df_median$Age
+
+```
+
+#### ✅ Generation Band Mapping 
+
+Create Generation bands based on categories.
+
+```{r}
+
+df <- df %>%
+  mutate(
+    GenerationBand = case_when(
+      Age <= 24 ~ "Alpha & Gen Z (0–24)",
+      Age <= 34 ~ "Young Adults (25–34)",
+      Age <= 54 ~ "Working Adults (35–54)",
+      Age <= 64 ~ "Silver Generation (55–64)",
+      Age <= 74 ~ "Merdeka Generation (65–74)",
+      TRUE ~ "Pioneer Generation (75+)"
+    ),
+    GenerationBand = factor(GenerationBand, levels = c(
+      "Alpha & Gen Z (0–24)", "Young Adults (25–34)", "Working Adults (35–54)",
+      "Silver Generation (55–64)", "Merdeka Generation (65–74)", "Pioneer Generation (75+)"
+    ))
+  )
 
 ```
 
@@ -433,6 +459,73 @@ plot_counts + plot_perc + plot_layout(guides = "collect") &
   theme(legend.position = "bottom", legend.text = element_text(size = rel(0.7)))
 ```
 
+```{r, echo=FALSE, fig.width=12}
+
+# Define generation bands
+generation_bands <- tibble(
+  Gen = c("Alpha & Gen Z", "Young Adults", "Working Adults",
+          "Silver Gen", "Merdeka Gen", "Pioneer Gen"),
+  Start = c(0, 24, 34, 54, 64, 74),
+  End   = c(24, 34, 54, 64, 74, 105),
+  Fill  = c("#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462")
+)
+
+# Expand dataset
+df_expanded <- df %>%
+  filter(!is.na(Region)) %>%
+  select(Region, Age, Pop) %>%
+  slice(rep(1:n(), Pop %/% 10))  # Downsampling for performance
+
+# Compute quartiles per region
+stats_labels <- df_expanded %>%
+  group_by(Region) %>%
+  summarise(
+    Q1 = quantile(Age, 0.25),
+    Median = median(Age),
+    Q3 = quantile(Age, 0.75),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(Q1, Median, Q3), names_to = "Type", values_to = "Value") %>%
+  mutate(Label = paste0(Type, ": ", round(Value)))
+
+# Plot
+ggplot() +
+  # Generation bands background
+  lapply(1:nrow(generation_bands), function(i) {
+    annotate("rect",
+             xmin = -Inf, xmax = Inf,
+             ymin = generation_bands$Start[i], ymax = generation_bands$End[i],
+             fill = generation_bands$Fill[i], alpha = 0.4)
+  }) +
+  # Boxplot
+  geom_boxplot(data = df_expanded, aes(x = Region, y = Age),
+               fill = "grey70", color = "black", width = 0.6, outlier.alpha = 0.5) +
+  # Quartile annotations with repel
+  geom_text_repel(
+    data = stats_labels,
+    aes(x = Region, y = Value, label = Label),
+    size = 3.0,
+    color = "#7b7272",
+    direction = "y",
+    nudge_x = 0.5,
+    segment.color = "black"
+  ) +
+  coord_flip() +
+  labs(
+    title = "Age Distribution Across Regions",
+    subtitle = "Boxplot annotated with regional Q1, Median, and Q3 values",
+    x = NULL, y = "Age"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12),
+    axis.text.y = element_text(size = 10),   # ← Corrected line
+    panel.grid.major.y = element_blank()
+  )
+
+```
+
 *Toggle to the other tabs to view the clearer version of each plot.*
 
 This visualisation examines the generational distribution of Singapore’s resident population across the five main planning regions, using both absolute population counts and proportional shares. The left panel highlights the total number of residents in each generation, while the right panel normalises these figures to show the internal demographic mix within each region.
@@ -548,6 +641,75 @@ plot_perc
 
 ```
 
+## Bar Plot of Age Distribution across Regions
+
+```{r, echo=FALSE, fig.width=12, fig.height=8}
+
+# Define generation bands
+generation_bands <- tibble(
+  Gen = c("Alpha & Gen Z", "Young Adults", "Working Adults",
+          "Silver Gen", "Merdeka Gen", "Pioneer Gen"),
+  Start = c(0, 24, 34, 54, 64, 74),
+  End   = c(24, 34, 54, 64, 74, 105),
+  Fill  = c("#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462")
+)
+
+# Expand dataset
+df_expanded <- df %>%
+  filter(!is.na(Region)) %>%
+  select(Region, Age, Pop) %>%
+  slice(rep(1:n(), Pop %/% 10))  # Downsampling for performance
+
+# Compute quartiles per region
+stats_labels <- df_expanded %>%
+  group_by(Region) %>%
+  summarise(
+    Q1 = quantile(Age, 0.25),
+    Median = median(Age),
+    Q3 = quantile(Age, 0.75),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(Q1, Median, Q3), names_to = "Type", values_to = "Value") %>%
+  mutate(Label = paste0(Type, ": ", round(Value)))
+
+# Plot
+ggplot() +
+  # Generation bands background
+  lapply(1:nrow(generation_bands), function(i) {
+    annotate("rect",
+             xmin = -Inf, xmax = Inf,
+             ymin = generation_bands$Start[i], ymax = generation_bands$End[i],
+             fill = generation_bands$Fill[i], alpha = 0.4)
+  }) +
+  # Boxplot
+  geom_boxplot(data = df_expanded, aes(x = Region, y = Age),
+               fill = "grey70", color = "black", width = 0.6, outlier.alpha = 0.5) +
+  # Quartile annotations with repel
+  geom_text_repel(
+    data = stats_labels,
+    aes(x = Region, y = Value, label = Label),
+    size = 3.0,
+    color = "#7b7272",
+    direction = "y",
+    nudge_x = 0.5,
+    segment.color = "black"
+  ) +
+  coord_flip() +
+  labs(
+    title = "Age Distribution Across Regions",
+    subtitle = "Boxplot annotated with regional Q1, Median, and Q3 values",
+    x = NULL, y = "Age"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12),
+    axis.text.y = element_text(size = 12, face = "bold"),   # ← Corrected line
+    panel.grid.major.y = element_blank()
+  )
+
+```
+
 ## The Code Chunk
 
 ```{r, echo=TRUE, eval=FALSE}
@@ -624,73 +786,6 @@ plot_counts + plot_perc + plot_layout(guides = "collect") &
 ```
 :::
 
-```{r, echo=FALSE, fig.width=12}
-
-# Define generation bands
-generation_bands <- tibble(
-  Gen = c("Alpha & Gen Z", "Young Adults", "Working Adults",
-          "Silver Gen", "Merdeka Gen", "Pioneer Gen"),
-  Start = c(0, 24, 34, 54, 64, 74),
-  End   = c(24, 34, 54, 64, 74, 105),
-  Fill  = c("#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462")
-)
-
-# Expand dataset
-df_expanded <- df %>%
-  filter(!is.na(Region)) %>%
-  select(Region, Age, Pop) %>%
-  slice(rep(1:n(), Pop %/% 10))  # Downsampling for performance
-
-# Compute quartiles per region
-stats_labels <- df_expanded %>%
-  group_by(Region) %>%
-  summarise(
-    Q1 = quantile(Age, 0.25),
-    Median = median(Age),
-    Q3 = quantile(Age, 0.75),
-    .groups = "drop"
-  ) %>%
-  pivot_longer(cols = c(Q1, Median, Q3), names_to = "Type", values_to = "Value") %>%
-  mutate(Label = paste0(Type, ": ", round(Value)))
-
-# Plot
-ggplot() +
-  # Generation bands background
-  lapply(1:nrow(generation_bands), function(i) {
-    annotate("rect",
-             xmin = -Inf, xmax = Inf,
-             ymin = generation_bands$Start[i], ymax = generation_bands$End[i],
-             fill = generation_bands$Fill[i], alpha = 0.4)
-  }) +
-  # Boxplot
-  geom_boxplot(data = df_expanded, aes(x = Region, y = Age),
-               fill = "grey70", color = "black", width = 0.6, outlier.alpha = 0.5) +
-  # Quartile annotations with repel
-  geom_text_repel(
-    data = stats_labels,
-    aes(x = Region, y = Value, label = Label),
-    size = 3.0,
-    color = "#7b7272",
-    direction = "y",
-    nudge_x = 0.5,
-    segment.color = "black"
-  ) +
-  coord_flip() +
-  labs(
-    title = "Age Distribution Across Regions",
-    subtitle = "Boxplot annotated with regional Q1, Median, and Q3 values",
-    x = NULL, y = "Age"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(size = 12),
-    axis.text.y = element_text(size = 10),   # ← Corrected line
-    panel.grid.major.y = element_blank()
-  )
-
-```
-
 ::: How-Does-it-Work
 ![](/Images/Insights.png){width="42"} [<strong>Insights gleamed from these plots in section 3.2</strong>]{style="font-size: 30px; vertical-align: middle;"}
 
@@ -703,48 +798,179 @@ Supporting this, the **boxplots and age summaries** reveal **higher median ages*
 
 ### 🔍 **3.3 Which Planning Areas have the most concentration of Young and Working Adults?**
 
-**Goal**:
+**Goal**: To examine the demographic concentration and gender composition of different age cohorts (below 25, 25–54, and 55+) across Singapore’s planning areas. This analysis focuses on identifying the top 15 planning areas with the highest population for each age band and further breaks down their gender profiles.
 
-**Method**:
+**Method**: Resident population data from June 2024 was filtered into three distinct age groups: youth (0–24), young and working adults (25–54), and seniors (55+). For each segment, the 15 planning areas with the highest populations were identified. Bar charts show absolute counts and pie charts show male-to-female ratios. Standardised colour schemes are used for clarity and comparison across visualisations.
+
+::: panel-tabset
+## Age 0 - 24
 
 ```{r, echo=FALSE, fig.width=10, fig.height=6}
 
-# Prepare data: Young Adults and Working Adults per PA
-df_ywa_single <- df %>%
-  filter(Age >= 25, Age <= 54, !is.na(PA)) %>%
-  mutate(
-    GenCat = case_when(
-      Age <= 34 ~ "Young Adults (25–34)",
-      TRUE ~ "Working Adults (35–54)"
-    )
-  ) %>%
-  group_by(PA, GenCat) %>%
-  summarise(Pop = sum(Pop), .groups = "drop") %>%
-  pivot_wider(names_from = GenCat, values_from = Pop, values_fill = 0) %>%
-  mutate(Total = `Young Adults (25–34)` + `Working Adults (35–54)`) %>%
-  arrange(desc(`Working Adults (35–54)`)) %>%
+# Prepare data: Total population aged 0–24 per Planning Area
+df_youth_total <- df %>%
+  filter(Age <= 24, !is.na(PA)) %>%
+  group_by(PA) %>%
+  summarise(Pop_0_24 = sum(Pop), .groups = "drop")
+
+# Total population per PA
+df_total_pa <- df %>%
+  filter(!is.na(PA)) %>%
+  group_by(PA) %>%
+  summarise(Pop_Total = sum(Pop), .groups = "drop")
+
+# Join and calculate percentage
+df_youth_merged <- df_youth_total %>%
+  left_join(df_total_pa, by = "PA") %>%
+  mutate(Percent = round(Pop_0_24 / Pop_Total * 100, 1)) %>%
+  arrange(desc(Pop_0_24)) %>%
   slice(1:15) %>%
-  pivot_longer(cols = c(`Young Adults (25–34)`, `Working Adults (35–54)`),
-               names_to = "GenCat", values_to = "Pop") %>%
-  mutate(PA = fct_reorder(PA, -Pop))
+  mutate(PA = factor(PA, levels = rev(PA)))  # Reverse for descending order in coord_flip
 
 # Plot
-ggplot(df_ywa_single, aes(x = PA, y = Pop, fill = GenCat)) +
-  geom_bar(stat = "identity", position = "dodge", width = 0.7) +
-  scale_fill_manual(values = c(
-    "Young Adults (25–34)" = "#ffffb3",
-    "Working Adults (35–54)" = "#bebada"
-  )) +
+ggplot(df_youth_merged, aes(x = PA, y = Pop_0_24)) +
+  geom_bar(stat = "identity", fill = "#66c2a5", color = "grey40", width = 0.7) +
+  geom_text(aes(label = scales::comma(Pop_0_24)), 
+            hjust = 1.1, color = "white", size = 3.2) +
+  geom_text(aes(label = paste0(Percent, "%")), 
+            hjust = -0.1, color = "grey20", size = 3.2) +
+  scale_y_continuous(
+    limits = c(0, 130000),
+    breaks = seq(0, 130000, by = 20000),
+    labels = scales::comma
+  )  +
+  coord_flip() +
   labs(
-    title = "Top 15 Planning Areas by Working Adults (35–54)",
-    subtitle = "With Young Adults (25–34) shown separately",
-    x = NULL, y = "Population", fill = NULL
+    title = "Top 15 Planning Areas by Population Aged 0–24",
+    subtitle = "Bars show absolute population; percentages indicate share of the PA’s total residents",
+    x = NULL, y = "Population (Aged 0–24)"
   ) +
-  scale_y_continuous(labels = scales::comma) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 10)
+  )
+
+```
+
+```{r, echo=FALSE, fig.width=10, fig.height=8}
+
+# Step 1: Identify top 15 planning areas by 0–24 age group
+df_young_top15 <- df %>%
+  filter(Age <= 24) %>%
+  group_by(PA) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  arrange(desc(Pop)) %>%
+  slice_head(n = 15)
+
+# Step 2: Filter and summarise gender data for 0–24
+df_gender_pie_24 <- df %>%
+  filter(Age <= 24, PA %in% df_young_top15$PA) %>%
+  group_by(PA, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(PA) %>%
+  mutate(Percent = Pop / sum(Pop) * 100)
+
+# Step 3: Define color mapping
+gender_colors <- c("Males" = "#ADD8E6", "Females" = "#FFC0CB")
+
+# Step 4: Create pie charts per PA
+pie_list_24 <- df_gender_pie_24 %>%
+  group_split(PA) %>%
+  map(~ {
+    this_pa <- unique(.x$PA)
+    ggplot(.x, aes(x = "", y = Pop, fill = Sex)) +
+      geom_bar(stat = "identity", width = 1, color = "white") +
+      coord_polar("y") +
+      geom_text(aes(label = paste0(round(Percent), "%")),
+                position = position_stack(vjust = 0.5),
+                size = 3, color = "grey20") +
+      scale_fill_manual(values = gender_colors) +
+      labs(title = this_pa, x = NULL, y = NULL) +
+      theme_void() +
+      theme(
+        plot.title = element_text(size = 10, hjust = 0.5),
+        legend.position = "none"
+      )
+  })
+
+# Step 5: Legend (separate dummy plot)
+legend_plot_24 <- ggplot(df_gender_pie_24, aes(x = "", y = Pop, fill = Sex)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = gender_colors, name = "Gender") +
+  theme_void() +
+  theme(legend.position = "top")
+
+# Step 6: Extract legend
+shared_legend_24 <- cowplot::get_legend(legend_plot_24)
+
+# Step 7: Combine pies + legend
+final_plot_24 <- (wrap_plots(pie_list_24, ncol = 5)) / wrap_elements(shared_legend_24) +
+  plot_layout(heights = c(1, 0.1)) +
+  plot_annotation(
+    title = "Gender Proportion in Top 15 Planning Areas",
+    subtitle = "Age group 0–24: Each pie shows male vs female composition",
+    theme = theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(size = 10)
+    )
+  )
+
+final_plot_24
+
+
+```
+
+## Age 25 - 54
+
+```{r, echo=FALSE, fig.width=10, fig.height=6}
+
+# Prepare data: Total population aged 25–54 per Planning Area
+df_ywa_total <- df %>%
+  filter(Age >= 25, Age <= 54, !is.na(PA)) %>%
+  group_by(PA) %>%
+  summarise(Pop_25_54 = sum(Pop), .groups = "drop")
+
+# Get total population per PA
+df_total_pa <- df %>%
+  filter(!is.na(PA)) %>%
+  group_by(PA) %>%
+  summarise(TotalPop = sum(Pop), .groups = "drop")
+
+# Join and compute percentage
+df_ywa_total <- df_ywa_total %>%
+  left_join(df_total_pa, by = "PA") %>%
+  mutate(
+    Perc = Pop_25_54 / TotalPop * 100
+  ) %>%
+  arrange(desc(Pop_25_54)) %>%
+  slice(1:15) %>%
+  mutate(PA = factor(PA, levels = rev(PA)))  # Reverse order for plotting
+
+# Plot
+ggplot(df_ywa_total, aes(x = PA, y = Pop_25_54)) +
+  geom_bar(stat = "identity", fill = "#bcaef5", color = "grey40", width = 0.7) +
+  
+  # Percentage outside the bar
+  geom_text(aes(label = paste0(round(Perc, 1), "%")), 
+            hjust = -0.1, size = 3.2, color = "black") +
+  
+  # Raw count inside the bar
+  geom_text(aes(label = scales::comma(Pop_25_54)),
+            hjust = 1.05, size = 3.1, color = "white") +
+  
+  labs(
+    title = "Top 15 Planning Areas by Population Count Aged 25–54",
+    subtitle = "With population count and percent proportion of that PA",
+    x = NULL, y = "Population"
+  ) +
+  scale_y_continuous(
+    limits = c(0, 130000),
+    breaks = seq(0, 130000, by = 20000),
+    labels = scales::comma
+  ) +
   coord_flip() +
   theme_minimal(base_size = 11)
-
-
 
 
 ```
@@ -815,368 +1041,146 @@ final_plot <- (wrap_plots(pie_list, ncol = 5)) / wrap_elements(shared_legend) +
 final_plot
 
 
-
 ```
+
+## Age 55 & above
 
 ```{r, echo=FALSE, fig.width=10, fig.height=6}
 
-# Prepare data: Young Adults and Working Adults per PA
-df_ywa_single <- df %>%
-  filter(Age >= 25, Age <= 54, !is.na(PA)) %>%
+# Prepare data: Total population aged 55 and above per Planning Area
+df_senior_total <- df %>%
+  filter(Age >= 55, !is.na(PA)) %>%
+  group_by(PA) %>%
+  summarise(Pop_55plus = sum(Pop), .groups = "drop")
+
+# Get total population per PA
+df_total_pa <- df %>%
+  filter(!is.na(PA)) %>%
+  group_by(PA) %>%
+  summarise(TotalPop = sum(Pop), .groups = "drop")
+
+# Join and compute percentage
+df_senior_total <- df_senior_total %>%
+  left_join(df_total_pa, by = "PA") %>%
   mutate(
-    GenCat = case_when(
-      Age <= 34 ~ "Young Adults (25–34)",
-      TRUE ~ "Working Adults (35–54)"
-    )
+    Perc = Pop_55plus / TotalPop * 100
   ) %>%
-  group_by(PA, GenCat) %>%
-  summarise(Pop = sum(Pop), .groups = "drop") %>%
-  pivot_wider(names_from = GenCat, values_from = Pop, values_fill = 0) %>%
-  mutate(Total = `Young Adults (25–34)` + `Working Adults (35–54)`) %>%
-  arrange(desc(`Working Adults (35–54)`)) %>%
-  slice(1:15)
-
-# Save ordering based on working adults
-pa_order <- df_ywa_single %>%
-  arrange(`Working Adults (35–54)`) %>%
-  pull(PA)
-
-# Reshape back to long format for plotting
-df_ywa_single_long <- df_ywa_single %>%
-  select(PA, `Young Adults (25–34)`, `Working Adults (35–54)`) %>%
-  pivot_longer(cols = -PA, names_to = "GenCat", values_to = "Pop") %>%
-  mutate(PA = factor(PA, levels = pa_order))
+  arrange(desc(Pop_55plus)) %>%
+  slice(1:15) %>%
+  mutate(PA = factor(PA, levels = rev(PA)))  # Reverse for plotting
 
 # Plot
-ggplot(df_ywa_single_long, aes(x = PA, y = Pop, fill = GenCat)) +
-  geom_bar(stat = "identity", position = "dodge", width = 0.7) +
-  scale_fill_manual(values = c(
-    "Young Adults (25–34)" = "#ffffb3",
-    "Working Adults (35–54)" = "#bebada"
-  )) +
+ggplot(df_senior_total, aes(x = PA, y = Pop_55plus)) +
+  geom_bar(stat = "identity", fill = "#e59e96", color = "grey40", width = 0.7) +
+  
+  # Percentage outside the bar
+  geom_text(aes(label = paste0(round(Perc, 1), "%")), 
+            hjust = -0.1, size = 3.2, color = "black") +
+  
+  # Raw count inside the bar
+  geom_text(aes(label = scales::comma(Pop_55plus)),
+            hjust = 1.05, size = 3.1, color = "white") +
+  
   labs(
-    title = "Top 15 Planning Areas by Working Adults (35–54)",
-    subtitle = "With Young Adults (25–34) shown separately",
-    x = NULL, y = "Population", fill = NULL
+    title = "Top 15 Planning Areas by Population Count Aged 55 & Above",
+    subtitle = "With population count and percent proportion of that PA",
+    x = NULL, y = "Population"
   ) +
-  scale_y_continuous(labels = scales::comma) +
+  scale_y_continuous(
+    limits = c(0, 130000),
+    breaks = seq(0, 130000, by = 20000),
+    labels = scales::comma
+  ) +
   coord_flip() +
   theme_minimal(base_size = 11)
 
 
 ```
 
-```{r, echo=FALSE, fig.width=10, fig.height=6}
+```{r, echo=FALSE, fig.width=10, fig.height=8}
 
-# Prepare data: Young Adults and Working Adults per PA
-df_ywa_single <- df %>%
-  filter(Age >= 25, Age <= 54, !is.na(PA)) %>%
-  mutate(
-    GenCat = case_when(
-      Age <= 34 ~ "Young Adults (25–34)",
-      TRUE ~ "Working Adults (35–54)"
-    )
-  ) %>%
-  group_by(PA, GenCat) %>%
+# Step 1: Identify top 15 planning areas by 55+ age group
+df_senior_top15 <- df %>%
+  filter(Age >= 55) %>%
+  group_by(PA) %>%
   summarise(Pop = sum(Pop), .groups = "drop") %>%
-  pivot_wider(names_from = GenCat, values_from = Pop, values_fill = 0) %>%
-  mutate(Total = `Young Adults (25–34)` + `Working Adults (35–54)`) %>%
-  arrange(`Working Adults (35–54)`) %>%
-  slice(1:15)
-
-# Save ordering based on working adults (ascending)
-pa_order <- df_ywa_single %>%
-  arrange(`Working Adults (35–54)`) %>%
-  pull(PA)
-
-# Reshape back to long format
-df_ywa_single_long <- df_ywa_single %>%
-  select(PA, `Young Adults (25–34)`, `Working Adults (35–54)`) %>%
-  pivot_longer(cols = -PA, names_to = "GenCat", values_to = "Pop") %>%
-  mutate(
-    PA = factor(PA, levels = pa_order),
-    GenCat = factor(GenCat, levels = c("Young Adults (25–34)", "Working Adults (35–54)"))  # correct stacking/dodge order
-  )
-
-# Plot
-ggplot(df_ywa_single_long, aes(x = PA, y = Pop, fill = GenCat)) +
-  geom_bar(stat = "identity", position = position_dodge(reverse = TRUE), width = 0.7) +
-  scale_fill_manual(
-    values = c("Young Adults (25–34)" = "#ffffb3", "Working Adults (35–54)" = "#bebada"),
-    breaks = c("Working Adults (35–54)", "Young Adults (25–34)")  # control legend order
-  ) +
-  labs(
-    title = "Top 15 Planning Areas by Working Adults (35–54)",
-    subtitle = "Bars arranged in ascending order; Working Adults appear above Young Adults",
-    x = NULL, y = "Population", fill = NULL
-  ) +
-  scale_y_continuous(labels = scales::comma) +
-  coord_flip() +
-  theme_minimal(base_size = 11)
-
-```
-
-```{r}
-# Required packages
-pacman::p_load(ggplot2, dplyr, stringr, ggthemes, patchwork)
-
-# Compute Median and IQR per Region
-df_age_stats <- df %>%
-  filter(!is.na(Region)) %>%
-  group_by(Region, Age) %>%
-  summarise(Pop = sum(Pop), .groups = "drop") %>%
-  group_by(Region) %>%
-  mutate(cum_pop = cumsum(Pop),
-         total_pop = sum(Pop),
-         cum_prop = cum_pop / total_pop) %>%
-  summarise(
-    Median = Age[which.min(abs(cum_prop - 0.5))],
-    Q1 = Age[which.min(abs(cum_prop - 0.25))],
-    Q3 = Age[which.min(abs(cum_prop - 0.75))],
-    .groups = "drop"
-  )
-
-# Plot: Median Age and IQR per Region
-ggplot(df_age_stats, aes(x = reorder(Region, Median), y = Median)) +
-  geom_point(size = 3, color = "#3366CC") +
-  geom_errorbar(aes(ymin = Q1, ymax = Q3), width = 0.2, color = "#3366CC", linewidth = 0.8) +
-  coord_flip() +
-  labs(
-    title = "Median Age with Interquartile Range by Region",
-    subtitle = "Singapore Resident Population (2024)",
-    x = NULL,
-    y = "Age"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    plot.subtitle = element_text(size = 10)
-  )
-
-```
-
-```{r}
-# Load required libraries
-pacman::p_load(dplyr, ggplot2, patchwork, stringr, ggrepel)
-
-# Define generation bands
-generation_bands <- tibble(
-  Gen = c("Alpha & Gen Z", "Young Adults", "Working Adults",
-          "Silver Gen", "Merdeka Gen", "Pioneer Gen"),
-  Start = c(0, 24, 34, 54, 64, 74),
-  End   = c(24, 34, 54, 64, 74, 105),
-  Fill  = c("#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462")
-)
-
-# Expand dataset
-df_expanded <- df %>%
-  filter(!is.na(Region)) %>%
-  select(Region, Age, Pop) %>%
-  slice(rep(1:n(), Pop %/% 10))  # Downsampling for performance
-
-# Compute quartiles per region
-stats_labels <- df_expanded %>%
-  group_by(Region) %>%
-  summarise(
-    Q1 = quantile(Age, 0.25),
-    Median = median(Age),
-    Q3 = quantile(Age, 0.75),
-    .groups = "drop"
-  ) %>%
-  pivot_longer(cols = c(Q1, Median, Q3), names_to = "Type", values_to = "Value") %>%
-  mutate(Label = paste0(Type, ": ", round(Value)))
-
-# Plot
-ggplot() +
-  # Generation bands background
-  lapply(1:nrow(generation_bands), function(i) {
-    annotate("rect",
-             xmin = -Inf, xmax = Inf,
-             ymin = generation_bands$Start[i], ymax = generation_bands$End[i],
-             fill = generation_bands$Fill[i], alpha = 0.4)
-  }) +
-  # Boxplot
-  geom_boxplot(data = df_expanded, aes(x = Region, y = Age),
-               fill = "grey70", color = "black", width = 0.6, outlier.alpha = 0.5) +
-  # Quartile annotations with repel
-  geom_text_repel(
-    data = stats_labels,
-    aes(x = Region, y = Value, label = Label),
-    size = 2.8,
-    color = "#7b7272",
-    direction = "y",
-    nudge_x = 0.5,
-    segment.color = "black"
-  ) +
-  coord_flip() +
-  labs(
-    title = "Age Distribution Across Regions",
-    subtitle = "Boxplot annotated with regional Q1, Median, and Q3 values",
-    x = NULL, y = "Age"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    plot.subtitle = element_text(size = 10),
-    axis.text.y = element_text(size = 10),
-    panel.grid.major.y = element_blank()
-  )
-
-```
-
-### 🔍 **3.6 Which subzones are the most densely populated?**
-
-**Goal**: Identify where population pressure may be most intense.
-
-**Method**: Bar chart or (if spatial data available) choropleth map of total population.
-
-```{r}
-
-df_subzone_pop <- df %>%
-  group_by(SZ) %>%
-  summarise(Pop = sum(Pop)) %>%
   arrange(desc(Pop)) %>%
-  slice_head(n = 20)
+  slice_head(n = 15)
 
-ggplot(df_subzone_pop, aes(x = reorder(SZ, Pop), y = Pop)) +
-  geom_col(fill = "darkblue") +
-  coord_flip() +
-  labs(title = "Top 20 Most Populated Subzones", x = "Subzone", y = "Population") +
-  theme_minimal()
-
-```
-
-```{r}
-
-# Load spatial packages
-pacman::p_load(sf, ggplot2, tidyverse, viridis)
-
-# Read the planning area shapefile (GeoPackage or GeoJSON recommended)
-planning_areas <- st_read("Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml")  # or .shp/.geojson
-
-# Prepare population data: total by PA
-pa_pop <- df %>%
+# Step 2: Filter and summarise gender data for 55+
+df_gender_pie_55 <- df %>%
+  filter(Age >= 55, PA %in% df_senior_top15$PA) %>%
+  group_by(PA, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
   group_by(PA) %>%
-  summarise(Pop = sum(Pop))
+  mutate(Percent = Pop / sum(Pop) * 100)
 
-# Ensure both PA names match exactly (some cleaning may be needed)
-# Join spatial and population data
-map_data <- planning_areas %>%
-  left_join(pa_pop, by = c("Name" = "PA"))  # Adjust column name if different
+# Step 3: Define color mapping
+gender_colors <- c("Males" = "#ADD8E6", "Females" = "#FFC0CB")
 
-# Plot
-ggplot(map_data) +
-  geom_sf(aes(fill = Pop), color = "white") +
-  scale_fill_viridis_c(option = "plasma", trans = "log") +
-  labs(title = "Population Distribution by Planning Area, Singapore",
-       fill = "Population") +
-  theme_minimal()
+# Step 4: Create pie charts per PA
+pie_list_55 <- df_gender_pie_55 %>%
+  group_split(PA) %>%
+  map(~ {
+    this_pa <- unique(.x$PA)
+    ggplot(.x, aes(x = "", y = Pop, fill = Sex)) +
+      geom_bar(stat = "identity", width = 1, color = "white") +
+      coord_polar("y") +
+      geom_text(aes(label = paste0(round(Percent), "%")),
+                position = position_stack(vjust = 0.5),
+                size = 3, color = "grey20") +
+      scale_fill_manual(values = gender_colors) +
+      labs(title = this_pa, x = NULL, y = NULL) +
+      theme_void() +
+      theme(
+        plot.title = element_text(size = 10, hjust = 0.5),
+        legend.position = "none"
+      )
+  })
 
-```
+# Step 5: Legend (separate dummy plot)
+legend_plot_55 <- ggplot(df_gender_pie_55, aes(x = "", y = Pop, fill = Sex)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = gender_colors, name = "Gender") +
+  theme_void() +
+  theme(legend.position = "top")
 
-```{r}
+# Step 6: Extract legend
+shared_legend_55 <- cowplot::get_legend(legend_plot_55)
 
-unique(planning_areas$Name)
-
-
-```
-
-```{r}
-
-# Load required packages
-pacman::p_load(sf, dplyr, ggplot2, viridis, stringr)
-
-# Step 1: Read the KML file
-planning_areas <- st_read("Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml")
-
-# Step 2: Assign names to each geometry
-pa_names <- c(
-  "ANG MO KIO", "BEDOK", "CENTRAL WATER CATCHMENT", "CHANGI", "BISHAN", "BOON LAY",
-  "MARINA SOUTH", "MARINE PARADE", "BUKIT BATOK", "BUKIT MERAH", "BUKIT PANJANG",
-  "BUKIT TIMAH", "CHANGI BAY", "CHOA CHU KANG", "CLEMENTI", "DOWNTOWN CORE", "GEYLANG",
-  "TENGAH", "HOUGANG", "JURONG EAST", "JURONG WEST", "KALLANG", "LIM CHU KANG", "MANDAI",
-  "MARINA EAST", "MUSEUM", "NEWTON", "NORTH-EASTERN ISLANDS", "NOVENA", "ORCHARD",
-  "OUTRAM", "PASIR RIS", "PAYA LEBAR", "PIONEER", "PUNGGOL", "QUEENSTOWN",
-  "RIVER VALLEY", "ROCHOR", "SELETAR", "SEMBAWANG", "SENGKANG", "SERANGOON",
-  "SIMPANG", "SINGAPORE RIVER", "SOUTHERN ISLANDS", "STRAITS VIEW", "SUNGEI KADUT",
-  "TAMPINES", "TANGLIN", "TOA PAYOH", "TUAS", "WESTERN ISLANDS",
-  "WESTERN WATER CATCHMENT", "WOODLANDS", "YISHUN"
-)
-planning_areas$PA <- pa_names
-
-# Step 3: Prepare population data
-pa_pop <- df %>%
-  mutate(PA = str_to_upper(str_trim(PA))) %>%
-  group_by(PA) %>%
-  summarise(Pop = sum(Pop), .groups = "drop")
-
-# Step 4: Join population to spatial data
-map_data <- planning_areas %>%
-  left_join(pa_pop, by = "PA")
-
-# Step 5: Plot with linear color scale (light = low pop, dark = high)
-ggplot(map_data) +
-  geom_sf(aes(fill = Pop), color = "white", size = 0.3) +
-  scale_fill_viridis_c(option = "plasma", direction = -1, na.value = "grey90") +
-  labs(
-    title = "Population Distribution by Planning Area, Singapore (2024)",
-    fill = "Population"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "right"
+# Step 7: Combine pies + legend
+final_plot_55 <- (wrap_plots(pie_list_55, ncol = 5)) / wrap_elements(shared_legend_55) +
+  plot_layout(heights = c(1, 0.1)) +
+  plot_annotation(
+    title = "Gender Proportion in Top 15 Planning Areas",
+    subtitle = "Age group 55 and above: Each pie shows male vs female composition",
+    theme = theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(size = 10)
+    )
   )
 
+final_plot_55
 
 ```
+:::
 
-```{r}
-# Load packages
-pacman::p_load(sf, dplyr, ggplot2, viridis, stringr)
+::: How-Does-it-Work
+![](/Images/Insights.png){width="42"} [<strong>Insights gleamed from these plots in section 3.3</strong>]{style="font-size: 30px; vertical-align: middle;"}
 
-# Step 1: Read the KML file
-planning_areas <- st_read("Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml")
+The analysis reveals key demographic concentrations across Singapore's planning areas. Among the 25–54 age group, Tampines, Woodlands, and Jurong West lead in population count, underscoring that large working population concentrated outside of the Core Central Regions.
 
-# Step 2: Add manually mapped names to the geometries
-pa_names <- c(
-  "ANG MO KIO", "BEDOK", "CENTRAL WATER CATCHMENT", "CHANGI", "BISHAN", "BOON LAY",
-  "MARINA SOUTH", "MARINE PARADE", "BUKIT BATOK", "BUKIT MERAH", "BUKIT PANJANG",
-  "BUKIT TIMAH", "CHANGI BAY", "CHOA CHU KANG", "CLEMENTI", "DOWNTOWN CORE", "GEYLANG",
-  "TENGAH", "HOUGANG", "JURONG EAST", "JURONG WEST", "KALLANG", "LIM CHU KANG", "MANDAI",
-  "MARINA EAST", "MUSEUM", "NEWTON", "NORTH-EASTERN ISLANDS", "NOVENA", "ORCHARD",
-  "OUTRAM", "PASIR RIS", "PAYA LEBAR", "PIONEER", "PUNGGOL", "QUEENSTOWN",
-  "RIVER VALLEY", "ROCHOR", "SELETAR", "SEMBAWANG", "SENGKANG", "SERANGOON",
-  "SIMPANG", "SINGAPORE RIVER", "SOUTHERN ISLANDS", "STRAITS VIEW", "SUNGEI KADUT",
-  "TAMPINES", "TANGLIN", "TOA PAYOH", "TUAS", "WESTERN ISLANDS",
-  "WESTERN WATER CATCHMENT", "WOODLANDS", "YISHUN"
-)
+In contrast, seniors (aged 55+) are more prevalent in mature estates like Bedok and Ang Mo Kio, reflecting Singapore’s ageing trends in older heartland areas.
 
-# Assign the names (assumes order matches exactly with features)
-planning_areas$PA <- pa_names
+Meanwhile, youth under 25 are highly concentrated in newer developments such as Punggol and Sengkang. This possibly implies there are a larger proportion of families with younger children in these areas.
 
-# Step 3: Summarise population by PA
-pa_pop <- df %>%
-  mutate(PA = str_to_upper(str_trim(PA))) %>%
-  group_by(PA) %>%
-  summarise(Pop = sum(Pop), .groups = "drop")
+Gender distributions across all top 15 regions remain relatively balanced, with a slight female predominance in most areas. This could indicate higher female longevity.
+:::
 
-# Step 4: Join population to spatial geometries
-map_data <- planning_areas %>%
-  left_join(pa_pop, by = "PA")
+# 4. Conclusion 📊
 
-# Step 5: Plot
-ggplot(map_data) +
-  geom_sf(aes(fill = Pop), color = "white", size = 0.2) +
-  scale_fill_viridis_c(option = "plasma", trans = "log", na.value = "grey90") +
-  labs(
-    title = "Population Distribution by Planning Area, Singapore",
-    fill = "Population (log scale)"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "right"
-  )
+This take-home exercise explored Singapore’s resident population data from June 2024 through a multi-dimensional demographic lens. By integrating age, gender, region, and planning area, the analysis produced targeted insights into population structure and spatial distribution patterns.
 
-```
+These visualisations serve not only to illustrate where population clusters form but also guide strategic planning for infrastructure, housing, healthcare, and youth development. As Singapore grapples with challenges such as an ageing population, urban density, and equitable access to services, such granular analysis becomes critical. Overall, these patterns offer valuable insights for urban planners and policymakers.
+
+Moving forward, the dataset could be expanded with ethnicity, housing type, or socio-economic markers to deepen the insights. Future research may also explore temporal trends using past census data, or predictive modelling to anticipate demographic shifts in upcoming housing developments.
