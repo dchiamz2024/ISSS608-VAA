@@ -1177,7 +1177,7 @@ Meanwhile, youth under 25 are highly concentrated in newer developments such as 
 Gender distributions across all top 15 regions remain relatively balanced, with a slight female predominance in most areas. This could indicate higher female longevity.
 :::
 
-# 4. Conclusion 📊
+# 4. Conclusion **🔚** 📝
 
 This take-home exercise explored Singapore’s resident population data from June 2024 through a multi-dimensional demographic lens. By integrating age, gender, region, and planning area, the analysis produced targeted insights into population structure and spatial distribution patterns.
 
