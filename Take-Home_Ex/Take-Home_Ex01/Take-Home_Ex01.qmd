@@ -843,9 +843,9 @@ ggplot(df_youth_merged, aes(x = PA, y = Pop_0_24)) +
   )  +
   coord_flip() +
   labs(
-    title = "Top 15 Planning Areas by Population Aged 0–24",
+    title = "Top 15 Planning Areas by Population Count (Aged 0–24)",
     subtitle = "Bars show absolute population; percentages indicate share of the PA’s total residents",
-    x = NULL, y = "Population (Aged 0–24)"
+    x = NULL, y = "Population count"
   ) +
   theme_minimal(base_size = 11) +
   theme(
@@ -920,8 +920,21 @@ final_plot_24 <- (wrap_plots(pie_list_24, ncol = 5)) / wrap_elements(shared_lege
 
 final_plot_24
 
-
 ```
+
+```{r, echo=FALSE, fig.width=10, fig.height=2}
+
+# Create an empty plot
+plot.new()
+
+# Add legend only
+legend("center",
+       legend = c("Females", "Males"),
+       fill = c("#FFC0CB", "#ADD8E6"),
+       horiz = TRUE,
+       box.lty = 0,
+       cex = 1.2)
+``` 
 
 ## Age 25 - 54
 
@@ -962,9 +975,9 @@ ggplot(df_ywa_total, aes(x = PA, y = Pop_25_54)) +
             hjust = 1.05, size = 3.1, color = "white") +
   
   labs(
-    title = "Top 15 Planning Areas by Population Count Aged 25–54",
+    title = "Top 15 Planning Areas by Population Count (Aged 25–54)",
     subtitle = "With population count and percent proportion of that PA",
-    x = NULL, y = "Population"
+    x = NULL, y = "Population count"
   ) +
   scale_y_continuous(
     limits = c(0, 130000),
@@ -972,7 +985,12 @@ ggplot(df_ywa_total, aes(x = PA, y = Pop_25_54)) +
     labels = scales::comma
   ) +
   coord_flip() +
-  theme_minimal(base_size = 11)
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 10)
+  )
+
 
 
 ```
@@ -1042,8 +1060,22 @@ final_plot <- (wrap_plots(pie_list, ncol = 5)) / wrap_elements(shared_legend) +
 
 final_plot
 
-
 ```
+
+```{r, echo=FALSE, fig.width=10, fig.height=2}
+
+# Create an empty plot
+plot.new()
+
+# Add legend only
+legend("center",
+       legend = c("Females", "Males"),
+       fill = c("#FFC0CB", "#ADD8E6"),
+       horiz = TRUE,
+       box.lty = 0,
+       cex = 1.2)
+``` 
+
 
 ## Age 55 & above
 
@@ -1084,9 +1116,9 @@ ggplot(df_senior_total, aes(x = PA, y = Pop_55plus)) +
             hjust = 1.05, size = 3.1, color = "white") +
   
   labs(
-    title = "Top 15 Planning Areas by Population Count Aged 55 & Above",
+    title = "Top 15 Planning Areas by Population Count (Aged 55 & Above)",
     subtitle = "With population count and percent proportion of that PA",
-    x = NULL, y = "Population"
+    x = NULL, y = "Population count"
   ) +
   scale_y_continuous(
     limits = c(0, 130000),
@@ -1094,7 +1126,12 @@ ggplot(df_senior_total, aes(x = PA, y = Pop_55plus)) +
     labels = scales::comma
   ) +
   coord_flip() +
-  theme_minimal(base_size = 11)
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 10)
+  )
+
 
 
 ```
@@ -1165,6 +1202,20 @@ final_plot_55 <- (wrap_plots(pie_list_55, ncol = 5)) / wrap_elements(shared_lege
 final_plot_55
 
 ```
+
+```{r, echo=FALSE, fig.width=10, fig.height=2}
+
+# Create an empty plot
+plot.new()
+
+# Add legend only
+legend("center",
+       legend = c("Females", "Males"),
+       fill = c("#FFC0CB", "#ADD8E6"),
+       horiz = TRUE,
+       box.lty = 0,
+       cex = 1.2)
+``` 
 
 ## Sample Code Chunk (Age 25-54)
 
@@ -1310,3 +1361,4 @@ This take-home exercise explored Singapore’s resident population data from Jun
 These visualisations serve not only to illustrate where population clusters form but also guide strategic planning for infrastructure, housing, healthcare, and youth development. As Singapore grapples with challenges such as an ageing population, urban density, and equitable access to services, such granular analysis becomes critical. Overall, these patterns offer valuable insights for urban planners and policymakers.
 
 Moving forward, the dataset could be expanded with ethnicity, housing type, or socio-economic markers to deepen the insights. Future research may also explore temporal trends using past census data, or predictive modelling to anticipate demographic shifts in upcoming housing developments.
+
