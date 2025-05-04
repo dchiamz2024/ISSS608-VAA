@@ -356,7 +356,7 @@ This population pyramid reveals the demographic structure of Singapore’s resid
 
 **Goal**: To explore the demographic composition across Singapore’s five regions using meaningful generational groupings, this visualisation compares the proportion of residents by age cohort. It addresses how youth, workforce, and senior populations differ geographically.
 
-**Method**: Using the 2024 DOS dataset, residents are grouped by region and classified into six age bands based on Singapore’s social-policy generations: *Alpha & Gen Z (0–24), Young Adults (25–34), Working Adults (35–54), Silver Generation (55–64), Merdeka Generation (65–74), and Pioneer Generation (75+)*. Percentages are calculated within each region and plotted using a colour-safe, perceptually consistent palette to enhance visual clarity and accessibility.
+**Method**: Using the 2024 DOS dataset, residents are grouped by region and classified into six age bands based on Singapore’s social-policy generations: *Alpha & Gen Z (0–24yo), Young Adults (25–34yo), Working Adults (35–54yo), Silver Generation (55–64yo), Merdeka Generation (65–74yo), and Pioneer Generation (\>75yo)*. Percentages are calculated within each region and plotted using a colour-safe, perceptually consistent palette to enhance visual clarity and accessibility.
 
 ::: panel-tabset
 ## The Combined Plot
@@ -433,7 +433,9 @@ plot_counts + plot_perc + plot_layout(guides = "collect") &
   theme(legend.position = "bottom", legend.text = element_text(size = rel(0.7)))
 ```
 
-Toggle to the other tabs to view the clearer version of each plot.
+*Toggle to the other tabs to view the clearer version of each plot.*
+
+This visualisation examines the generational distribution of Singapore’s resident population across the five main planning regions, using both absolute population counts and proportional shares. The left panel highlights the total number of residents in each generation, while the right panel normalises these figures to show the internal demographic mix within each region.
 
 ## Population Count by Generation
 
@@ -692,15 +694,225 @@ ggplot() +
 ::: How-Does-it-Work
 ![](/Images/Insights.png){width="42"} [<strong>Insights gleamed from these plots in section 3.2</strong>]{style="font-size: 30px; vertical-align: middle;"}
 
-This visualisation examines the generational distribution of Singapore’s resident population across the five main planning regions, using both absolute population counts and proportional shares. The left panel highlights the total number of residents in each generation, while the right panel normalises these figures to show the internal demographic mix within each region.
+These visualisations compares Singapore’s resident population by generation across the five main planning regions, using both absolute ounts (left panel) and proportional shares (right panel). **Working adults (ages 35–54)** form the largest demographic in all regions, especially in the **East and North**. However, the **Central region** stands out for its **higher concentration of older residents**, particularly from the **Merdeka and Pioneer generations**, both in absolute numbers and as a proportion of its population.
 
-Working adults (ages 35–54) represent the largest demographic group in all regions, particularly in the East and North. The Central region stands out with a relatively higher proportion of seniors, notably from the Pioneer and Merdeka generations, suggesting a more aged residential base. Conversely, North-East and West regions have a higher proportion of younger residents (under 35), indicative of newer housing developments and growing family clusters.
+Conversely, the **North-East and West** regions show a higher share of **younger residents under 35**, reflecting newer housing developments and growing family clusters. While younger generations are more evenly spread in these regions, older cohorts are disproportionately concentrated in the **Central, East, and West**.
+
+Supporting this, the **boxplots and age summaries** reveal **higher median ages** and **tighter interquartile ranges** in these ageing regions—highlighting a more mature demographic profile that warrants targeted **urban planning, healthcare, and ageing-in-place strategies**.
 :::
 
-```{r}
+### 🔍 **3.3 Which Planning Areas have the most concentration of Young and Working Adults?**
+
+**Goal**:
+
+**Method**:
+
+```{r, echo=FALSE, fig.width=10, fig.height=6}
+
+# Prepare data: Young Adults and Working Adults per PA
+df_ywa_single <- df %>%
+  filter(Age >= 25, Age <= 54, !is.na(PA)) %>%
+  mutate(
+    GenCat = case_when(
+      Age <= 34 ~ "Young Adults (25–34)",
+      TRUE ~ "Working Adults (35–54)"
+    )
+  ) %>%
+  group_by(PA, GenCat) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  pivot_wider(names_from = GenCat, values_from = Pop, values_fill = 0) %>%
+  mutate(Total = `Young Adults (25–34)` + `Working Adults (35–54)`) %>%
+  arrange(desc(`Working Adults (35–54)`)) %>%
+  slice(1:15) %>%
+  pivot_longer(cols = c(`Young Adults (25–34)`, `Working Adults (35–54)`),
+               names_to = "GenCat", values_to = "Pop") %>%
+  mutate(PA = fct_reorder(PA, -Pop))
+
+# Plot
+ggplot(df_ywa_single, aes(x = PA, y = Pop, fill = GenCat)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.7) +
+  scale_fill_manual(values = c(
+    "Young Adults (25–34)" = "#ffffb3",
+    "Working Adults (35–54)" = "#bebada"
+  )) +
+  labs(
+    title = "Top 15 Planning Areas by Working Adults (35–54)",
+    subtitle = "With Young Adults (25–34) shown separately",
+    x = NULL, y = "Population", fill = NULL
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  coord_flip() +
+  theme_minimal(base_size = 11)
+
+
+
+
 ```
 
-```{r}
+```{r, echo=FALSE, fig.width=10, fig.height=8}
+
+# Step 1: Identify top 15 planning areas by 25–54 age group
+df_ywa_single <- df %>%
+  filter(Age >= 25, Age <= 54) %>%
+  group_by(PA) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  arrange(desc(Pop)) %>%
+  slice_head(n = 15)
+
+# Step 2: Filter and summarise gender data
+df_gender_pie <- df %>%
+  filter(Age >= 25, Age <= 54, PA %in% df_ywa_single$PA) %>%
+  group_by(PA, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(PA) %>%
+  mutate(Percent = Pop / sum(Pop) * 100)
+
+# Step 3: Define color mapping
+gender_colors <- c("Males" = "#ADD8E6", "Females" = "#FFC0CB")
+
+# Step 4: Create pie charts per PA
+pie_list <- df_gender_pie %>%
+  group_split(PA) %>%
+  map(~ {
+    this_pa <- unique(.x$PA)
+    ggplot(.x, aes(x = "", y = Pop, fill = Sex)) +
+      geom_bar(stat = "identity", width = 1, color = "white") +
+      coord_polar("y") +
+      geom_text(aes(label = paste0(round(Percent), "%")),
+                position = position_stack(vjust = 0.5),
+                size = 3, color = "grey20") +
+      scale_fill_manual(values = gender_colors) +
+      labs(title = this_pa, x = NULL, y = NULL) +
+      theme_void() +
+      theme(
+        plot.title = element_text(size = 10, hjust = 0.5),
+        legend.position = "none"
+      )
+  })
+
+# Step 5: Legend (separate dummy plot)
+legend_plot <- ggplot(df_gender_pie, aes(x = "", y = Pop, fill = Sex)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = gender_colors, name = "Gender") +
+  theme_void() +
+  theme(legend.position = "top")
+
+# Step 6: Extract legend
+shared_legend <- cowplot::get_legend(legend_plot)
+
+# Step 7: Combine pies + legend
+final_plot <- (wrap_plots(pie_list, ncol = 5)) / wrap_elements(shared_legend) +
+  plot_layout(heights = c(1, 0.1)) +
+  plot_annotation(
+    title = "Gender Proportion in Top 15 Planning Areas",
+    subtitle = "Age group 25–54: Each pie shows male vs female composition",
+    theme = theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(size = 10)
+    )
+  )
+
+final_plot
+
+
+
+```
+
+```{r, echo=FALSE, fig.width=10, fig.height=6}
+
+# Prepare data: Young Adults and Working Adults per PA
+df_ywa_single <- df %>%
+  filter(Age >= 25, Age <= 54, !is.na(PA)) %>%
+  mutate(
+    GenCat = case_when(
+      Age <= 34 ~ "Young Adults (25–34)",
+      TRUE ~ "Working Adults (35–54)"
+    )
+  ) %>%
+  group_by(PA, GenCat) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  pivot_wider(names_from = GenCat, values_from = Pop, values_fill = 0) %>%
+  mutate(Total = `Young Adults (25–34)` + `Working Adults (35–54)`) %>%
+  arrange(desc(`Working Adults (35–54)`)) %>%
+  slice(1:15)
+
+# Save ordering based on working adults
+pa_order <- df_ywa_single %>%
+  arrange(`Working Adults (35–54)`) %>%
+  pull(PA)
+
+# Reshape back to long format for plotting
+df_ywa_single_long <- df_ywa_single %>%
+  select(PA, `Young Adults (25–34)`, `Working Adults (35–54)`) %>%
+  pivot_longer(cols = -PA, names_to = "GenCat", values_to = "Pop") %>%
+  mutate(PA = factor(PA, levels = pa_order))
+
+# Plot
+ggplot(df_ywa_single_long, aes(x = PA, y = Pop, fill = GenCat)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.7) +
+  scale_fill_manual(values = c(
+    "Young Adults (25–34)" = "#ffffb3",
+    "Working Adults (35–54)" = "#bebada"
+  )) +
+  labs(
+    title = "Top 15 Planning Areas by Working Adults (35–54)",
+    subtitle = "With Young Adults (25–34) shown separately",
+    x = NULL, y = "Population", fill = NULL
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  coord_flip() +
+  theme_minimal(base_size = 11)
+
+
+```
+
+```{r, echo=FALSE, fig.width=10, fig.height=6}
+
+# Prepare data: Young Adults and Working Adults per PA
+df_ywa_single <- df %>%
+  filter(Age >= 25, Age <= 54, !is.na(PA)) %>%
+  mutate(
+    GenCat = case_when(
+      Age <= 34 ~ "Young Adults (25–34)",
+      TRUE ~ "Working Adults (35–54)"
+    )
+  ) %>%
+  group_by(PA, GenCat) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  pivot_wider(names_from = GenCat, values_from = Pop, values_fill = 0) %>%
+  mutate(Total = `Young Adults (25–34)` + `Working Adults (35–54)`) %>%
+  arrange(`Working Adults (35–54)`) %>%
+  slice(1:15)
+
+# Save ordering based on working adults (ascending)
+pa_order <- df_ywa_single %>%
+  arrange(`Working Adults (35–54)`) %>%
+  pull(PA)
+
+# Reshape back to long format
+df_ywa_single_long <- df_ywa_single %>%
+  select(PA, `Young Adults (25–34)`, `Working Adults (35–54)`) %>%
+  pivot_longer(cols = -PA, names_to = "GenCat", values_to = "Pop") %>%
+  mutate(
+    PA = factor(PA, levels = pa_order),
+    GenCat = factor(GenCat, levels = c("Young Adults (25–34)", "Working Adults (35–54)"))  # correct stacking/dodge order
+  )
+
+# Plot
+ggplot(df_ywa_single_long, aes(x = PA, y = Pop, fill = GenCat)) +
+  geom_bar(stat = "identity", position = position_dodge(reverse = TRUE), width = 0.7) +
+  scale_fill_manual(
+    values = c("Young Adults (25–34)" = "#ffffb3", "Working Adults (35–54)" = "#bebada"),
+    breaks = c("Working Adults (35–54)", "Young Adults (25–34)")  # control legend order
+  ) +
+  labs(
+    title = "Top 15 Planning Areas by Working Adults (35–54)",
+    subtitle = "Bars arranged in ascending order; Working Adults appear above Young Adults",
+    x = NULL, y = "Population", fill = NULL
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  coord_flip() +
+  theme_minimal(base_size = 11)
 
 ```
 
@@ -809,57 +1021,6 @@ ggplot() +
     axis.text.y = element_text(size = 10),
     panel.grid.major.y = element_blank()
   )
-
-```
-
-### 🔍 **3.3 Where are children (age 0–14) most concentrated?**
-
-**Goal**: Identify family-oriented areas for policy planning (schools, childcare).
-
-**Method**: Heatmap across Planning Area and Subzone using child population totals.
-
-```{r}
-df_children <- df %>%
-  filter(Age < 15) %>%
-  group_by(PA, SZ) %>%
-  summarise(Children = sum(Pop), .groups = "drop")
-
-ggplot(df_children, aes(x = reorder(SZ, Children), y = PA, fill = Children)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90)) +
-  labs(title = "Child Population Density by Subzone",
-       x = "Subzone", y = "Planning Area")
-
-```
-
-### 🔍 **3.4 What is the elderly dependency ratio across planning areas?**
-
-**Goal**: Show where ageing populations might place pressure on the working-age base.
-
-**Method**: Compute and plot the ratio of elderly (65+) to working-age (20–64) residents.
-
-```{r}
-
-df_ratio <- df %>%
-  mutate(AgeGroup = case_when(
-    Age >= 65 ~ "Elderly",
-    Age >= 20 & Age < 65 ~ "Working",
-    TRUE ~ "Other"
-  )) %>%
-  group_by(PA, AgeGroup) %>%
-  summarise(Pop = sum(Pop), .groups = "drop") %>%
-  pivot_wider(names_from = AgeGroup, values_from = Pop) %>%
-  mutate(DependencyRatio = Elderly / Working)
-
-ggplot(df_ratio, aes(x = reorder(PA, DependencyRatio), y = DependencyRatio)) +
-  geom_col(fill = "darkred") +
-  coord_flip() +
-  labs(title = "Elderly Dependency Ratio by Planning Area",
-       x = "Planning Area", y = "Elderly per Working-age Resident") +
-  theme_minimal()
-
 
 ```
 
@@ -1017,9 +1178,5 @@ ggplot(map_data) +
     plot.title = element_text(face = "bold", size = 14),
     legend.position = "right"
   )
-
-```
-
-```{r}
 
 ```

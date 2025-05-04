@@ -205,8 +205,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#what-is-the-age-and-gender-structure-in-the-singapore-resident-population" id="toc-what-is-the-age-and-gender-structure-in-the-singapore-resident-population" class="nav-link" data-scroll-target="#what-is-the-age-and-gender-structure-in-the-singapore-resident-population">🔍 <strong>3.1 What is the age and gender structure in the Singapore resident population?</strong></a></li>
   <li><a href="#how-are-age-groups-distributed-across-the-five-regions" id="toc-how-are-age-groups-distributed-across-the-five-regions" class="nav-link" data-scroll-target="#how-are-age-groups-distributed-across-the-five-regions">🔍 <strong>3.2 How are age groups distributed across the five regions?</strong></a></li>
+  <li><a href="#which-planning-areas-have-the-most-concentration-of-young-and-working-adults" id="toc-which-planning-areas-have-the-most-concentration-of-young-and-working-adults" class="nav-link" data-scroll-target="#which-planning-areas-have-the-most-concentration-of-young-and-working-adults">🔍 <strong>3.3 Which Planning Areas have the most concentration of Young and Working Adults?</strong></a></li>
   <li><a href="#where-are-children-age-014-most-concentrated" id="toc-where-are-children-age-014-most-concentrated" class="nav-link" data-scroll-target="#where-are-children-age-014-most-concentrated">🔍 <strong>3.3 Where are children (age 0–14) most concentrated?</strong></a></li>
-  <li><a href="#what-is-the-elderly-dependency-ratio-across-planning-areas" id="toc-what-is-the-elderly-dependency-ratio-across-planning-areas" class="nav-link" data-scroll-target="#what-is-the-elderly-dependency-ratio-across-planning-areas">🔍 <strong>3.4 What is the elderly dependency ratio across planning areas?</strong></a></li>
   <li><a href="#which-subzones-are-the-most-densely-populated" id="toc-which-subzones-are-the-most-densely-populated" class="nav-link" data-scroll-target="#which-subzones-are-the-most-densely-populated">🔍 <strong>3.6 Which subzones are the most densely populated?</strong></a></li>
   </ul></li>
   </ul>
@@ -615,7 +615,7 @@ $ Time &lt;dbl&gt; 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2
 <section id="how-are-age-groups-distributed-across-the-five-regions" class="level3">
 <h3 class="anchored" data-anchor-id="how-are-age-groups-distributed-across-the-five-regions">🔍 <strong>3.2 How are age groups distributed across the five regions?</strong></h3>
 <p><strong>Goal</strong>: To explore the demographic composition across Singapore’s five regions using meaningful generational groupings, this visualisation compares the proportion of residents by age cohort. It addresses how youth, workforce, and senior populations differ geographically.</p>
-<p><strong>Method</strong>: Using the 2024 DOS dataset, residents are grouped by region and classified into six age bands based on Singapore’s social-policy generations: <em>Alpha &amp; Gen Z (0–24), Young Adults (25–34), Working Adults (35–54), Silver Generation (55–64), Merdeka Generation (65–74), and Pioneer Generation (75+)</em>. Percentages are calculated within each region and plotted using a colour-safe, perceptually consistent palette to enhance visual clarity and accessibility.</p>
+<p><strong>Method</strong>: Using the 2024 DOS dataset, residents are grouped by region and classified into six age bands based on Singapore’s social-policy generations: <em>Alpha &amp; Gen Z (0–24yo), Young Adults (25–34yo), Working Adults (35–54yo), Silver Generation (55–64yo), Merdeka Generation (65–74yo), and Pioneer Generation (&gt;75yo)</em>. Percentages are calculated within each region and plotted using a colour-safe, perceptually consistent palette to enhance visual clarity and accessibility.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">The Combined Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Population Count by Generation</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Population Percentage by Generation</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">The Code Chunk</a></li></ul>
 <div class="tab-content">
@@ -629,7 +629,8 @@ $ Time &lt;dbl&gt; 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2
 </div>
 </div>
 </div>
-<p>Toggle to the other tabs to view the clearer version of each plot.</p>
+<p><em>Toggle to the other tabs to view the clearer version of each plot.</em></p>
+<p>This visualisation examines the generational distribution of Singapore’s resident population across the five main planning regions, using both absolute population counts and proportional shares. The left panel highlights the total number of residents in each generation, while the right panel normalises these figures to show the internal demographic mix within each region.</p>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell">
@@ -738,8 +739,77 @@ $ Time &lt;dbl&gt; 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2
 </div>
 <div class="How-Does-it-Work">
 <p><img src="../..\Images/Insights.png" class="img-fluid" width="42"> <span style="font-size: 30px; vertical-align: middle;"><strong>Insights gleamed from these plots in section 3.2</strong></span></p>
-<p>This visualisation examines the generational distribution of Singapore’s resident population across the five main planning regions, using both absolute population counts and proportional shares. The left panel highlights the total number of residents in each generation, while the right panel normalises these figures to show the internal demographic mix within each region.</p>
-<p>Working adults (ages 35–54) represent the largest demographic group in all regions, particularly in the East and North. The Central region stands out with a relatively higher proportion of seniors, notably from the Pioneer and Merdeka generations, suggesting a more aged residential base. Conversely, North-East and West regions have a higher proportion of younger residents (under 35), indicative of newer housing developments and growing family clusters.</p>
+<p>These visualisations compares Singapore’s resident population by generation across the five main planning regions, using both absolute ounts (left panel) and proportional shares (right panel). <strong>Working adults (ages 35–54)</strong> form the largest demographic in all regions, especially in the <strong>East and North</strong>. However, the <strong>Central region</strong> stands out for its <strong>higher concentration of older residents</strong>, particularly from the <strong>Merdeka and Pioneer generations</strong>, both in absolute numbers and as a proportion of its population.</p>
+<p>Conversely, the <strong>North-East and West</strong> regions show a higher share of <strong>younger residents under 35</strong>, reflecting newer housing developments and growing family clusters. While younger generations are more evenly spread in these regions, older cohorts are disproportionately concentrated in the <strong>Central, East, and West</strong>.</p>
+<p>Supporting this, the <strong>boxplots and age summaries</strong> reveal <strong>higher median ages</strong> and <strong>tighter interquartile ranges</strong> in these ageing regions—highlighting a more mature demographic profile that warrants targeted <strong>urban planning, healthcare, and ageing-in-place strategies</strong>.</p>
+</div>
+</section>
+<section id="which-planning-areas-have-the-most-concentration-of-young-and-working-adults" class="level3">
+<h3 class="anchored" data-anchor-id="which-planning-areas-have-the-most-concentration-of-young-and-working-adults">🔍 <strong>3.3 Which Planning Areas have the most concentration of Young and Working Adults?</strong></h3>
+<p><strong>Goal</strong>:</p>
+<p><strong>Method</strong>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Required packages</span></span>
@@ -780,7 +850,7 @@ $ Time &lt;dbl&gt; 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -854,7 +924,7 @@ $ Time &lt;dbl&gt; 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -880,38 +950,7 @@ $ Time &lt;dbl&gt; 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="what-is-the-elderly-dependency-ratio-across-planning-areas" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-the-elderly-dependency-ratio-across-planning-areas">🔍 <strong>3.4 What is the elderly dependency ratio across planning areas?</strong></h3>
-<p><strong>Goal</strong>: Show where ageing populations might place pressure on the working-age base.</p>
-<p><strong>Method</strong>: Compute and plot the ratio of elderly (65+) to working-age (20–64) residents.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df_ratio <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">AgeGroup =</span> <span class="fu">case_when</span>(</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    Age <span class="sc">&gt;=</span> <span class="dv">65</span> <span class="sc">~</span> <span class="st">"Elderly"</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    Age <span class="sc">&gt;=</span> <span class="dv">20</span> <span class="sc">&amp;</span> Age <span class="sc">&lt;</span> <span class="dv">65</span> <span class="sc">~</span> <span class="st">"Working"</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Other"</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA, AgeGroup) <span class="sc">%&gt;%</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Pop =</span> <span class="fu">sum</span>(Pop), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> AgeGroup, <span class="at">values_from =</span> Pop) <span class="sc">%&gt;%</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">DependencyRatio =</span> Elderly <span class="sc">/</span> Working)</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_ratio, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(PA, DependencyRatio), <span class="at">y =</span> DependencyRatio)) <span class="sc">+</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Elderly Dependency Ratio by Planning Area"</span>,</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Planning Area"</span>, <span class="at">y =</span> <span class="st">"Elderly per Working-age Resident"</span>) <span class="sc">+</span></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -922,31 +961,31 @@ $ Time &lt;dbl&gt; 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2
 <p><strong>Goal</strong>: Identify where population pressure may be most intense.</p>
 <p><strong>Method</strong>: Bar chart or (if spatial data available) choropleth map of total population.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df_subzone_pop <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SZ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Pop =</span> <span class="fu">sum</span>(Pop)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Pop)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">20</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_subzone_pop, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(SZ, Pop), <span class="at">y =</span> Pop)) <span class="sc">+</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkblue"</span>) <span class="sc">+</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 20 Most Populated Subzones"</span>, <span class="at">x =</span> <span class="st">"Subzone"</span>, <span class="at">y =</span> <span class="st">"Population"</span>) <span class="sc">+</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df_subzone_pop <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SZ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Pop =</span> <span class="fu">sum</span>(Pop)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Pop)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">20</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_subzone_pop, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(SZ, Pop), <span class="at">y =</span> Pop)) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkblue"</span>) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 20 Most Populated Subzones"</span>, <span class="at">x =</span> <span class="st">"Subzone"</span>, <span class="at">y =</span> <span class="st">"Population"</span>) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load spatial packages</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, ggplot2, tidyverse, viridis)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the planning area shapefile (GeoPackage or GeoJSON recommended)</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>planning_areas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml"</span>)  <span class="co"># or .shp/.geojson</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load spatial packages</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, ggplot2, tidyverse, viridis)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the planning area shapefile (GeoPackage or GeoJSON recommended)</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>planning_areas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml"</span>)  <span class="co"># or .shp/.geojson</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `URA_MP19_PLNG_AREA_NO_SEA_PL' from data source 
   `D:\OneDrive - Singapore Management University\dchiamz2024\ISSS608-VAA\Take-Home_Ex\Take-Home_Ex01\Dataset\MP19_PLANNING_AREA_NO_SEA_PL.kml' 
@@ -957,33 +996,33 @@ Dimension:     XY
 Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
 Geodetic CRS:  WGS 84</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare population data: total by PA</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>pa_pop <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA) <span class="sc">%&gt;%</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Pop =</span> <span class="fu">sum</span>(Pop))</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure both PA names match exactly (some cleaning may be needed)</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Join spatial and population data</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>map_data <span class="ot">&lt;-</span> planning_areas <span class="sc">%&gt;%</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(pa_pop, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Name"</span> <span class="ot">=</span> <span class="st">"PA"</span>))  <span class="co"># Adjust column name if different</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(map_data) <span class="sc">+</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Pop), <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"plasma"</span>, <span class="at">trans =</span> <span class="st">"log"</span>) <span class="sc">+</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Population Distribution by Planning Area, Singapore"</span>,</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Population"</span>) <span class="sc">+</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare population data: total by PA</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>pa_pop <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA) <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Pop =</span> <span class="fu">sum</span>(Pop))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure both PA names match exactly (some cleaning may be needed)</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Join spatial and population data</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>map_data <span class="ot">&lt;-</span> planning_areas <span class="sc">%&gt;%</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(pa_pop, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Name"</span> <span class="ot">=</span> <span class="st">"PA"</span>))  <span class="co"># Adjust column name if different</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(map_data) <span class="sc">+</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Pop), <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"plasma"</span>, <span class="at">trans =</span> <span class="st">"log"</span>) <span class="sc">+</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Population Distribution by Planning Area, Singapore"</span>,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Population"</span>) <span class="sc">+</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(planning_areas<span class="sc">$</span>Name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(planning_areas<span class="sc">$</span>Name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "kml_1"  "kml_2"  "kml_3"  "kml_4"  "kml_5"  "kml_6"  "kml_7"  "kml_8" 
  [9] "kml_9"  "kml_10" "kml_11" "kml_12" "kml_13" "kml_14" "kml_15" "kml_16"
@@ -995,11 +1034,11 @@ Geodetic CRS:  WGS 84</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required packages</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, dplyr, ggplot2, viridis, stringr)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Read the KML file</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>planning_areas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, dplyr, ggplot2, viridis, stringr)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Read the KML file</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>planning_areas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `URA_MP19_PLNG_AREA_NO_SEA_PL' from data source 
   `D:\OneDrive - Singapore Management University\dchiamz2024\ISSS608-VAA\Take-Home_Ex\Take-Home_Ex01\Dataset\MP19_PLANNING_AREA_NO_SEA_PL.kml' 
@@ -1010,58 +1049,58 @@ Dimension:     XY
 Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
 Geodetic CRS:  WGS 84</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Assign names to each geometry</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>pa_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ANG MO KIO"</span>, <span class="st">"BEDOK"</span>, <span class="st">"CENTRAL WATER CATCHMENT"</span>, <span class="st">"CHANGI"</span>, <span class="st">"BISHAN"</span>, <span class="st">"BOON LAY"</span>,</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MARINA SOUTH"</span>, <span class="st">"MARINE PARADE"</span>, <span class="st">"BUKIT BATOK"</span>, <span class="st">"BUKIT MERAH"</span>, <span class="st">"BUKIT PANJANG"</span>,</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"BUKIT TIMAH"</span>, <span class="st">"CHANGI BAY"</span>, <span class="st">"CHOA CHU KANG"</span>, <span class="st">"CLEMENTI"</span>, <span class="st">"DOWNTOWN CORE"</span>, <span class="st">"GEYLANG"</span>,</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TENGAH"</span>, <span class="st">"HOUGANG"</span>, <span class="st">"JURONG EAST"</span>, <span class="st">"JURONG WEST"</span>, <span class="st">"KALLANG"</span>, <span class="st">"LIM CHU KANG"</span>, <span class="st">"MANDAI"</span>,</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MARINA EAST"</span>, <span class="st">"MUSEUM"</span>, <span class="st">"NEWTON"</span>, <span class="st">"NORTH-EASTERN ISLANDS"</span>, <span class="st">"NOVENA"</span>, <span class="st">"ORCHARD"</span>,</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"OUTRAM"</span>, <span class="st">"PASIR RIS"</span>, <span class="st">"PAYA LEBAR"</span>, <span class="st">"PIONEER"</span>, <span class="st">"PUNGGOL"</span>, <span class="st">"QUEENSTOWN"</span>,</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RIVER VALLEY"</span>, <span class="st">"ROCHOR"</span>, <span class="st">"SELETAR"</span>, <span class="st">"SEMBAWANG"</span>, <span class="st">"SENGKANG"</span>, <span class="st">"SERANGOON"</span>,</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SIMPANG"</span>, <span class="st">"SINGAPORE RIVER"</span>, <span class="st">"SOUTHERN ISLANDS"</span>, <span class="st">"STRAITS VIEW"</span>, <span class="st">"SUNGEI KADUT"</span>,</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TAMPINES"</span>, <span class="st">"TANGLIN"</span>, <span class="st">"TOA PAYOH"</span>, <span class="st">"TUAS"</span>, <span class="st">"WESTERN ISLANDS"</span>,</span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"WESTERN WATER CATCHMENT"</span>, <span class="st">"WOODLANDS"</span>, <span class="st">"YISHUN"</span></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>planning_areas<span class="sc">$</span>PA <span class="ot">&lt;-</span> pa_names</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Prepare population data</span></span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>pa_pop <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PA =</span> <span class="fu">str_to_upper</span>(<span class="fu">str_trim</span>(PA))) <span class="sc">%&gt;%</span></span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA) <span class="sc">%&gt;%</span></span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Pop =</span> <span class="fu">sum</span>(Pop), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Join population to spatial data</span></span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>map_data <span class="ot">&lt;-</span> planning_areas <span class="sc">%&gt;%</span></span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(pa_pop, <span class="at">by =</span> <span class="st">"PA"</span>)</span>
-<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Plot with linear color scale (light = low pop, dark = high)</span></span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(map_data) <span class="sc">+</span></span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Pop), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"plasma"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey90"</span>) <span class="sc">+</span></span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Population Distribution by Planning Area, Singapore (2024)"</span>,</span>
-<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Population"</span></span>
-<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
-<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Assign names to each geometry</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>pa_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ANG MO KIO"</span>, <span class="st">"BEDOK"</span>, <span class="st">"CENTRAL WATER CATCHMENT"</span>, <span class="st">"CHANGI"</span>, <span class="st">"BISHAN"</span>, <span class="st">"BOON LAY"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MARINA SOUTH"</span>, <span class="st">"MARINE PARADE"</span>, <span class="st">"BUKIT BATOK"</span>, <span class="st">"BUKIT MERAH"</span>, <span class="st">"BUKIT PANJANG"</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"BUKIT TIMAH"</span>, <span class="st">"CHANGI BAY"</span>, <span class="st">"CHOA CHU KANG"</span>, <span class="st">"CLEMENTI"</span>, <span class="st">"DOWNTOWN CORE"</span>, <span class="st">"GEYLANG"</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TENGAH"</span>, <span class="st">"HOUGANG"</span>, <span class="st">"JURONG EAST"</span>, <span class="st">"JURONG WEST"</span>, <span class="st">"KALLANG"</span>, <span class="st">"LIM CHU KANG"</span>, <span class="st">"MANDAI"</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MARINA EAST"</span>, <span class="st">"MUSEUM"</span>, <span class="st">"NEWTON"</span>, <span class="st">"NORTH-EASTERN ISLANDS"</span>, <span class="st">"NOVENA"</span>, <span class="st">"ORCHARD"</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"OUTRAM"</span>, <span class="st">"PASIR RIS"</span>, <span class="st">"PAYA LEBAR"</span>, <span class="st">"PIONEER"</span>, <span class="st">"PUNGGOL"</span>, <span class="st">"QUEENSTOWN"</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RIVER VALLEY"</span>, <span class="st">"ROCHOR"</span>, <span class="st">"SELETAR"</span>, <span class="st">"SEMBAWANG"</span>, <span class="st">"SENGKANG"</span>, <span class="st">"SERANGOON"</span>,</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SIMPANG"</span>, <span class="st">"SINGAPORE RIVER"</span>, <span class="st">"SOUTHERN ISLANDS"</span>, <span class="st">"STRAITS VIEW"</span>, <span class="st">"SUNGEI KADUT"</span>,</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TAMPINES"</span>, <span class="st">"TANGLIN"</span>, <span class="st">"TOA PAYOH"</span>, <span class="st">"TUAS"</span>, <span class="st">"WESTERN ISLANDS"</span>,</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"WESTERN WATER CATCHMENT"</span>, <span class="st">"WOODLANDS"</span>, <span class="st">"YISHUN"</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>planning_areas<span class="sc">$</span>PA <span class="ot">&lt;-</span> pa_names</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Prepare population data</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>pa_pop <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PA =</span> <span class="fu">str_to_upper</span>(<span class="fu">str_trim</span>(PA))) <span class="sc">%&gt;%</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA) <span class="sc">%&gt;%</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Pop =</span> <span class="fu">sum</span>(Pop), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Join population to spatial data</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>map_data <span class="ot">&lt;-</span> planning_areas <span class="sc">%&gt;%</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(pa_pop, <span class="at">by =</span> <span class="st">"PA"</span>)</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Plot with linear color scale (light = low pop, dark = high)</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(map_data) <span class="sc">+</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Pop), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"plasma"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey90"</span>) <span class="sc">+</span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Population Distribution by Planning Area, Singapore (2024)"</span>,</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Population"</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, dplyr, ggplot2, viridis, stringr)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Read the KML file</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>planning_areas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, dplyr, ggplot2, viridis, stringr)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Read the KML file</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>planning_areas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"Dataset/MP19_PLANNING_AREA_NO_SEA_PL.kml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `URA_MP19_PLNG_AREA_NO_SEA_PL' from data source 
   `D:\OneDrive - Singapore Management University\dchiamz2024\ISSS608-VAA\Take-Home_Ex\Take-Home_Ex01\Dataset\MP19_PLANNING_AREA_NO_SEA_PL.kml' 
@@ -1072,50 +1111,50 @@ Dimension:     XY
 Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
 Geodetic CRS:  WGS 84</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Add manually mapped names to the geometries</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>pa_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ANG MO KIO"</span>, <span class="st">"BEDOK"</span>, <span class="st">"CENTRAL WATER CATCHMENT"</span>, <span class="st">"CHANGI"</span>, <span class="st">"BISHAN"</span>, <span class="st">"BOON LAY"</span>,</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MARINA SOUTH"</span>, <span class="st">"MARINE PARADE"</span>, <span class="st">"BUKIT BATOK"</span>, <span class="st">"BUKIT MERAH"</span>, <span class="st">"BUKIT PANJANG"</span>,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"BUKIT TIMAH"</span>, <span class="st">"CHANGI BAY"</span>, <span class="st">"CHOA CHU KANG"</span>, <span class="st">"CLEMENTI"</span>, <span class="st">"DOWNTOWN CORE"</span>, <span class="st">"GEYLANG"</span>,</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TENGAH"</span>, <span class="st">"HOUGANG"</span>, <span class="st">"JURONG EAST"</span>, <span class="st">"JURONG WEST"</span>, <span class="st">"KALLANG"</span>, <span class="st">"LIM CHU KANG"</span>, <span class="st">"MANDAI"</span>,</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MARINA EAST"</span>, <span class="st">"MUSEUM"</span>, <span class="st">"NEWTON"</span>, <span class="st">"NORTH-EASTERN ISLANDS"</span>, <span class="st">"NOVENA"</span>, <span class="st">"ORCHARD"</span>,</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"OUTRAM"</span>, <span class="st">"PASIR RIS"</span>, <span class="st">"PAYA LEBAR"</span>, <span class="st">"PIONEER"</span>, <span class="st">"PUNGGOL"</span>, <span class="st">"QUEENSTOWN"</span>,</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RIVER VALLEY"</span>, <span class="st">"ROCHOR"</span>, <span class="st">"SELETAR"</span>, <span class="st">"SEMBAWANG"</span>, <span class="st">"SENGKANG"</span>, <span class="st">"SERANGOON"</span>,</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SIMPANG"</span>, <span class="st">"SINGAPORE RIVER"</span>, <span class="st">"SOUTHERN ISLANDS"</span>, <span class="st">"STRAITS VIEW"</span>, <span class="st">"SUNGEI KADUT"</span>,</span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TAMPINES"</span>, <span class="st">"TANGLIN"</span>, <span class="st">"TOA PAYOH"</span>, <span class="st">"TUAS"</span>, <span class="st">"WESTERN ISLANDS"</span>,</span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"WESTERN WATER CATCHMENT"</span>, <span class="st">"WOODLANDS"</span>, <span class="st">"YISHUN"</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign the names (assumes order matches exactly with features)</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>planning_areas<span class="sc">$</span>PA <span class="ot">&lt;-</span> pa_names</span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Summarise population by PA</span></span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>pa_pop <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PA =</span> <span class="fu">str_to_upper</span>(<span class="fu">str_trim</span>(PA))) <span class="sc">%&gt;%</span></span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA) <span class="sc">%&gt;%</span></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Pop =</span> <span class="fu">sum</span>(Pop), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Join population to spatial geometries</span></span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>map_data <span class="ot">&lt;-</span> planning_areas <span class="sc">%&gt;%</span></span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(pa_pop, <span class="at">by =</span> <span class="st">"PA"</span>)</span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Plot</span></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(map_data) <span class="sc">+</span></span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Pop), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"plasma"</span>, <span class="at">trans =</span> <span class="st">"log"</span>, <span class="at">na.value =</span> <span class="st">"grey90"</span>) <span class="sc">+</span></span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Population Distribution by Planning Area, Singapore"</span>,</span>
-<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Population (log scale)"</span></span>
-<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
-<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Add manually mapped names to the geometries</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>pa_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ANG MO KIO"</span>, <span class="st">"BEDOK"</span>, <span class="st">"CENTRAL WATER CATCHMENT"</span>, <span class="st">"CHANGI"</span>, <span class="st">"BISHAN"</span>, <span class="st">"BOON LAY"</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MARINA SOUTH"</span>, <span class="st">"MARINE PARADE"</span>, <span class="st">"BUKIT BATOK"</span>, <span class="st">"BUKIT MERAH"</span>, <span class="st">"BUKIT PANJANG"</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"BUKIT TIMAH"</span>, <span class="st">"CHANGI BAY"</span>, <span class="st">"CHOA CHU KANG"</span>, <span class="st">"CLEMENTI"</span>, <span class="st">"DOWNTOWN CORE"</span>, <span class="st">"GEYLANG"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TENGAH"</span>, <span class="st">"HOUGANG"</span>, <span class="st">"JURONG EAST"</span>, <span class="st">"JURONG WEST"</span>, <span class="st">"KALLANG"</span>, <span class="st">"LIM CHU KANG"</span>, <span class="st">"MANDAI"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MARINA EAST"</span>, <span class="st">"MUSEUM"</span>, <span class="st">"NEWTON"</span>, <span class="st">"NORTH-EASTERN ISLANDS"</span>, <span class="st">"NOVENA"</span>, <span class="st">"ORCHARD"</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"OUTRAM"</span>, <span class="st">"PASIR RIS"</span>, <span class="st">"PAYA LEBAR"</span>, <span class="st">"PIONEER"</span>, <span class="st">"PUNGGOL"</span>, <span class="st">"QUEENSTOWN"</span>,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RIVER VALLEY"</span>, <span class="st">"ROCHOR"</span>, <span class="st">"SELETAR"</span>, <span class="st">"SEMBAWANG"</span>, <span class="st">"SENGKANG"</span>, <span class="st">"SERANGOON"</span>,</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SIMPANG"</span>, <span class="st">"SINGAPORE RIVER"</span>, <span class="st">"SOUTHERN ISLANDS"</span>, <span class="st">"STRAITS VIEW"</span>, <span class="st">"SUNGEI KADUT"</span>,</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TAMPINES"</span>, <span class="st">"TANGLIN"</span>, <span class="st">"TOA PAYOH"</span>, <span class="st">"TUAS"</span>, <span class="st">"WESTERN ISLANDS"</span>,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"WESTERN WATER CATCHMENT"</span>, <span class="st">"WOODLANDS"</span>, <span class="st">"YISHUN"</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign the names (assumes order matches exactly with features)</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>planning_areas<span class="sc">$</span>PA <span class="ot">&lt;-</span> pa_names</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Summarise population by PA</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>pa_pop <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PA =</span> <span class="fu">str_to_upper</span>(<span class="fu">str_trim</span>(PA))) <span class="sc">%&gt;%</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA) <span class="sc">%&gt;%</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Pop =</span> <span class="fu">sum</span>(Pop), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Join population to spatial geometries</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>map_data <span class="ot">&lt;-</span> planning_areas <span class="sc">%&gt;%</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(pa_pop, <span class="at">by =</span> <span class="st">"PA"</span>)</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Plot</span></span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(map_data) <span class="sc">+</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Pop), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"plasma"</span>, <span class="at">trans =</span> <span class="st">"log"</span>, <span class="at">na.value =</span> <span class="st">"grey90"</span>) <span class="sc">+</span></span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Population Distribution by Planning Area, Singapore"</span>,</span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Population (log scale)"</span></span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
