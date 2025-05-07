@@ -1,0 +1,18 @@
+---
+title: "Hands-on Exercise 4d"
+description: ""
+author: "David Chiam"
+date: "7 May 2025"
+date-modified: "7 May 2025"
+format: html
+editor: visual
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+![](/Images/Under%20Construction.jpg)
+
+This page will be filled soon, come check it out in time to come.

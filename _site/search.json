@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "Hands-on_Ex/Hands-on_Ex04/Hands-On_Ex04b.html",
+    "href": "Hands-on_Ex/Hands-on_Ex04/Hands-On_Ex04b.html",
+    "title": "Hands-on Exercise 4b",
+    "section": "",
+    "text": "This page will be filled soon, come check it out in time to come."
+  },
+  {
     "objectID": "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html",
     "href": "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html",
     "title": "Take-Home Exercise 1",
@@ -14,45 +21,38 @@
     "text": "A local online media company that publishes daily content on digital platforms is planning to release an article on demographic structures and distribution of Singapore in 2024."
   },
   {
-    "objectID": "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#our-task",
-    "href": "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#our-task",
-    "title": "Take-Home Exercise 1",
-    "section": "",
-    "text": "In this exercise, Exploratory Data Analysis (EDA) methods and ggplot functions are used to explore:\n\nNeed to write something here\nand here"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "ISSS608-David’s Visual Analytics Portfolio",
-    "section": "",
-    "text": "Welcome to ISSS609 Visual Analytics and Applications. In this website, you will find my coursework prepared for this course.\nI hope that over the journey of this course, I will turn from this:\n\n\n\n\n\nTo enjoying what I have learn from this course and applying it to my future work."
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html",
-    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html",
-    "title": "Hands-on Exercise 1",
-    "section": "",
-    "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed in the computer. If they are, then they will be launched into R.\nNote: Pacman is like a package manager, Tidyverse are packages for data science eg. plotting, wrangling, cleaning, visualization etc\n\npacman::p_load(tidyverse) \n\n\n\n\nNote: if you did not run the first code chunk tidyverse, this will indicate not found. read_csv is a code from tidyverse\n\nexam_data &lt;- read_csv(\"data/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#install-and-launching-r-packages",
-    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#install-and-launching-r-packages",
-    "title": "Hands-on Exercise 1",
-    "section": "",
-    "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed in the computer. If they are, then they will be launched into R.\nNote: Pacman is like a package manager, Tidyverse are packages for data science eg. plotting, wrangling, cleaning, visualization etc\n\npacman::p_load(tidyverse)"
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-the-data",
-    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-the-data",
-    "title": "Hands-on Exercise 1",
-    "section": "",
-    "text": "Note: if you did not run the first code chunk tidyverse, this will indicate not found. read_csv is a code from tidyverse\n\nexam_data &lt;- read_csv(\"data/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
-  },
-  {
     "objectID": "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#the-task",
     "href": "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#the-task",
     "title": "Take-Home Exercise 1",
     "section": "",
     "text": "Assuming the role of the graphical editor of the media company, the task was to prepare at most three data visualisation for the exercise.\nHence in this exercise, I curated three key visualisations as part of dats exploration:\n\nGenerational Distribution by Region: A paired bar chart highlights both absolute and relative generational makeup across Singapore’s five planning regions, revealing the Central and East as home to proportionally older populations.\nAge Demographics by Planning Area: A boxplot with overlaid generation bands showcases median age and interquartile ranges, emphasising regions with mature population profiles like Central and West Singapore.\nTop Planning Areas by Age Band: A set of ranked bar charts and accompanying pie charts depict the top 15 planning areas by population size in three age segments—youth (0–24), adults (25–54), and seniors (55+). These are complemented with gender breakdowns to visualise demographic imbalances."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex06/Hands-On_Ex06.html",
+    "href": "Hands-on_Ex/Hands-on_Ex06/Hands-On_Ex06.html",
+    "title": "Hands-on Exercise 6",
+    "section": "",
+    "text": "This page will be filled soon, come check it out in time to come."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-On_Ex05.html",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-On_Ex05.html",
+    "title": "Hands-on Exercise 5",
+    "section": "",
+    "text": "This page will be filled soon, come check it out in time to come."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html",
+    "title": "Take-Home Assignment 2",
+    "section": "",
+    "text": "This page will be filled soon, come check it out in time to come."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-On_Ex07.html",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-On_Ex07.html",
+    "title": "Hands-on Exercise 6",
+    "section": "",
+    "text": "This page will be filled soon, come check it out in time to come."
   }
 ]
