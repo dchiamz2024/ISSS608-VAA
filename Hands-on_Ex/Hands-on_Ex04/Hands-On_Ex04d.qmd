@@ -50,7 +50,7 @@ The code chunk below imports the data into R and save it into a tibble data fram
 covid19 <- read_csv("DataEx04/COVID-19_DKI_Jakarta.csv") %>%
   mutate_if(is.character, as.factor)
 
-print(covid19)
+head(covid19, 10)
 ```
 
 ## **8.4 FunnelPlotR methods**
@@ -74,10 +74,38 @@ funnel_plot(
   .data = covid19,
   numerator = Positive,
   denominator = Death,
-  group = `Sub-district`
+  group = `Sub-district`,
+  title = "Funnel Plot"
 )
 
 ```
+
+::: {.callout-note appearance="minimal"}
+**This is an attempt to plot the funnel plot using the parameters above.**
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show Code"
+
+# Generate the funnel plot
+funnel_plot(
+  .data = covid19,
+  numerator = Death,            # events of interest
+  denominator = Positive,       # total population (cases)
+  group = `Sub-district`,       # grouping
+  limit = 95,                   # confidence limit
+  label_outliers = TRUE,        # label outliers
+  Poisson_limits = TRUE,        # add Poisson control limits
+  OD_adjust = TRUE,             # overdispersion-adjusted limits
+  xrange = c(0, 6500),          # zoom in on x-axis
+  yrange = c(0, 0.05),          # zoom in on y-axis
+  title = "COVID-19 Fatality Funnel Plot",
+  x_label = "Cumulative Positive COVID-19 Cases",
+  y_label = "Fatality Rate"
+)
+
+```
+:::
 
 Things to learn from the code chunk above.
 
@@ -98,7 +126,8 @@ funnel_plot(
   group = `Sub-district`,
   data_type = "PR",     #<<
   xrange = c(0, 6500),  #<<
-  yrange = c(0, 0.05)   #<<
+  yrange = c(0, 0.05),   #<<
+  title = "COVID-19 Fatality Funnel Plot by Sub-district"
 )
 
 ```
@@ -120,7 +149,7 @@ funnel_plot(
   xrange = c(0, 6500),  
   yrange = c(0, 0.05),
   label = NA,
-  title = "Cumulative COVID-19 Fatality Rate by Cumulative Total Number of COVID-19 Positive Cases", #<<           
+  title = "Cumulative COVID-19 Fatality Rate \nby Cumulative Total Number of COVID-19 Positive Cases", #<<           
   x_label = "Cumulative COVID-19 Positive Cases", #<<
   y_label = "Cumulative Fatality Rate"  #<<
 )
