@@ -45,6 +45,8 @@ pacman::p_load(ggstatsplot, tidyverse)
 
 ### **6.3.2 Importing data**
 
+For the purpose of this exercise, *Exam_data.csv* will be used.
+
 ```{r}
 
 exam <- read_csv("DataEx04/Exam_data.csv")
