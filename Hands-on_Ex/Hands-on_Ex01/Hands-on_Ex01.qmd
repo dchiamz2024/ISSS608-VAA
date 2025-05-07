@@ -3,7 +3,7 @@ title: "Hands-on Exercise 1"
 author: "David Chiam"
 ---
 
-# Getting Started
+# 1 - Getting Started
 
 ## Install and Launching R Packages
 
