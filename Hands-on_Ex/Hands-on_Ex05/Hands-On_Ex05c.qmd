@@ -43,7 +43,7 @@ In the code chunk below, **read_csv()** of *readr* is used to import WHData-2018
 
 ```{r}
 
-wh <- read_csv("data/WHData-2018.csv")
+wh <- read_csv("DataEx05/WHData-2018.csv")
 
 ```
 

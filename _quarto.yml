@@ -37,8 +37,10 @@ website:
           href: "Hands-on_Ex/Hands-on_Ex06/Hands-On_Ex06.html"
     - text: "Take-Home Exercises"
       menu:
-        - text: "Take-Home Exercise 1"
+        - text: "Take-Home Exercise 1 (Part 1 - Own Visualisation)"
           href: "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html"
+        - text: "Take-Home Exercise 1 (Part 2 - Liu Chih Yuan's Visualisation)"
+          href: "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01_LCY.html"
         - text: "Take-Home Exercise 2"
           href: "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html"
     right:
