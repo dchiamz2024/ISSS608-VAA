@@ -445,7 +445,7 @@ exam %>%
 
 ## **7.5 Visualising Uncertainty with Hypothetical Outcome Plots (HOPs)**
 
-### **11.5.1 Installing ungeviz package**
+### **7.5.1 Installing ungeviz package**
 
 ```{r}
 
@@ -461,7 +461,7 @@ library(ungeviz)
 
 ```
 
-### **11.5.3 Visualising Uncertainty with Hypothetical Outcome Plots (HOPs)**
+### **7.5.3 Visualising Uncertainty with Hypothetical Outcome Plots (HOPs)**
 
 Next, the code chunk below will be used to build the HOPs.
 

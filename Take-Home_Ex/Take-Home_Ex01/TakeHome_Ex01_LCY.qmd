@@ -4,11 +4,16 @@ author: "Liu Chih Yuan & David Chiam"
 date: "April 29, 2025"
 date-modified: "10 May 2025"
 format: html
+code-fold: true
+code-tools: true
+
 execute: 
   eval: true        # run code 
   echo: true         # show code 
+  message: false
   warning: false     #warning msg wont come out
   freeze: true      #speed up rendering time
+editor: visual
 ---
 
 ::: callout-note
@@ -149,7 +154,9 @@ p2 <- df %>%
 ------------------------------------------------------------------------
 
 ::: callout-note
-## 3 Good Design Principles
+## *Comments by David Chiam* on EDA 1: Population by Age / Age Group
+
+[<strong>3 Good Design Principles </strong>]{style="font-size: 22px;"}
 
 1.  **Good Data-Appropriate Chart Type (Total Population by Age & Population by Age Group)**
 
@@ -161,21 +168,17 @@ p2 <- df %>%
 
 2.  **Clear Labelling and Minimal Chart Junk**
 
-```         
--   The Axis Labels were simple and understanbleable. For both plots, the Y-axis population intervals with the use of horizontal grid lines allow for clear relative reference and comparisons. Furthermore the grid line are in lighter tone of grey which does not distract the viewer.
+    -   The Axis Labels were simple and understanbleable. For both plots, the Y-axis population intervals with the use of horizontal grid lines allow for clear relative reference and comparisons. Furthermore the grid line are in lighter tone of grey which does not distract the viewer.
 
--   With no excessive gridlines, background noise, or distracting embellishments, Chih Yuan was able to apply the principle of minimizing “non-data ink” to maintain visual clarity.
+    -   With no excessive gridlines, background noise, or distracting embellishments, Chih Yuan was able to apply the principle of minimizing “non-data ink” to maintain visual clarity.
 
--   [**Assessment**]{.underline}: I would give this a good score on the clarity scale.
-```
+    -   [**Assessment**]{.underline}: I would give this a good score on the clarity scale.
 
 3.  **Functional Simplicity**
 
-```         
--   The plot avoids excessive color schemes, 3D effects, or elaborate design, ensuring that the focus remains solely on the dataset itself. The use of colours also made the visual easier to identify age groupings which confusion, especially avoiding "colour blind" schemes.
+    -   The plot avoids excessive color schemes, 3D effects, or elaborate design, ensuring that the focus remains solely on the dataset itself. The use of colours also made the visual easier to identify age groupings which confusion, especially avoiding "colour blind" schemes.
 
--   It can be observed that Chich Yuan has likely prioritized clarity over unnecessary decoration is a strong point.
-```
+    -   It can be observed that Chih Yuan has likely prioritized clarity over unnecessary decoration is a strong point.
 :::
 
 ------------------------------------------------------------------------

@@ -3,7 +3,7 @@ title: "Hands-on Exercise 4b"
 description: ""
 author: "David Chiam"
 date: "7 May 2025"
-date-modified: "7 May 2025"
+date-modified: "10 May 2025"
 format: html
 editor: visual
 execute: 
@@ -104,13 +104,48 @@ A **Bayes Factor** can be any positive number. One of the most common interpreta
 
 In the code chunk below, [*ggbetweenstats()*](https://indrajeetpatil.github.io/ggstatsplot/reference/ggbetweenstats.html) is used to build a visual for two-sample mean test of Maths scores by gender.
 
+**Non-Parametric Version**:
+
+-   will produce a "median" point
+
 ```{r}
 
 ggbetweenstats(
   data = exam,
   x = GENDER, 
   y = MATHS,
-  type = "np",
+  type = "np",      # <<non-parametric 
+  messages = FALSE
+)
+```
+
+**Parametric Version**:
+
+-   will produce a "mean" point
+-   use Welch t-Test (unequal variance as an assumption)
+
+```{r}
+
+ggbetweenstats(
+  data = exam,
+  x = GENDER, 
+  y = MATHS,
+  type = "p",      # <<parametric 
+  messages = FALSE
+)
+```
+
+**Robust Version**:
+
+-   will produce a "mean" point
+-   use Welch t-Test (unequal variance as an assumption)
+
+```{r}
+ggbetweenstats(
+  data = exam,
+  x = GENDER, 
+  y = MATHS,
+  type = "r",      # <<parametric 
   messages = FALSE
 )
 ```
@@ -149,6 +184,20 @@ ggbetweenstats(
 -   “all” → everything
 :::
 
+```{r}
+ggbetweenstats(
+  data = exam,
+  x = RACE, 
+  y = ENGLISH,
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "all",     # << the change in parameter.
+  p.adjust.method = "fdr",
+  messages = FALSE
+)
+```
+
 #### 6.3.7.1 ggbetweenstats - Summary of tests
 
 ![](/Images/Hands-on_Image05.jpg){width="493"}
@@ -168,6 +217,16 @@ ggscatterstats(
   x = MATHS,
   y = ENGLISH,
   marginal = FALSE,
+  )
+```
+
+```{r}
+
+ggscatterstats(
+  data = exam,
+  x = MATHS,
+  y = ENGLISH,
+  marginal = TRUE,
   )
 ```
 

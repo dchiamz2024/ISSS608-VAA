@@ -3,7 +3,7 @@ title: "Hands-on Exercise 4a"
 description: ""
 author: "David Chiam"
 date: "4 May 2025"
-date-modified: "7 May 2025"
+date-modified: "10 May 2025"
 format: html
 editor: visual
 execute: 
@@ -73,7 +73,7 @@ ggridges package provides two main geom to plot gridgeline plots, they are: [`ge
 The ridgeline plot below is plotted by using `geom_density_ridges()`.
 
 ::: panel-tabset
-## The Plot
+## The Plot (English)
 
 ```{r, echo=FALSE}
 
@@ -96,7 +96,7 @@ ggplot(exam,
 
 ```
 
-## The Code Chunk
+## The Code Chunk (English)
 
 ```{r, eval=FALSE}
 
@@ -119,6 +119,55 @@ ggplot(exam,
 
 ```
 :::
+
+::: panel-tabset
+## The Plot (Maths)
+
+```{r, echo=FALSE}
+
+ggplot(exam, 
+       aes(x = MATHS, 
+           y = CLASS)) +
+  geom_density_ridges(
+    scale = 3,
+    rel_min_height = 0.01,
+    bandwidth = 3.4,
+    fill = lighten("#7097BB", .3),
+    color = "white"
+  ) +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+    ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+
+```
+
+## The Code Chunk (Maths)
+
+```{r, eval=FALSE}
+
+ggplot(exam, 
+       aes(x = MATHS, 
+           y = CLASS)) +
+  geom_density_ridges(
+    scale = 3,
+    rel_min_height = 0.01,
+    bandwidth = 3.4,
+    fill = lighten("#7097BB", .3),
+    color = "white"
+  ) +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+    ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+
+```
+:::
+
 
 ### **5.3.2 Varying fill colors along the x axis**
 
