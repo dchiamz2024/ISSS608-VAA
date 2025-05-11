@@ -934,7 +934,7 @@ legend("center",
        horiz = TRUE,
        box.lty = 0,
        cex = 1.2)
-``` 
+```
 
 ## Age 25 - 54
 
@@ -1074,8 +1074,7 @@ legend("center",
        horiz = TRUE,
        box.lty = 0,
        cex = 1.2)
-``` 
-
+```
 
 ## Age 55 & above
 
@@ -1215,7 +1214,7 @@ legend("center",
        horiz = TRUE,
        box.lty = 0,
        cex = 1.2)
-``` 
+```
 
 ## Sample Code Chunk (Age 25-54)
 
@@ -1361,4 +1360,3 @@ This take-home exercise explored Singapore’s resident population data from Jun
 These visualisations serve not only to illustrate where population clusters form but also guide strategic planning for infrastructure, housing, healthcare, and youth development. As Singapore grapples with challenges such as an ageing population, urban density, and equitable access to services, such granular analysis becomes critical. Overall, these patterns offer valuable insights for urban planners and policymakers.
 
 Moving forward, the dataset could be expanded with ethnicity, housing type, or socio-economic markers to deepen the insights. Future research may also explore temporal trends using past census data, or predictive modelling to anticipate demographic shifts in upcoming housing developments.
-
