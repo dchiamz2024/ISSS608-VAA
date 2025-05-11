@@ -17,9 +17,9 @@ editor: visual
 ---
 
 ::: callout-note
-This Netlify page was originally designed and produced by [LIU CHIH-YUAN](https://cabbage-wonderland.netlify.app/takehome_ex/takehome_ex01/takehome_ex01) for his Take-Home Assignment 1.
+The original Netlify page was designed and produced by [LIU CHIH-YUAN](https://cabbage-wonderland.netlify.app/takehome_ex/takehome_ex01/takehome_ex01) for his Take-Home Assignment 1 and can be found in the link by clicking on his *name*. Below is an extract of the original page inclusive the codes and plots.
 
-I will be providing a critic on three good design principles and three areas for further improvement on his work. I will also preare the makeover version of the data visualisation.
+I will be providing a critic on three good design principles and three areas for further improvement on his work. I will also prepare the makeover version of the data visualisation in Section 4 below.
 :::
 
 # Exploratory Analysis of Age and Gender Distribution Across Singapore Planning Areas (2024)
@@ -154,7 +154,7 @@ p2 <- df %>%
 ------------------------------------------------------------------------
 
 ::: callout-note
-## *Comments by David Chiam* on EDA 1: Population by Age / Age Group
+### *Comments by David Chiam* on EDA 1: Population by Age / Age Group
 
 ![](/Images/thumbs-up.png){width="32"}[<strong> 3 Good Design Principles</strong>]{style="font-size:22px; color:#0077CC;"}
 
@@ -181,214 +181,81 @@ p2 <- df %>%
     -   It can be observed that Chih Yuan has likely prioritized clarity over unnecessary decoration is a strong point.
 
 ![](/Images/negative-comment.png){width="32"}[<strong> 3 Areas for Improvement </strong>]{style="font-size:22px; color:#0077CC;"}
+
+1.  **More Data-meaningful Colour Encoding for Plot A**
+
+    -   Originally only one colour was used in Plot A, whch is "steelblue". And all ages were treated uniformly with no extra information encoded visually. However, in Plot B, the ages were broken down in to Age Groups and had respectively colours.
+
+    -   [**Improvements**]{.underline}: With each Age bar coloured by the Age Group (i.e. Chlid, Youth, Adult, Senior etc.) according to a meaningful colour palette, the read would be able to immediately perceive a generation structure (by colour) on Plot A. This is to adhere to the design principle where it leverages on the pre-attentive attributes to encode extra informationn for instant recognition.
+
+    -   How this is done: use a customized `scale_fill_manual()` based on Age Bands.
+
+2.  **Better X-Axis Scale (Breaks) and Age Handling**
+
+    -   The original plot was created with bar for AgeNum but the Age axis was cluttered with every single year shown with the defauly ggplot spacing. This might cause readers to have a cognitive overload trying to trace the exact age levels.
+
+    -   [**Improvements**]{.underline}: There is a need to have explicit control over the X-axis breaks using `breaks = seq(0, 110, by = 5)`, where the age labels are every 5 years intervals. this makes the chart easier to read and keeps the chart clean and orderly. The design principle was to reduce clutter and optimise scales for faster comprehension.
+
+3.  **Clearer Population by Age Group Plot (with Dual Labels)**
+
+    -   The original plot `p2` uses AgeGroup categories correctly but plots only height (population count) as an absolute value. This does not give the reader a sense of relative comparison between Age Groups.
+
+    -   [**Improvements**]{.underline}: In the Plot B, bar labels where included to show the population count inside the bar and the percentage value outside the bar. This gives the reader both the absolute and relative metrics for the visuals. The design principle is to make data-ink ratio higher and avoid having readers to calculate information manually.
 :::
+
+------------------------------------------------------------------------
+
+## 4. Improved Visualisation to EDA 1
+
+::: callout-note
+### *Revised codes by David Chiam* on EDA 1: Population by Age / Age Group
+
+### 4.1 Update to Data Preparation Prior to Plotting:
+
+✅ Treat `"90_and_Over"` **as part of Age = 90** (not missing, not removed).\
+✅ Sum it into the population count for Age 90 — exactly like Liu Chih-Yuan's original "Total Population by Age" plot.
+
+✅ So in the final Plot A:
+
+-   **X-axis 0 to 90** with Age 90 representing both 90-year-olds **and above**. So that there is no weird gaps or missing data.
 
 ```{r}
 
-# 1. Population by Age
-df_age <- df %>%
-  filter(!is.na(Age)) %>%
-  group_by(Age) %>%
-  summarise(Pop = sum(Pop), .groups = "drop")
-
-# 2. Define age groups
-df_age_group <- df %>%
-  mutate(
-    AgeGroup = case_when(
-      Age <= 14 ~ "Child (0–14)",
-      Age >= 15 & Age <= 24 ~ "Youth (15–24)",
-      Age >= 25 & Age <= 64 ~ "Adult (25–64)",
-      Age >= 65 ~ "Senior (65+)"
-    )
-  ) %>%
-  group_by(AgeGroup) %>%
-  summarise(Pop = sum(Pop), .groups = "drop")
-
-# For percentage plot
-df_age_group <- df_age_group %>%
-  mutate(Perc = Pop / sum(Pop) * 100)
-
-
-# --- Plotting ---
-
-# Add AgeGroup into df_age (merge logic)
-df_age <- df_age %>%
-  mutate(
-    AgeGroup = case_when(
-      Age <= 14 ~ "Child (0–14)",
-      Age >= 15 & Age <= 24 ~ "Youth (15–24)",
-      Age >= 25 & Age <= 64 ~ "Adult (25–64)",
-      Age >= 65 ~ "Senior (65+)"
-    )
-  )
-
-# Define color palette
-agegroup_colors <- c(
-  "Child (0–14)" = "#8dd3c7",
-  "Youth (15–24)" = "#ffffb3",
-  "Adult (25–64)" = "#bebada",
-  "Senior (65+)" = "#fb8072"
-)
-
-# --- Plot A: Total Population by Age (now colored by AgeGroup)
-plot_age <- ggplot(df_age, aes(x = Age, y = Pop, fill = AgeGroup)) +
-  geom_col(color = "grey30", width = 0.9) +
-  scale_fill_manual(values = agegroup_colors) +
-  scale_y_continuous(labels = comma) +
-  labs(
-    title = "Singapore Resident Population by Age",
-    x = "Age", y = "Population",
-    fill = "Age Group"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    axis.text = element_text(size = 10),
-    panel.grid.minor = element_blank(),
-    legend.position = "none"  # Hide legend because Plot B will show it
-  )
-
-# --- Plot B: Population Composition by Age Group (same as before)
-plot_agegroup <- ggplot(df_age_group, aes(x = "", y = Perc, fill = AgeGroup)) +
-  geom_col(width = 0.5, color = "grey20") +
-  coord_flip() +
-  scale_fill_manual(values = agegroup_colors) +
-  labs(
-    title = "Population Composition by Age Group",
-    x = NULL, y = "Percentage of Total Population",
-    fill = "Age Group"
-  ) +
-  scale_y_continuous(labels = function(x) paste0(x, "%")) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "top",
-    legend.title = element_text(size = 10),
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank()
-  )
-
-# --- Final Combined Plot
-(plot_age) / (plot_agegroup) +
-  plot_layout(heights = c(2.0, 0.5))
-
-```
-
-```{}
-```
-
-```{r fig.height=8, fig.width=10}
-
 # --- Data Preparation ---
-df_age <- df_age %>%
+
+# Correct Age handling: treat "90_and_Over" as Age 90
+df <- df %>%
   mutate(
-    Age = as.numeric(Age),  # <-- Ensure Age is numeric
-    AgeGroup = case_when(
-      Age <= 14 ~ "Child (0–14)",
-      Age >= 15 & Age <= 24 ~ "Youth (15–24)",
-      Age >= 25 & Age <= 64 ~ "Adult (25–64)",
-      Age >= 65 ~ "Senior (65+)"
-    ),
-    AgeGroup = factor(AgeGroup, levels = c(
-      "Child (0–14)", "Youth (15–24)", "Adult (25–64)", "Senior (65+)"
-    ))
+    AgeNum = ifelse(Age == "90_and_Over", 90, as.numeric(Age))
   )
 
-# df_age_group AgeGroup ordering (optional if you haven't already)
-df_age_group <- df_age_group %>%
-  mutate(AgeGroup = factor(AgeGroup, levels = c(
-    "Child (0–14)", "Youth (15–24)", "Adult (25–64)", "Senior (65+)"
-  )))
-
-
-
-# --- Plotting ---
-
-# Add AgeGroup into df_age (merge logic)
-df_age <- df_age %>%
+# Summarise population by AgeNum for both Plots
+df_age <- df %>%
+  group_by(AgeNum) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
   mutate(
     AgeGroup = case_when(
-      Age <= 14 ~ "Child (0–14)",
-      Age >= 15 & Age <= 24 ~ "Youth (15–24)",
-      Age >= 25 & Age <= 64 ~ "Adult (25–64)",
-      Age >= 65 ~ "Senior (65+)"
+      AgeNum <= 14 ~ "Child (0–14)",
+      AgeNum >= 15 & AgeNum <= 24 ~ "Youth (15–24)",
+      AgeNum >= 25 & AgeNum <= 64 ~ "Adult (25–64)",
+      AgeNum >= 65 ~ "Senior (65+)"
     ),
     AgeGroup = factor(AgeGroup, levels = c("Child (0–14)", "Youth (15–24)", "Adult (25–64)", "Senior (65+)"))
   )
 
-# Define color palette
-agegroup_colors <- c(
-  "Child (0–14)" = "#8dd3c7",
-  "Youth (15–24)" = "#ffffb3",
-  "Adult (25–64)" = "#bebada",
-  "Senior (65+)" = "#fb8072"
-)
-
-# --- Plot A: Total Population by Age
-plot_age <- ggplot(df_age, aes(x = Age, y = Pop, fill = AgeGroup)) +
-  geom_col(color = "grey30", width = 0.9) +
-  scale_fill_manual(values = agegroup_colors) +
-  scale_x_continuous(breaks = seq(0, 110, by = 5)) +  # X-axis labels every 5 years
-  scale_y_continuous(labels = scales::comma) +
-  labs(
-    title = "Singapore Resident Population by Age",
-    x = "Age", y = "Population Count",
-    fill = "Age Group"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    axis.text = element_text(size = 8),
-    panel.grid.minor = element_blank(),
-    legend.position = "none"
+# Summarise by AgeGroup for Plot B
+df_age_group <- df_age %>%
+  group_by(AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  mutate(
+    Perc = Pop / sum(Pop) * 100  # Calculate percentage
   )
 
-# --- Plot B: Population Composition by Age Group (safe way)
-
-# Fix: Filter to only valid 4 Age Groups
-df_age_group <- df_age_group %>%
-  filter(AgeGroup %in% c("Child (0–14)", "Youth (15–24)", "Adult (25–64)", "Senior (65+)")) %>%
-  mutate(AgeGroup = factor(AgeGroup, levels = c("Child (0–14)", "Youth (15–24)", "Adult (25–64)", "Senior (65+)")))
-
-plot_agegroup <- ggplot(df_age_group, aes(x = AgeGroup, y = Perc, fill = AgeGroup)) +
-  geom_col(width = 0.5, color = "grey20") +
-  scale_fill_manual(values = agegroup_colors) +
-  scale_y_continuous(labels = function(x) paste0(x, "%")) +
-  coord_flip() +
-  labs(
-    title = "Population Composition by Age Group",
-    x = NULL, y = "Percentage of Total Population",
-    fill = "Age Group"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "bottom",
-    legend.title = element_blank(),
-    legend.text = element_text(size = rel(0.7)),  # 30% smaller
-    axis.text = element_text(size = 8)
-  )
-
-
-# --- Final Combined Plot
-(plot_age) / (plot_agegroup) +
-  plot_layout(heights = c(2.0, 1.5)) 
 ```
 
-```{r fig.height=8, fig.width=10}
-# --- Plotting ---
+### **4.2 Improved Code for the Output Plots:**
 
-# Add AgeGroup into df_age (merge logic)
-df_age <- df_age %>%
-  mutate(
-    AgeGroup = case_when(
-      Age <= 14 ~ "Child (0–14)",
-      Age >= 15 & Age <= 24 ~ "Youth (15–24)",
-      Age >= 25 & Age <= 64 ~ "Adult (25–64)",
-      Age >= 65 ~ "Senior (65+)"
-    ),
-    AgeGroup = factor(AgeGroup, levels = c("Child (0–14)", "Youth (15–24)", "Adult (25–64)", "Senior (65+)"))
-  )
+```{r fig.height=8, fig.width=10}
 
 # Define color palette
 agegroup_colors <- c(
@@ -398,11 +265,11 @@ agegroup_colors <- c(
   "Senior (65+)" = "#fb8072"
 )
 
-# --- Plot A: Total Population by Age
-plot_age <- ggplot(df_age, aes(x = Age, y = Pop, fill = AgeGroup)) +
+# --- Plot A: Total Population by Age ---
+plot_age <- ggplot(df_age, aes(x = AgeNum, y = Pop, fill = AgeGroup)) +
   geom_col(color = "grey30", width = 0.9) +
   scale_fill_manual(values = agegroup_colors) +
-  scale_x_continuous(breaks = seq(0, 110, by = 5)) +  # X-axis labels every 5 years
+  scale_x_continuous(breaks = seq(0, 90, by = 5)) +
   scale_y_continuous(labels = scales::comma) +
   labs(
     title = "Singapore Resident Population by Age",
@@ -417,22 +284,18 @@ plot_age <- ggplot(df_age, aes(x = Age, y = Pop, fill = AgeGroup)) +
     legend.position = "none"
   )
 
-# --- Plot B: Updated Population Composition by Age Group ---
-
-# Make sure df_age_group has both Pop and Perc (you may need to adjust depending on upstream prep)
-# Assume df_age_group has columns: AgeGroup, Pop, Perc
-
+# --- Plot B: Population Composition by Age Group ---
 plot_agegroup <- ggplot(df_age_group, aes(x = AgeGroup, y = Perc, fill = AgeGroup)) +
   geom_col(width = 0.5, color = "grey20") +
   scale_fill_manual(values = agegroup_colors) +
   scale_y_continuous(labels = function(x) paste0(x, "%")) +
   coord_flip() +
-  # Labels inside the bar for Pop (Population Count)
-  geom_text(aes(label = scales::comma(Pop)), 
-            position = position_stack(vjust = 0.5), 
+  # Label inside bar for Population Count
+  geom_text(aes(label = scales::comma(Pop)),
+            position = position_stack(vjust = 0.5),
             color = "black", size = 3) +
-  # Labels at the end for Percentage
-  geom_text(aes(label = paste0(round(Perc, 1), "%"), y = Perc + 2), 
+  # Label at end of bar for Percent
+  geom_text(aes(label = paste0(round(Perc, 1), "%"), y = Perc + 2),
             hjust = 0, size = 3, color = "grey30") +
   labs(
     title = "Population Composition by Age Group",
@@ -444,20 +307,15 @@ plot_agegroup <- ggplot(df_age_group, aes(x = AgeGroup, y = Perc, fill = AgeGrou
     plot.title = element_text(face = "bold", size = 14),
     legend.position = "bottom",
     legend.title = element_blank(),
-    legend.text = element_text(size = rel(0.7)),  # 30% smaller
-    axis.text.y = element_blank(),  # Remove category labels
+    legend.text = element_text(size = rel(0.7)),
+    axis.text.y = element_text(size = 8, face = "bold"),
     axis.ticks.y = element_blank()
   )
 
-
-
-# --- Final Combined Plot
+# --- Final Combined Plot ---
 (plot_age) / (plot_agegroup) +
-  plot_layout(heights = c(2.0, 1.5)) 
+  plot_layout(heights = c(2.0, 1.5))
+
 
 ```
-
-```{r}
-```
-
-------------------------------------------------------------------------
+:::
