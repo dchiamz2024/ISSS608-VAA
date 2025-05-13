@@ -27,6 +27,10 @@ website:
           href: "Hands-on_Ex/Hands-on_Ex05/Hands-On_Ex05.html"
         - text: "Hands-on Exercise 6"
           href: "Hands-on_Ex/Hands-on_Ex06/Hands-On_Ex06.html"
+        - text: "Hands-on Exercise 7"
+          href: "Hands-on_Ex/Hands-on_Ex07/Hands-On_Ex07.html"
+        - text: "Hands-on Exercise 8"
+          href: "Hands-on_Ex/Hands-on_Ex08/Hands-On_Ex08.html"
     - text: "Take-Home Exercises"
       menu:
         - text: "Take-Home Exercise 1 (Part 1 - Own Visualisation)"
@@ -36,7 +40,7 @@ website:
         - text: "Take-Home Exercise 2"
           href: "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html"
         - text: "Take-Home Exercise 3"
-          href: "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex03.html"
+          href: "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html"
     right:
       - href: index.qmd
         text: Home
