@@ -3,7 +3,7 @@ title: "Hands-on Exercise 5"
 description: ""
 author: "David Chiam"
 date: "12 May 2025"
-date-modified: "12 May 2025"
+date-modified: "16 May 2025"
 format: html
 editor: visual
 code-fold: false
@@ -798,5 +798,93 @@ visNetwork(GAStech_nodes,
              nodesIdSelection = TRUE) %>%
   visLegend() %>%
   visLayout(randomSeed = 123)
+
+```
+
+## **9.9 Self Hands-on Practice on the codes in this section**
+
+![](/Images/Hands-on-Practice.png){width="558"}
+
+I will be using the previously loaded csv files in `GAStech_nodes` and `GAStech_edges`
+
+### Step 1a: Check Column Names
+
+```{r}
+
+colnames(GAStech_nodes)
+
+```
+
+```{r}
+
+colnames(GAStech_edges)
+
+```
+
+### Step 1b: Rename `count` to `weight`
+
+```{r}
+
+# Create a weighted edge list by counting source-target pairs
+GAStech_edges_summary <- GAStech_edges %>%
+  count(source, target, name = "weight") %>%
+  rename(from = source, to = target)
+
+```
+
+### Step 2: Calculate Degree and Size Nodes
+
+```{r}
+
+# Compute degree using igraph
+
+g <- graph_from_data_frame(GAStech_edges, 
+                           directed = TRUE, 
+                           vertices = GAStech_nodes)
+GAStech_nodes$size <- degree(g, mode = "all")
+
+
+```
+
+### Step 3: Basic Interactive Network with visNetwork
+
+```{r}
+
+visNetwork(GAStech_nodes, GAStech_edges) %>%
+  visOptions(highlightNearest = TRUE, 
+             nodesIdSelection = TRUE) %>%
+  visLayout(randomSeed = 123)
+
+```
+
+### Step 4: Add Group Colors and Filtering
+
+```{r}
+
+visNetwork(GAStech_nodes, GAStech_edges) %>%
+  visGroups(groupname = "Administration", color = "lightblue") %>%
+  visGroups(groupname = "IT", color = "orange") %>%
+  visGroups(groupname = "Engineering", color = "lightgreen") %>%
+  visOptions(
+    highlightNearest = TRUE,
+    nodesIdSelection = TRUE,
+    selectedBy = "group"
+  ) %>%
+  visLayout(randomSeed = 42)
+
+```
+
+### Step 5: Filter Edges by Email Volume (e.g., weight ≥ 10)
+
+```{r}
+
+# Filter for high-volume communication
+GAStech_edges_strong <- GAStech_edges_summary %>% filter(weight >= 10)
+
+# Plot with visNetwork
+visNetwork(GAStech_nodes, GAStech_edges_strong) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+  visLayout(randomSeed = 88)
+
 
 ```
