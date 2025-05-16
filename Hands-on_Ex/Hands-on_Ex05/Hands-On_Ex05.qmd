@@ -1095,36 +1095,3 @@ ggraph(facet_graph, layout = "lgl") +
   labs(title = "GAStech Email Networks by Weekday (Grouped by Department)")
 
 ```
-
-```{r fig.height=8, fig.width=12, warning=FALSE}
-
-GAStech_nodes <- GAStech_nodes %>%
-  mutate(id = as.character(id))
-
-
-# 1. Join sender and receiver department info
-edges_with_dept <- raw_edges %>%
-  left_join(GAStech_nodes, by = c("source" = "id")) %>%
-  rename(SourceDept = Department) %>%
-  left_join(GAStech_nodes, by = c("target" = "id")) %>%
-  rename(TargetDept = Department)
-
-# 2. Keep only within-department interactions
-intradept_edges <- edges_with_dept %>%
-  filter(SourceDept == TargetDept) %>%
-  count(source, target, SourceDept, name = "weight") %>%
-  rename(from = source, to = target, group = SourceDept)
-
-# 3. Filter nodes who participate in these edges
-intradept_nodes <- GAStech_nodes %>%
-  filter(id %in% unique(c(intradept_edges$from, intradept_edges$to)))
-
-# 4. Create network
-visNetwork(intradept_nodes, intradept_edges) %>%
-  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE, selectedBy = "group") %>%
-  visGroups(groupname = "Administration", color = "lightblue") %>%
-  visGroups(groupname = "Engineering", color = "orange") %>%
-  visGroups(groupname = "IT", color = "lightgreen") %>%
-  visLayout(randomSeed = 99)
-
-```
