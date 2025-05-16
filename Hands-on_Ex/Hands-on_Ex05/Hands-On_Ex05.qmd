@@ -807,7 +807,9 @@ visNetwork(GAStech_nodes,
 
 I will be using the previously loaded csv files in `GAStech_nodes` and `GAStech_edges`
 
-### Step 1a: Check Column Names
+### 9.9.1 Trying Out Plots
+
+#### Step 1a: Check Column Names
 
 ```{r}
 
@@ -821,7 +823,7 @@ colnames(GAStech_edges)
 
 ```
 
-### Step 1b: Rename `count` to `weight`
+#### Step 1b: Rename `source` to `target`
 
 ```{r}
 
@@ -832,7 +834,7 @@ GAStech_edges_summary <- GAStech_edges %>%
 
 ```
 
-### Step 2: Calculate Degree and Size Nodes
+#### Step 2: Calculate Degree and Size Nodes
 
 ```{r}
 
@@ -846,7 +848,7 @@ GAStech_nodes$size <- degree(g, mode = "all")
 
 ```
 
-### Step 3: Basic Interactive Network with visNetwork
+#### Step 3: Basic Interactive Network with visNetwork
 
 ```{r}
 
@@ -857,7 +859,7 @@ visNetwork(GAStech_nodes, GAStech_edges) %>%
 
 ```
 
-### Step 4: Add Group Colors and Filtering
+#### Step 4: Add Group Colors and Filtering
 
 ```{r}
 
@@ -874,7 +876,7 @@ visNetwork(GAStech_nodes, GAStech_edges) %>%
 
 ```
 
-### Step 5: Filter Edges by Email Volume (e.g., weight ≥ 10)
+#### Step 5: Filter Edges by Email Volume (e.g., weight ≥ 10)
 
 ```{r}
 
@@ -887,4 +889,218 @@ visNetwork(GAStech_nodes, GAStech_edges_strong) %>%
   visLayout(randomSeed = 88)
 
 
+```
+
+### 9.9.2 Trying Out Graph Layouts with `ggraph`
+
+#### `layout = "circle"`
+
+::: panel-tabset
+## The Plot
+
+```{r, echo=FALSE}
+
+# Convert to tbl_graph
+email_graph <- tbl_graph(nodes = GAStech_nodes, edges = GAStech_edges_summary, directed = TRUE)
+
+# Circle Layout
+ggraph(email_graph, layout = "circle") +
+  geom_edge_link(aes(alpha = weight), show.legend = FALSE) +
+  geom_node_point(aes(color = group, size = centrality_degree())) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  theme_graph()
+
+```
+
+## The Code Chunk
+
+```{r, eval=FALSE}
+
+# Convert to tbl_graph
+email_graph <- tbl_graph(nodes = GAStech_nodes, edges = GAStech_edges_summary, directed = TRUE)
+
+# Circle Layout
+ggraph(email_graph, layout = "circle") +
+  geom_edge_link(aes(alpha = weight), show.legend = FALSE) +
+  geom_node_point(aes(color = group, size = centrality_degree())) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  theme_graph()
+
+```
+:::
+
+#### `layout = "kk"` (Kamada-Kawai)
+
+::: panel-tabset
+## The Plot
+
+```{r, echo=FALSE}
+
+# Convert to tbl_graph
+email_graph <- tbl_graph(nodes = GAStech_nodes, edges = GAStech_edges_summary, directed = TRUE)
+
+# Kamada-Kawai Layout
+ggraph(email_graph, layout = "kk") +
+  geom_edge_link(aes(alpha = weight), show.legend = FALSE) +
+  geom_node_point(aes(color = group, size = centrality_degree())) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  theme_graph()
+
+```
+
+## The Code Chunk
+
+```{r, eval=FALSE}
+
+# Convert to tbl_graph
+email_graph <- tbl_graph(nodes = GAStech_nodes, edges = GAStech_edges_summary, directed = TRUE)
+
+# Kamada-Kawai Layout
+ggraph(email_graph, layout = "kk") +
+  geom_edge_link(aes(alpha = weight), show.legend = FALSE) +
+  geom_node_point(aes(color = group, size = centrality_degree())) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  theme_graph()
+
+```
+:::
+
+#### `layout = "lgl"` (Large Graph Layout)
+
+::: panel-tabset
+## The Plot
+
+```{r, echo=FALSE}
+
+# Convert to tbl_graph
+email_graph <- tbl_graph(nodes = GAStech_nodes, edges = GAStech_edges_summary, directed = TRUE)
+
+# Large Graph Layout
+ggraph(email_graph, layout = "lgl") +
+  geom_edge_link(aes(alpha = weight), show.legend = FALSE) +
+  geom_node_point(aes(color = group, size = centrality_degree())) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  theme_graph()
+
+```
+
+## The Code Chunk
+
+```{r, eval=FALSE}
+
+# Convert to tbl_graph
+email_graph <- tbl_graph(nodes = GAStech_nodes, edges = GAStech_edges_summary, directed = TRUE)
+
+# Large Graph Layout
+ggraph(email_graph, layout = "lgl") +
+  geom_edge_link(aes(alpha = weight), show.legend = FALSE) +
+  geom_node_point(aes(color = group, size = centrality_degree())) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  theme_graph()
+
+```
+:::
+
+#### `layout = "dh"` (Davidson-Harel)
+
+::: panel-tabset
+## The Plot
+
+```{r, echo=FALSE}
+
+# Convert to tbl_graph
+email_graph <- tbl_graph(nodes = GAStech_nodes, edges = GAStech_edges_summary, directed = TRUE)
+
+# David-Harel Layout
+ggraph(email_graph, layout = "dh") +
+  geom_edge_link(aes(alpha = weight), show.legend = FALSE) +
+  geom_node_point(aes(color = group, size = centrality_degree())) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  theme_graph()
+```
+
+## The Code Chunk
+
+```{r, eval=FALSE}
+
+# Convert to tbl_graph
+email_graph <- tbl_graph(nodes = GAStech_nodes, edges = GAStech_edges_summary, directed = TRUE)
+
+# David-Harel Layout
+ggraph(email_graph, layout = "dh") +
+  geom_edge_link(aes(alpha = weight), show.legend = FALSE) +
+  geom_node_point(aes(color = group, size = centrality_degree())) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  theme_graph()
+```
+:::
+
+### 9.9.3 Trying Out Network Node & Edge Metrics
+
+```{r, eval=FALSE}
+
+email_graph <- email_graph %>%
+  mutate(
+    degree = centrality_degree(mode = "all"),
+    betweenness = centrality_betweenness(),
+    closeness = centrality_closeness()
+  )
+
+# View top centrality nodes
+email_graph %>%
+  as_tibble() %>%
+  arrange(desc(degree)) %>%
+  select(label, group, degree, betweenness, closeness) %>%
+  head(10)
+
+```
+
+### 9.9.3 Trying Out `facet_edges()` or `facet_nodes()` for Multiple Views
+
+```{r fig.height=8, fig.width=12, warning=FALSE}
+
+# Example: Facet edges by weekday (requires joining original edge data with time info)
+GAStech_edges_summary <- GAStech_edges %>%
+  count(source, target, Weekday, name = "weight") %>%
+  rename(from = source, to = target)
+
+facet_graph <- tbl_graph(nodes = GAStech_nodes, edges = GAStech_edges_summary, directed = TRUE)
+
+ggraph(facet_graph, layout = "fr") +
+  geom_edge_link(aes(alpha = weight), show.legend = FALSE) +
+  geom_node_point(aes(color = group)) +
+  geom_node_text(aes(label = label), size = 2, repel = TRUE) +
+  facet_edges(~Weekday) +
+  theme_graph()
+
+```
+
+```{r}
+
+# --- Load Data ---
+GAStech_nodes <- read_csv("DataEx05/GAStech_email_node.csv")
+raw_edges <- read_csv("DataEx05/GAStech_email_edge.csv")
+
+# --- Prepare Nodes ---
+# Assume id and label columns exist and use Department as group
+GAStech_nodes <- GAStech_nodes %>%
+  rename(id = id, label = label) %>%
+  mutate(group = Department)
+
+# --- Prepare Edges with subject grouping ---
+subject_edges <- raw_edges %>%
+  count(source, target, MainSubject, name = "weight") %>%
+  rename(from = source, to = target)
+
+# --- Create Interactive Network ---
+visNetwork(GAStech_nodes, subject_edges) %>%
+  visOptions(
+    highlightNearest = TRUE,
+    nodesIdSelection = TRUE,
+    selectedBy = list(variable = "MainSubject", multiple = FALSE)
+  ) %>%
+  visGroups(groupname = "Administration", color = "lightblue") %>%
+  visGroups(groupname = "Engineering", color = "orange") %>%
+  visGroups(groupname = "IT", color = "lightgreen") %>%
+  visLayout(randomSeed = 42)
 ```
