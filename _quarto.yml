@@ -41,6 +41,10 @@ website:
           href: "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html"
         - text: "Take-Home Exercise 3"
           href: "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html"
+    - text: "In-Class Exercises"
+      menu:
+        - text: "In-Class Exercise 1 (on Mini Challenge 1 data)"
+          href: "In-Class_Ex/In-Class_Ex01/In-Class_Ex01.html"
     right:
       - href: index.qmd
         text: Home
