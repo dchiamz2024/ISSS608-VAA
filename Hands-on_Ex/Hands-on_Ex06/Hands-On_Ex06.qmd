@@ -514,6 +514,8 @@ sg_ts <- sg %>%
 First we would like to see the number of Daily new Covid-19 cases and Deaths over the period of 2020 to 2024.
 
 ```{r}
+#| code-fold: true
+
 sg_long <- sg %>% pivot_longer(-date, names_to="metric", values_to="count")
 
 ggplot(sg_long, aes(date, count, color=metric)) +
@@ -567,7 +569,7 @@ sg_ts %>%
     )
 ```
 
-### **2021 Daily New Cases**
+### 2021 Daily New Cases
 
 ```{r}
 #| code-fold: true
