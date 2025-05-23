@@ -269,6 +269,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#step-1-data-import-1" id="toc-step-1-data-import-1" class="nav-link" data-scroll-target="#step-1-data-import-1"><strong>10.5.1 Step 1: Data Import</strong></a></li>
   <li><a href="#step-2-plotting-the-slopegraph" id="toc-step-2-plotting-the-slopegraph" class="nav-link" data-scroll-target="#step-2-plotting-the-slopegraph"><strong>10.5.2 Step 2: Plotting the slopegraph</strong></a></li>
   </ul></li>
+  <li><a href="#self-hands-on-practice-on-the-codes-in-this-section" id="toc-self-hands-on-practice-on-the-codes-in-this-section" class="nav-link" data-scroll-target="#self-hands-on-practice-on-the-codes-in-this-section"><strong>10.6 Self Hands-on Practice on the codes in this section</strong></a>
+  <ul class="collapse">
+  <li><a href="#step-1-data-import-2" id="toc-step-1-data-import-2" class="nav-link" data-scroll-target="#step-1-data-import-2"><strong>Step 1: Data Import</strong></a></li>
+  <li><a href="#step-taking-a-glimpse-and-understanding-the-dataset" id="toc-step-taking-a-glimpse-and-understanding-the-dataset" class="nav-link" data-scroll-target="#step-taking-a-glimpse-and-understanding-the-dataset"><strong>Step : Taking a Glimpse and Understanding the Dataset</strong></a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -884,6 +889,1036 @@ Thing to learn from the code chunk above
 </div>
 <div class="callout-body-container callout-body">
 <p>For effective data visualisation design, <code>factor()</code> is used convert the value type of <em>Year</em> field from numeric to factor.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="self-hands-on-practice-on-the-codes-in-this-section" class="level2">
+<h2 class="anchored" data-anchor-id="self-hands-on-practice-on-the-codes-in-this-section"><strong>10.6 Self Hands-on Practice on the codes in this section</strong></h2>
+<p><img src="../..\Images/Hands-on-Practice.png" class="img-fluid" width="558"></p>
+<section id="step-1-data-import-2" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-data-import-2"><strong>Step 1: Data Import</strong></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(feasts)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull in the full OWID COVID dataset</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>owid <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://covid.ourworldindata.org/data/owid-covid-data.csv"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">iso_code =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">location =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">date     =</span> <span class="fu">col_date</span>(<span class="at">format =</span> <span class="st">""</span>),</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_cases =</span> <span class="fu">col_double</span>(),</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_deaths =</span> <span class="fu">col_double</span>(),</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># you can add more columns here as needed</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-taking-a-glimpse-and-understanding-the-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="step-taking-a-glimpse-and-understanding-the-dataset"><strong>Step : Taking a Glimpse and Understanding the Dataset</strong></h3>
+<p>Look through the dataset that has been loaded.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Column names</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">colnames</span>(owid))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "iso_code"                                  
+ [2] "continent"                                 
+ [3] "location"                                  
+ [4] "date"                                      
+ [5] "total_cases"                               
+ [6] "new_cases"                                 
+ [7] "new_cases_smoothed"                        
+ [8] "total_deaths"                              
+ [9] "new_deaths"                                
+[10] "new_deaths_smoothed"                       
+[11] "total_cases_per_million"                   
+[12] "new_cases_per_million"                     
+[13] "new_cases_smoothed_per_million"            
+[14] "total_deaths_per_million"                  
+[15] "new_deaths_per_million"                    
+[16] "new_deaths_smoothed_per_million"           
+[17] "reproduction_rate"                         
+[18] "icu_patients"                              
+[19] "icu_patients_per_million"                  
+[20] "hosp_patients"                             
+[21] "hosp_patients_per_million"                 
+[22] "weekly_icu_admissions"                     
+[23] "weekly_icu_admissions_per_million"         
+[24] "weekly_hosp_admissions"                    
+[25] "weekly_hosp_admissions_per_million"        
+[26] "total_tests"                               
+[27] "new_tests"                                 
+[28] "total_tests_per_thousand"                  
+[29] "new_tests_per_thousand"                    
+[30] "new_tests_smoothed"                        
+[31] "new_tests_smoothed_per_thousand"           
+[32] "positive_rate"                             
+[33] "tests_per_case"                            
+[34] "tests_units"                               
+[35] "total_vaccinations"                        
+[36] "people_vaccinated"                         
+[37] "people_fully_vaccinated"                   
+[38] "total_boosters"                            
+[39] "new_vaccinations"                          
+[40] "new_vaccinations_smoothed"                 
+[41] "total_vaccinations_per_hundred"            
+[42] "people_vaccinated_per_hundred"             
+[43] "people_fully_vaccinated_per_hundred"       
+[44] "total_boosters_per_hundred"                
+[45] "new_vaccinations_smoothed_per_million"     
+[46] "new_people_vaccinated_smoothed"            
+[47] "new_people_vaccinated_smoothed_per_hundred"
+[48] "stringency_index"                          
+[49] "population_density"                        
+[50] "median_age"                                
+[51] "aged_65_older"                             
+[52] "aged_70_older"                             
+[53] "gdp_per_capita"                            
+[54] "extreme_poverty"                           
+[55] "cardiovasc_death_rate"                     
+[56] "diabetes_prevalence"                       
+[57] "female_smokers"                            
+[58] "male_smokers"                              
+[59] "handwashing_facilities"                    
+[60] "hospital_beds_per_thousand"                
+[61] "life_expectancy"                           
+[62] "human_development_index"                   
+[63] "population"                                
+[64] "excess_mortality_cumulative_absolute"      
+[65] "excess_mortality_cumulative"               
+[66] "excess_mortality"                          
+[67] "excess_mortality_cumulative_per_million"   </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Glimpse structure</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(owid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 429,435
+Columns: 67
+$ iso_code                                   &lt;chr&gt; "AFG", "AFG", "AFG", "AFG",…
+$ continent                                  &lt;chr&gt; "Asia", "Asia", "Asia", "As…
+$ location                                   &lt;chr&gt; "Afghanistan", "Afghanistan…
+$ date                                       &lt;date&gt; 2020-01-05, 2020-01-06, 20…
+$ total_cases                                &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ new_cases                                  &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ new_cases_smoothed                         &lt;dbl&gt; NA, NA, NA, NA, NA, 0, 0, 0…
+$ total_deaths                               &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ new_deaths                                 &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ new_deaths_smoothed                        &lt;dbl&gt; NA, NA, NA, NA, NA, 0, 0, 0…
+$ total_cases_per_million                    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ new_cases_per_million                      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ new_cases_smoothed_per_million             &lt;dbl&gt; NA, NA, NA, NA, NA, 0, 0, 0…
+$ total_deaths_per_million                   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ new_deaths_per_million                     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ new_deaths_smoothed_per_million            &lt;dbl&gt; NA, NA, NA, NA, NA, 0, 0, 0…
+$ reproduction_rate                          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ icu_patients                               &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ icu_patients_per_million                   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ hosp_patients                              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ hosp_patients_per_million                  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ weekly_icu_admissions                      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ weekly_icu_admissions_per_million          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ weekly_hosp_admissions                     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ weekly_hosp_admissions_per_million         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ total_tests                                &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ new_tests                                  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ total_tests_per_thousand                   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ new_tests_per_thousand                     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ new_tests_smoothed                         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ new_tests_smoothed_per_thousand            &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ positive_rate                              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ tests_per_case                             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ tests_units                                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ total_vaccinations                         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ people_vaccinated                          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ people_fully_vaccinated                    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ total_boosters                             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ new_vaccinations                           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ new_vaccinations_smoothed                  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ total_vaccinations_per_hundred             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ people_vaccinated_per_hundred              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ people_fully_vaccinated_per_hundred        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ total_boosters_per_hundred                 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ new_vaccinations_smoothed_per_million      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ new_people_vaccinated_smoothed             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ new_people_vaccinated_smoothed_per_hundred &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ stringency_index                           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ population_density                         &lt;dbl&gt; 54.422, 54.422, 54.422, 54.…
+$ median_age                                 &lt;dbl&gt; 18.6, 18.6, 18.6, 18.6, 18.…
+$ aged_65_older                              &lt;dbl&gt; 2.581, 2.581, 2.581, 2.581,…
+$ aged_70_older                              &lt;dbl&gt; 1.337, 1.337, 1.337, 1.337,…
+$ gdp_per_capita                             &lt;dbl&gt; 1803.987, 1803.987, 1803.98…
+$ extreme_poverty                            &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ cardiovasc_death_rate                      &lt;dbl&gt; 597.029, 597.029, 597.029, …
+$ diabetes_prevalence                        &lt;dbl&gt; 9.59, 9.59, 9.59, 9.59, 9.5…
+$ female_smokers                             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ male_smokers                               &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ handwashing_facilities                     &lt;dbl&gt; 37.746, 37.746, 37.746, 37.…
+$ hospital_beds_per_thousand                 &lt;dbl&gt; 0.5, 0.5, 0.5, 0.5, 0.5, 0.…
+$ life_expectancy                            &lt;dbl&gt; 64.83, 64.83, 64.83, 64.83,…
+$ human_development_index                    &lt;dbl&gt; 0.511, 0.511, 0.511, 0.511,…
+$ population                                 &lt;dbl&gt; 41128772, 41128772, 4112877…
+$ excess_mortality_cumulative_absolute       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ excess_mortality_cumulative                &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ excess_mortality                           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…
+$ excess_mortality_cumulative_per_million    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. First 6 rows</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(owid), <span class="at">caption =</span> <span class="st">"First six rows of the OWID COVID dataset"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>First six rows of the OWID COVID dataset</caption>
+<colgroup>
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">iso_code</th>
+<th style="text-align: left;">continent</th>
+<th style="text-align: left;">location</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">total_cases</th>
+<th style="text-align: right;">new_cases</th>
+<th style="text-align: right;">new_cases_smoothed</th>
+<th style="text-align: right;">total_deaths</th>
+<th style="text-align: right;">new_deaths</th>
+<th style="text-align: right;">new_deaths_smoothed</th>
+<th style="text-align: right;">total_cases_per_million</th>
+<th style="text-align: right;">new_cases_per_million</th>
+<th style="text-align: right;">new_cases_smoothed_per_million</th>
+<th style="text-align: right;">total_deaths_per_million</th>
+<th style="text-align: right;">new_deaths_per_million</th>
+<th style="text-align: right;">new_deaths_smoothed_per_million</th>
+<th style="text-align: right;">reproduction_rate</th>
+<th style="text-align: right;">icu_patients</th>
+<th style="text-align: right;">icu_patients_per_million</th>
+<th style="text-align: right;">hosp_patients</th>
+<th style="text-align: right;">hosp_patients_per_million</th>
+<th style="text-align: right;">weekly_icu_admissions</th>
+<th style="text-align: right;">weekly_icu_admissions_per_million</th>
+<th style="text-align: right;">weekly_hosp_admissions</th>
+<th style="text-align: right;">weekly_hosp_admissions_per_million</th>
+<th style="text-align: right;">total_tests</th>
+<th style="text-align: right;">new_tests</th>
+<th style="text-align: right;">total_tests_per_thousand</th>
+<th style="text-align: right;">new_tests_per_thousand</th>
+<th style="text-align: right;">new_tests_smoothed</th>
+<th style="text-align: right;">new_tests_smoothed_per_thousand</th>
+<th style="text-align: right;">positive_rate</th>
+<th style="text-align: right;">tests_per_case</th>
+<th style="text-align: left;">tests_units</th>
+<th style="text-align: right;">total_vaccinations</th>
+<th style="text-align: right;">people_vaccinated</th>
+<th style="text-align: right;">people_fully_vaccinated</th>
+<th style="text-align: right;">total_boosters</th>
+<th style="text-align: right;">new_vaccinations</th>
+<th style="text-align: right;">new_vaccinations_smoothed</th>
+<th style="text-align: right;">total_vaccinations_per_hundred</th>
+<th style="text-align: right;">people_vaccinated_per_hundred</th>
+<th style="text-align: right;">people_fully_vaccinated_per_hundred</th>
+<th style="text-align: right;">total_boosters_per_hundred</th>
+<th style="text-align: right;">new_vaccinations_smoothed_per_million</th>
+<th style="text-align: right;">new_people_vaccinated_smoothed</th>
+<th style="text-align: right;">new_people_vaccinated_smoothed_per_hundred</th>
+<th style="text-align: right;">stringency_index</th>
+<th style="text-align: right;">population_density</th>
+<th style="text-align: right;">median_age</th>
+<th style="text-align: right;">aged_65_older</th>
+<th style="text-align: right;">aged_70_older</th>
+<th style="text-align: right;">gdp_per_capita</th>
+<th style="text-align: right;">extreme_poverty</th>
+<th style="text-align: right;">cardiovasc_death_rate</th>
+<th style="text-align: right;">diabetes_prevalence</th>
+<th style="text-align: right;">female_smokers</th>
+<th style="text-align: right;">male_smokers</th>
+<th style="text-align: right;">handwashing_facilities</th>
+<th style="text-align: right;">hospital_beds_per_thousand</th>
+<th style="text-align: right;">life_expectancy</th>
+<th style="text-align: right;">human_development_index</th>
+<th style="text-align: right;">population</th>
+<th style="text-align: right;">excess_mortality_cumulative_absolute</th>
+<th style="text-align: right;">excess_mortality_cumulative</th>
+<th style="text-align: right;">excess_mortality</th>
+<th style="text-align: right;">excess_mortality_cumulative_per_million</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">Asia</td>
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">2020-01-05</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">54.422</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;">2.581</td>
+<td style="text-align: right;">1.337</td>
+<td style="text-align: right;">1803.987</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">597.029</td>
+<td style="text-align: right;">9.59</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">37.746</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">64.83</td>
+<td style="text-align: right;">0.511</td>
+<td style="text-align: right;">41128772</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">Asia</td>
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">2020-01-06</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">54.422</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;">2.581</td>
+<td style="text-align: right;">1.337</td>
+<td style="text-align: right;">1803.987</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">597.029</td>
+<td style="text-align: right;">9.59</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">37.746</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">64.83</td>
+<td style="text-align: right;">0.511</td>
+<td style="text-align: right;">41128772</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">Asia</td>
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">2020-01-07</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">54.422</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;">2.581</td>
+<td style="text-align: right;">1.337</td>
+<td style="text-align: right;">1803.987</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">597.029</td>
+<td style="text-align: right;">9.59</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">37.746</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">64.83</td>
+<td style="text-align: right;">0.511</td>
+<td style="text-align: right;">41128772</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">Asia</td>
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">2020-01-08</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">54.422</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;">2.581</td>
+<td style="text-align: right;">1.337</td>
+<td style="text-align: right;">1803.987</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">597.029</td>
+<td style="text-align: right;">9.59</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">37.746</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">64.83</td>
+<td style="text-align: right;">0.511</td>
+<td style="text-align: right;">41128772</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">Asia</td>
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">2020-01-09</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">54.422</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;">2.581</td>
+<td style="text-align: right;">1.337</td>
+<td style="text-align: right;">1803.987</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">597.029</td>
+<td style="text-align: right;">9.59</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">37.746</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">64.83</td>
+<td style="text-align: right;">0.511</td>
+<td style="text-align: right;">41128772</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">Asia</td>
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">2020-01-10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">54.422</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;">2.581</td>
+<td style="text-align: right;">1.337</td>
+<td style="text-align: right;">1803.987</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">597.029</td>
+<td style="text-align: right;">9.59</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">37.746</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">64.83</td>
+<td style="text-align: right;">0.511</td>
+<td style="text-align: right;">41128772</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Quick summary of key numeric fields</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">select</span>(owid, new_cases, new_deaths, total_cases, total_deaths, people_vaccinated))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   new_cases          new_deaths         total_cases         total_deaths    
+ Min.   :       0   Min.   :     0.00   Min.   :        0   Min.   :      0  
+ 1st Qu.:       0   1st Qu.:     0.00   1st Qu.:     6281   1st Qu.:     43  
+ Median :       0   Median :     0.00   Median :    63653   Median :    799  
+ Mean   :    8017   Mean   :    71.85   Mean   :  7365292   Mean   :  81260  
+ 3rd Qu.:       0   3rd Qu.:     0.00   3rd Qu.:   758272   3rd Qu.:   9574  
+ Max.   :44236227   Max.   :103719.00   Max.   :775866783   Max.   :7057132  
+ NA's   :19276      NA's   :18827       NA's   :17631       NA's   :17631    
+ people_vaccinated  
+ Min.   :0.000e+00  
+ 1st Qu.:1.050e+06  
+ Median :6.901e+06  
+ Mean   :2.487e+08  
+ 3rd Qu.:5.093e+07  
+ Max.   :5.631e+09  
+ NA's   :348303     </code></pre>
+</div>
+</div>
+<p>I will only be extracting the Data for Singapore in this tryout.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sg <span class="ot">&lt;-</span> owid <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(location <span class="sc">==</span> <span class="st">"Singapore"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date, new_cases, new_deaths)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to a tsibble</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>sg_ts <span class="ot">&lt;-</span> sg <span class="sc">%&gt;%</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>sg_long <span class="ot">&lt;-</span> sg <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>date, <span class="at">names_to=</span><span class="st">"metric"</span>, <span class="at">values_to=</span><span class="st">"count"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sg_long, <span class="fu">aes</span>(date, count, <span class="at">color=</span>metric)) <span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Daily New COVID-19 Cases vs Deaths (Singapore)"</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> <span class="st">"Count"</span>,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">""</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex06_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Calendar Heat Map</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>sg_ts <span class="sc">%&gt;%</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">year  =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%Y"</span>)),</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">factor</span>(<span class="fu">format</span>(date, <span class="st">"%b"</span>), <span class="at">levels =</span> month.abb),</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">day   =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%d"</span>))</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(day, month, <span class="at">fill =</span> new_cases)) <span class="sc">+</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> year, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(<span class="at">trans =</span> <span class="st">"sqrt"</span>, <span class="at">na.value =</span> <span class="st">"grey90"</span>) <span class="sc">+</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Calendar Heatmap: Daily New Cases (Singapore)"</span>,</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Day of Month"</span>, <span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">fill =</span> <span class="st">"New Cases"</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid    =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex06_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The below code chunks will plot the Calendar Heatmap (Day × Month) of daily new cases for each year.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">2020 Daily Cases</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">2021 Daily Cases</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">2022 Daily Cases</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">2023 Daily Cases</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-5" role="tab" aria-controls="tabset-2-5" aria-selected="false">2024 Daily Cases</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>sg_ts <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Extract year/month/day</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">year  =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%Y"</span>)),</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">factor</span>(<span class="fu">format</span>(date, <span class="st">"%b"</span>), <span class="at">levels =</span> month.abb),</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">day   =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%d"</span>))</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. Keep only 2020</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2020</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Plot without needing a facet (single year)</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> month, <span class="at">fill =</span> new_cases)) <span class="sc">+</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">trans    =</span> <span class="st">"sqrt"</span>,</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.value =</span> <span class="st">"grey90"</span>,</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">name     =</span> <span class="st">"New Cases"</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Calendar Heatmap: Daily New Cases in Singapore (2020)"</span>,</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">x     =</span> <span class="st">"Day of Month"</span>,</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">y     =</span> <span class="cn">NULL</span></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid    =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex06_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>sg_ts <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Extract year/month/day</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">year  =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%Y"</span>)),</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">factor</span>(<span class="fu">format</span>(date, <span class="st">"%b"</span>), <span class="at">levels =</span> month.abb),</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">day   =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%d"</span>))</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. Keep only 2021</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2021</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Plot without needing a facet (single year)</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> month, <span class="at">fill =</span> new_cases)) <span class="sc">+</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">trans    =</span> <span class="st">"sqrt"</span>,</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.value =</span> <span class="st">"grey90"</span>,</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">name     =</span> <span class="st">"New Cases"</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Calendar Heatmap: Daily New Cases in Singapore (2021)"</span>,</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">x     =</span> <span class="st">"Day of Month"</span>,</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">y     =</span> <span class="cn">NULL</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid    =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex06_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>sg_ts <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Extract year/month/day</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">year  =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%Y"</span>)),</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">factor</span>(<span class="fu">format</span>(date, <span class="st">"%b"</span>), <span class="at">levels =</span> month.abb),</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">day   =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%d"</span>))</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. Keep only 2022</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2022</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Plot without needing a facet (single year)</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> month, <span class="at">fill =</span> new_cases)) <span class="sc">+</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">trans    =</span> <span class="st">"sqrt"</span>,</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.value =</span> <span class="st">"grey90"</span>,</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">name     =</span> <span class="st">"New Cases"</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Calendar Heatmap: Daily New Cases in Singapore (2022)"</span>,</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">x     =</span> <span class="st">"Day of Month"</span>,</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">y     =</span> <span class="cn">NULL</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid    =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex06_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>sg_ts <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Extract year/month/day</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">year  =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%Y"</span>)),</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">factor</span>(<span class="fu">format</span>(date, <span class="st">"%b"</span>), <span class="at">levels =</span> month.abb),</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">day   =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%d"</span>))</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. Keep only 2023</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2023</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Plot without needing a facet (single year)</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> month, <span class="at">fill =</span> new_cases)) <span class="sc">+</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">trans    =</span> <span class="st">"sqrt"</span>,</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.value =</span> <span class="st">"grey90"</span>,</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">name     =</span> <span class="st">"New Cases"</span></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Calendar Heatmap: Daily New Cases in Singapore (2023)"</span>,</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">x     =</span> <span class="st">"Day of Month"</span>,</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">y     =</span> <span class="cn">NULL</span></span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid    =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex06_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-5-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>sg_ts <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Extract year/month/day</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">year  =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%Y"</span>)),</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">factor</span>(<span class="fu">format</span>(date, <span class="st">"%b"</span>), <span class="at">levels =</span> month.abb),</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">day   =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%d"</span>))</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. Keep only 2024</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2024</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Plot without needing a facet (single year)</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> month, <span class="at">fill =</span> new_cases)) <span class="sc">+</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">trans    =</span> <span class="st">"sqrt"</span>,</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.value =</span> <span class="st">"grey90"</span>,</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">name     =</span> <span class="st">"New Cases"</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Calendar Heatmap: Daily New Cases in Singapore (2024)"</span>,</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">x     =</span> <span class="st">"Day of Month"</span>,</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">y     =</span> <span class="cn">NULL</span></span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid    =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex06_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 

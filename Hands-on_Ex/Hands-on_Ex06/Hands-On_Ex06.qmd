@@ -450,3 +450,284 @@ rice %>%
 
 For effective data visualisation design, `factor()` is used convert the value type of *Year* field from numeric to factor.
 :::
+
+## **10.6 Self Hands-on Practice on the codes in this section**
+
+![](/Images/Hands-on-Practice.png){width="558"}
+
+### **Step 1: Data Import**
+
+```{r}
+
+library(tsibble)
+library(feasts)
+
+# Pull in the full OWID COVID dataset
+owid <- readr::read_csv(
+  "https://covid.ourworldindata.org/data/owid-covid-data.csv",
+  col_types = cols(
+    iso_code = col_character(),
+    location = col_character(),
+    date     = col_date(format = ""),
+    new_cases = col_double(),
+    new_deaths = col_double(),
+    # you can add more columns here as needed
+  )
+)
+
+```
+
+### **Step : Taking a Glimpse and Understanding the Dataset**
+
+Look through the dataset that has been loaded.
+
+```{r}
+
+# 1. Column names
+print(colnames(owid))
+
+# 2. Glimpse structure
+glimpse(owid)
+
+# 3. First 6 rows
+knitr::kable(head(owid), caption = "First six rows of the OWID COVID dataset")
+
+# 4. Quick summary of key numeric fields
+summary(select(owid, new_cases, new_deaths, total_cases, total_deaths, people_vaccinated))
+```
+
+I will only be extracting the Data for Singapore in this tryout.
+
+```{r}
+
+sg <- owid %>%
+  filter(location == "Singapore") %>%
+  select(date, new_cases, new_deaths)
+
+# Convert to a tsibble
+sg_ts <- sg %>%
+  as_tsibble(index = date)
+```
+
+```{r}
+sg_long <- sg %>% pivot_longer(-date, names_to="metric", values_to="count")
+
+ggplot(sg_long, aes(date, count, color=metric)) +
+  geom_line() +
+  labs(
+    title = "Daily New COVID-19 Cases vs Deaths (Singapore)",
+    x = "Date", y = "Count",
+    color = ""
+  ) +
+  theme_minimal()
+```
+
+Calendar Heat Map
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+sg_ts %>%
+  mutate(
+    year  = as.integer(format(date, "%Y")),
+    month = factor(format(date, "%b"), levels = month.abb),
+    day   = as.integer(format(date, "%d"))
+  ) %>%
+  ggplot(aes(day, month, fill = new_cases)) +
+    geom_tile(color = "white") +
+    facet_wrap(~ year, ncol = 1) +
+    scale_fill_viridis_c(trans = "sqrt", na.value = "grey90") +
+    labs(
+      title = "Calendar Heatmap: Daily New Cases (Singapore)",
+      x = "Day of Month", y = NULL, fill = "New Cases"
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.y   = element_text(size = 8),
+      panel.grid    = element_blank()
+    )
+```
+
+The below code chunks will plot the Calendar Heatmap (Day × Month) of daily new cases for each year.
+
+::: panel-tabset
+## 2020 Daily Cases
+
+```{r}
+#| code-fold: true
+
+sg_ts %>%
+  # 1. Extract year/month/day
+  mutate(
+    year  = as.integer(format(date, "%Y")),
+    month = factor(format(date, "%b"), levels = month.abb),
+    day   = as.integer(format(date, "%d"))
+  ) %>%
+  # 2. Keep only 2020
+  filter(year == 2020) %>%
+  # 3. Plot without needing a facet (single year)
+  ggplot(aes(x = day, y = month, fill = new_cases)) +
+    geom_tile(color = "white") +
+    scale_fill_viridis_c(
+      trans    = "sqrt",
+      na.value = "grey90",
+      name     = "New Cases"
+    ) +
+    labs(
+      title = "Calendar Heatmap: Daily New Cases in Singapore (2020)",
+      x     = "Day of Month",
+      y     = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.y   = element_text(size = 8),
+      panel.grid    = element_blank()
+    )
+```
+
+## 2021 Daily Cases
+
+```{r}
+#| code-fold: true
+
+sg_ts %>%
+  # 1. Extract year/month/day
+  mutate(
+    year  = as.integer(format(date, "%Y")),
+    month = factor(format(date, "%b"), levels = month.abb),
+    day   = as.integer(format(date, "%d"))
+  ) %>%
+  # 2. Keep only 2021
+  filter(year == 2021) %>%
+  # 3. Plot without needing a facet (single year)
+  ggplot(aes(x = day, y = month, fill = new_cases)) +
+    geom_tile(color = "white") +
+    scale_fill_viridis_c(
+      trans    = "sqrt",
+      na.value = "grey90",
+      name     = "New Cases"
+    ) +
+    labs(
+      title = "Calendar Heatmap: Daily New Cases in Singapore (2021)",
+      x     = "Day of Month",
+      y     = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.y   = element_text(size = 8),
+      panel.grid    = element_blank()
+    )
+```
+
+## 2022 Daily Cases
+
+```{r}
+#| code-fold: true
+
+sg_ts %>%
+  # 1. Extract year/month/day
+  mutate(
+    year  = as.integer(format(date, "%Y")),
+    month = factor(format(date, "%b"), levels = month.abb),
+    day   = as.integer(format(date, "%d"))
+  ) %>%
+  # 2. Keep only 2022
+  filter(year == 2022) %>%
+  # 3. Plot without needing a facet (single year)
+  ggplot(aes(x = day, y = month, fill = new_cases)) +
+    geom_tile(color = "white") +
+    scale_fill_viridis_c(
+      trans    = "sqrt",
+      na.value = "grey90",
+      name     = "New Cases"
+    ) +
+    labs(
+      title = "Calendar Heatmap: Daily New Cases in Singapore (2022)",
+      x     = "Day of Month",
+      y     = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.y   = element_text(size = 8),
+      panel.grid    = element_blank()
+    )
+```
+
+## 2023 Daily Cases
+
+```{r}
+#| code-fold: true
+
+sg_ts %>%
+  # 1. Extract year/month/day
+  mutate(
+    year  = as.integer(format(date, "%Y")),
+    month = factor(format(date, "%b"), levels = month.abb),
+    day   = as.integer(format(date, "%d"))
+  ) %>%
+  # 2. Keep only 2023
+  filter(year == 2023) %>%
+  # 3. Plot without needing a facet (single year)
+  ggplot(aes(x = day, y = month, fill = new_cases)) +
+    geom_tile(color = "white") +
+    scale_fill_viridis_c(
+      trans    = "sqrt",
+      na.value = "grey90",
+      name     = "New Cases"
+    ) +
+    labs(
+      title = "Calendar Heatmap: Daily New Cases in Singapore (2023)",
+      x     = "Day of Month",
+      y     = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.y   = element_text(size = 8),
+      panel.grid    = element_blank()
+    )
+
+
+```
+
+## 2024 Daily Cases
+
+```{r}
+#| code-fold: true
+
+sg_ts %>%
+  # 1. Extract year/month/day
+  mutate(
+    year  = as.integer(format(date, "%Y")),
+    month = factor(format(date, "%b"), levels = month.abb),
+    day   = as.integer(format(date, "%d"))
+  ) %>%
+  # 2. Keep only 2024
+  filter(year == 2024) %>%
+  # 3. Plot without needing a facet (single year)
+  ggplot(aes(x = day, y = month, fill = new_cases)) +
+    geom_tile(color = "white") +
+    scale_fill_viridis_c(
+      trans    = "sqrt",
+      na.value = "grey90",
+      name     = "New Cases"
+    ) +
+    labs(
+      title = "Calendar Heatmap: Daily New Cases in Singapore (2024)",
+      x     = "Day of Month",
+      y     = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.y   = element_text(size = 8),
+      panel.grid    = element_blank()
+    )
+```
+:::
+
+```{r}
+
+
+```
