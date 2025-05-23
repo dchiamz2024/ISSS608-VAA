@@ -477,7 +477,7 @@ owid <- readr::read_csv(
 
 ```
 
-### **Step : Taking a Glimpse and Understanding the Dataset**
+### **Step 2: Taking a Glimpse and Understanding the Dataset**
 
 Look through the dataset that has been loaded.
 
@@ -522,6 +522,8 @@ ggplot(sg_long, aes(date, count, color=metric)) +
   theme_minimal()
 ```
 
+### **Step 3: Plotting the Heatmaps by Daily New Cases**
+
 Calendar Heat Map
 
 ```{r}
@@ -554,7 +556,7 @@ sg_ts %>%
 The below code chunks will plot the Calendar Heatmap (Day × Month) of daily new cases for each year.
 
 ::: panel-tabset
-## 2020 Daily Cases
+### 2020 Daily Cases
 
 ```{r}
 #| code-fold: true
@@ -588,7 +590,7 @@ sg_ts %>%
     )
 ```
 
-## 2021 Daily Cases
+### **2021 Daily Cases**
 
 ```{r}
 #| code-fold: true
@@ -622,7 +624,7 @@ sg_ts %>%
     )
 ```
 
-## 2022 Daily Cases
+### 2022 Daily Cases
 
 ```{r}
 #| code-fold: true
@@ -656,7 +658,7 @@ sg_ts %>%
     )
 ```
 
-## 2023 Daily Cases
+### 2023 Daily Cases
 
 ```{r}
 #| code-fold: true
@@ -692,7 +694,7 @@ sg_ts %>%
 
 ```
 
-## 2024 Daily Cases
+### 2024 Daily Cases
 
 ```{r}
 #| code-fold: true
