@@ -441,7 +441,7 @@ rice %>%
   newggslopegraph(Year, Yield, Country,
                 Title = "Rice Yield of Top 11 Asian Counties",
                 SubTitle = "1961-1980",
-                Caption = "Prepared by: Dr. Kam Tin Seong")
+                Caption = "adapted & replotted by: David Chiam")
 
 ```
 
@@ -455,7 +455,9 @@ For effective data visualisation design, `factor()` is used convert the value ty
 
 ![](/Images/Hands-on-Practice.png){width="558"}
 
-### **Step 1: Data Import**
+## Tryout 1 on: Covid-19 Dataset from ourworldindata
+
+### **Step 1: Data Import (Covid-19 cases)**
 
 ```{r}
 
@@ -509,6 +511,8 @@ sg_ts <- sg %>%
   as_tsibble(index = date)
 ```
 
+First we would like to see the number of Daily new Covid-19 cases and Deaths over the period of 2020 to 2024.
+
 ```{r}
 sg_long <- sg %>% pivot_longer(-date, names_to="metric", values_to="count")
 
@@ -524,39 +528,12 @@ ggplot(sg_long, aes(date, count, color=metric)) +
 
 ### **Step 3: Plotting the Heatmaps by Daily New Cases**
 
-Calendar Heat Map
-
-```{r}
-
-library(dplyr)
-library(ggplot2)
-library(lubridate)
-
-sg_ts %>%
-  mutate(
-    year  = as.integer(format(date, "%Y")),
-    month = factor(format(date, "%b"), levels = month.abb),
-    day   = as.integer(format(date, "%d"))
-  ) %>%
-  ggplot(aes(day, month, fill = new_cases)) +
-    geom_tile(color = "white") +
-    facet_wrap(~ year, ncol = 1) +
-    scale_fill_viridis_c(trans = "sqrt", na.value = "grey90") +
-    labs(
-      title = "Calendar Heatmap: Daily New Cases (Singapore)",
-      x = "Day of Month", y = NULL, fill = "New Cases"
-    ) +
-    theme_minimal() +
-    theme(
-      axis.text.y   = element_text(size = 8),
-      panel.grid    = element_blank()
-    )
-```
+I would imagine the plots to show how many daily cases per day. Given that that are alot of data points, I envisage the plot to be sectorised by months of the year and the individual dates in the month.
 
 The below code chunks will plot the Calendar Heatmap (Day × Month) of daily new cases for each year.
 
 ::: panel-tabset
-### 2020 Daily Cases
+### 2020 Daily New Cases
 
 ```{r}
 #| code-fold: true
@@ -590,7 +567,7 @@ sg_ts %>%
     )
 ```
 
-### **2021 Daily Cases**
+### **2021 Daily New Cases**
 
 ```{r}
 #| code-fold: true
@@ -624,7 +601,7 @@ sg_ts %>%
     )
 ```
 
-### 2022 Daily Cases
+### 2022 Daily New Cases
 
 ```{r}
 #| code-fold: true
@@ -658,7 +635,7 @@ sg_ts %>%
     )
 ```
 
-### 2023 Daily Cases
+### 2023 Daily New Cases
 
 ```{r}
 #| code-fold: true
@@ -694,7 +671,7 @@ sg_ts %>%
 
 ```
 
-### 2024 Daily Cases
+### 2024 Daily New Cases
 
 ```{r}
 #| code-fold: true
@@ -729,7 +706,98 @@ sg_ts %>%
 ```
 :::
 
+## Tryout 2 on: Life Expectancy Dataset from Kaggle
+
+### **Step 1: Data Import (Life Expectancy cases)**
+
 ```{r}
 
+le <- read_csv("DataEx06/Life Expectancy.csv")
 
+```
+
+### **Step 2a:** Peek at the first few rows
+
+```{r}
+
+head(le)
+```
+
+### **Step 2b:** List all column names
+
+```{r}
+
+colnames(le)
+```
+
+### **Step 3a:** Plot the Slope plot for all countries comparing between 2000 and 2020
+
+Quick plot of all Countries Slope Plot comparing life expectancy between 2000 and 2020.
+
+```{r}
+#| code-fold: true
+
+le_sel <- le %>%
+  filter(Year %in% c(2000, 2020)) %>%
+  select(
+    Country    = Entity,                           # <— rename on‐the‐fly
+    Year,
+    life_exp   = `Period life expectancy at birth - Sex: total - Age: 0`  # <— rename on‐the‐fly
+  )
+
+ggplot(le_sel, aes(x = factor(Year), y = life_exp, group = Country, color = Country)) +
+  geom_line(show.legend = FALSE) +
+  geom_point(size = 2, show.legend = FALSE) +
+  labs(
+    title = "Slope Graph: Life Expectancy at Birth (2000 vs 2020)",
+    x     = NULL,
+    y     = "Life Expectancy (years)"
+  ) +
+  theme_minimal()
+```
+
+### **Step 3b:** Narrow down to ASEAN countries by Filtering
+
+Next, we just want to filter the 10 ASEAN Countries and compare their life expectancy changes over the 20 years from 2000 to 2020.
+
+```{r}
+
+# Define the 10 ASEAN countries
+asean_countries <- c(
+  "Brunei", "Cambodia", "Indonesia", "Laos",
+  "Malaysia", "Myanmar", "Philippines",
+  "Singapore", "Thailand", "Vietnam"
+)
+
+# Filter for ASEAN + years 2000 & 2020, and select/rename columns
+asean_slope <- le %>%
+  filter(
+    Year %in% c(2000, 2020),
+    Entity %in% asean_countries
+  ) %>%
+  mutate(
+    Country  = Entity,
+    LifeExp  = `Period life expectancy at birth - Sex: total - Age: 0`,
+    Year = factor(Year)
+  ) %>%
+  select(Country, Year, LifeExp)
+
+
+
+```
+
+### **Step 3c: Slopegraph** Plot for ASEAN countries
+
+```{r}
+#| code-fold: true
+
+newggslopegraph(
+  asean_slope,
+  Time        = Year,
+  Measurement = LifeExp,
+  Grouping    = Country,
+  Title       = "ASEAN Life Expectancy at Birth (2000 vs 2020)",
+  SubTitle    = "Comparing across 10 Member States",
+  Caption     = "Data source: Kaggle Global Life Expectancy"
+)
 ```
