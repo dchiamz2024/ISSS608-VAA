@@ -9,8 +9,8 @@ Welcome to **ISSS609 Visual Analytics and Applications**. In this website, you w
 
 I hope that over the journey of this course, I will turn from this:
 
-![](Images/DreadVAA.png){fig-align="center"}
+![](Images/DreadVAA.png){width="448"}
 
 To enjoying what I have learn from this course and applying it to my future work.
 
-![](Images/EnjoyingVAA.png){fig-align="center"}
+![](Images/EnjoyingVAA.png){width="455"}
