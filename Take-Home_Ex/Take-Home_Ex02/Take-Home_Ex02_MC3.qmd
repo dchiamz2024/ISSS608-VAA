@@ -401,14 +401,13 @@ This code creates an **interactive communication network graph** using `visNetwo
 
 -   Each **node** represents a person or entity, **node size** is based on total messages **sent** by that participant.
 -   Each **edge (arrow)** represents a communication sent from one participant to another, the thicker the edge, the more message sent to that particular receiver.
--   The layout places **larger (more active) nodes toward the center** in a circular arrangement.
 
-::: panel-tabset
-## Ver 1: Layout_in_circle
+**Ver 1: Layout_in_circle**
 
-```{r, fig.width=8, fig.height=14}
+Message Senders are arranged from most to the least number of messages sent.
+
+```{r, fig.width=10, fig.height=12}
 #| code-fold: true
-
 library(visNetwork)
 
 # Step 1: Summarize communication edges
@@ -421,18 +420,34 @@ message_counts <- comm_edges_vis %>%
   group_by(from) %>%
   summarise(sent_count = sum(value), .groups = "drop")
 
-# Step 3: Prepare nodes, merge with message count and sort
+# Step 3: Prepare nodes, merge with message count and add color/shape
 nodes_vis <- mc3_nodes_cleaned %>%
   filter(id %in% unique(c(comm_edges_vis$from, comm_edges_vis$to))) %>%
   select(id, label, sub_type) %>%
   left_join(message_counts, by = c("id" = "from")) %>%
   mutate(
     sent_count = replace_na(sent_count, 0),
-    size = rescale(sent_count, to = c(10, 40)),  # larger = more active
+    size = rescale(sent_count, to = c(10, 40)),
     title = paste0(label, "<br>Sub-type: ", sub_type,
-                   ifelse(!is.na(sent_count), paste0("<br>Sent: ", sent_count, " messages"), ""))
+                   ifelse(!is.na(sent_count), paste0("<br>Sent: ", sent_count, " messages"), "")),
+    color = case_when(
+      sub_type == "Person" ~ "royalblue",
+      sub_type == "Organization" ~ "darkorange",
+      sub_type == "Vessel" ~ "forestgreen",
+      sub_type == "Group" ~ "purple",
+      sub_type == "Location" ~ "grey40",
+      TRUE ~ "black"
+    ),
+    shape = case_when(
+      sub_type == "Person" ~ "dot",
+      sub_type == "Organization" ~ "square",
+      sub_type == "Vessel" ~ "triangle",
+      sub_type == "Group" ~ "star",
+      sub_type == "Location" ~ "diamond",
+      TRUE ~ "dot"
+    )
   ) %>%
-  arrange(desc(size))  # Important: bigger nodes rendered first = inner in circle layout
+  arrange(desc(size))
 
 # Step 4: Format visNetwork edges
 edges_vis <- comm_edges_vis %>%
@@ -442,9 +457,31 @@ edges_vis <- comm_edges_vis %>%
     title = paste("Messages:", value)
   )
 
-# Step 5: Render network with layout_in_circle
+# Step 5: Define legend items
+legend_nodes <- data.frame(
+  label = c("Person", "Organization", "Vessel", "Group", "Location"),
+  color = c("royalblue", "darkorange", "forestgreen", "purple", "grey40"),
+  shape = c("dot", "square", "triangle", "star", "diamond"),
+  stringsAsFactors = FALSE
+)
+
+# Step 6: Render network with legend
 visNetwork(nodes_vis, edges_vis, width = "100%", height = "1000px") %>%
-  visNodes(size = nodes_vis$size) %>%
+  visNodes(
+    size = nodes_vis$size
+    # color and shape are picked up from nodes_vis columns automatically
+  ) %>%
+  visLegend(
+    addNodes = lapply(1:nrow(legend_nodes), function(i) {
+      list(
+        label = legend_nodes$label[i],
+        shape = legend_nodes$shape[i],
+        color = legend_nodes$color[i]
+      )
+    }),
+    useGroups = FALSE,
+    width = 0.15
+  ) %>%
   visEdges(smooth = FALSE) %>%
   visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
   visIgraphLayout(layout = "layout_in_circle") %>%
@@ -453,7 +490,9 @@ visNetwork(nodes_vis, edges_vis, width = "100%", height = "1000px") %>%
 
 ```
 
-## Ver 2: Layout_on_sphere
+**Ver 2: Layout_on_sphere**
+
+From this plot, we note that Miranda Jordan and Clepper jensen are isolated communications between themselves.s
 
 ```{r}
 #| code-fold: true
@@ -469,7 +508,7 @@ message_counts <- comm_edges_vis %>%
   group_by(from) %>%
   summarise(sent_count = sum(value), .groups = "drop")
 
-# Step 3: Prepare nodes with label, subtype, and scaled size
+# Step 3: Prepare nodes with label, subtype, color, shape, and scaled size
 nodes_vis <- mc3_nodes_cleaned %>%
   filter(id %in% unique(c(comm_edges_vis$from, comm_edges_vis$to))) %>%
   select(id, label, sub_type) %>%
@@ -478,10 +517,26 @@ nodes_vis <- mc3_nodes_cleaned %>%
     size = if_else(
       sub_type == "Person",
       rescale(sent_count, to = c(10, 40), na.rm = TRUE),
-      15  # default size for other node types
+      15
     ),
     title = paste0(label, "<br>Sub-type: ", sub_type,
-                   ifelse(!is.na(sent_count), paste0("<br>Sent: ", sent_count, " messages"), ""))
+                   ifelse(!is.na(sent_count), paste0("<br>Sent: ", sent_count, " messages"), "")),
+    color = case_when(
+      sub_type == "Person" ~ "royalblue",
+      sub_type == "Organization" ~ "darkorange",
+      sub_type == "Vessel" ~ "forestgreen",
+      sub_type == "Group" ~ "purple",
+      sub_type == "Location" ~ "grey40",
+      TRUE ~ "black"
+    ),
+    shape = case_when(
+      sub_type == "Person" ~ "dot",
+      sub_type == "Organization" ~ "square",
+      sub_type == "Vessel" ~ "triangle",
+      sub_type == "Group" ~ "star",
+      sub_type == "Location" ~ "diamond",
+      TRUE ~ "dot"
+    )
   )
 
 # Step 4: Format edges
@@ -492,20 +547,50 @@ edges_vis <- comm_edges_vis %>%
     title = paste("Messages:", value)
   )
 
-# Step 5: Render the network with layout_on_sphere
+# Step 5: Legend mapping
+legend_nodes <- data.frame(
+  label = c("Person", "Organization", "Vessel", "Group", "Location"),
+  color = c("royalblue", "darkorange", "forestgreen", "purple", "grey40"),
+  shape = c("dot", "square", "triangle", "star", "diamond"),
+  stringsAsFactors = FALSE
+)
+
+# Step 6: Render the network with layout_on_sphere and legend
 visNetwork(nodes_vis, edges_vis, width = "100%", height = "900px") %>%
-  visNodes(size = nodes_vis$size) %>%
+  visNodes(
+    size = nodes_vis$size
+    # color and shape columns are automatically used
+  ) %>%
+  visLegend(
+    addNodes = lapply(1:nrow(legend_nodes), function(i) {
+      list(
+        label = legend_nodes$label[i],
+        shape = legend_nodes$shape[i],
+        color = legend_nodes$color[i]
+      )
+    }),
+    useGroups = FALSE,
+    width = 0.15
+  ) %>%
   visEdges(smooth = FALSE) %>%
   visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
   visIgraphLayout(layout = "layout_on_sphere") %>%
   visPhysics(enabled = FALSE) %>%
-  visLayout(randomSeed = 42)
+  visLayout(randomSeed = 1818)
 
 
 ```
-:::
 
-## 4 - Task 1: Daily Temporal Patterns in Communication 🎯
+## 4 - Task 1a & 1b: Daily Temporal Patterns in Communications over the Two Weeks 🎯
+
+::: callout-note
+## VAST Challenge Task & Question 1a and 1b
+
+Clepper found that messages frequently came in at around the same time each day.
+
+-   Develop a graph-based visual analytics approach to identify any daily temporal patterns in communications.
+-   How do these patterns shift over the two weeks of observations?
+:::
 
 **Objective**
 
@@ -1818,7 +1903,7 @@ ggplot(comm_halfhour, aes(x = time_bin, y = n)) +
   geom_text_repel(
     aes(label = paste0(n, " (", percent(percent, accuracy = 1), ")")),
     nudge_y = 3,
-    size = 2,
+    size = 2.5,
     direction = "y",
     max.overlaps = Inf
   ) +
@@ -1835,26 +1920,224 @@ ggplot(comm_halfhour, aes(x = time_bin, y = n)) +
 
 ```
 
+::: callout-tip
+## 1a. What are the identifiable daily temporal patterns in communications?
+
+1.  The daily communication volume fluctuates slightly between 34 and 49 messages, with an average of approximately 42 messages per day, highlighting a stable overall activity level. Notably, the highest volume occurs on 11th October (49 messages), immediately following the lowest volume the day before on 10th October (34 messages)—a sharp rebound that may signal a response to specific events or operational needs. Despite these fluctuations, the system maintains a consistent tempo across the two weeks.
+
+2.  The temporal analysis using both the heat map and time series plots reveals a pronounced morning-centric communication rhythm. The vast majority of radio traffic is concentrated between 9:00 AM and 11:30 AM, with the most intense peaks typically occurring between 10:00 and 11:00 AM. With reference to the Density plot of Daily half-hourly message volume, of the 14 days, we see message density peaks at 10:30 AM on 9 days, while on 3 days, it peaks at 12:30 PM.
+
+3.  For instance if we were to based in on the hourly plot, 5th October (Fri) and 11th October (Thu) both register their highest single-hour counts at 10:00 AM at 24 and 21 messages respectively. Communication activity drops off steeply after lunchtime, with more than 90% of the days showing little to no activity after 2:30 PM. This pattern suggests a highly structured daily workflow, where key decisions and coordination are front-loaded in the day. Importantly, the hourly heat map also indicates that this routine holds across both weekdays and weekends—communication volumes and peak hours remain similar, underlining the operational regularity of the group regardless of the day of week.
+:::
+
+::: callout-tip
+## 1b. How do these patterns shift over the two weeks of observations?
+
+1.  Over the two-week period, while the timing and structure of communication peaks remain broadly consistent, there are subtle shifts in both intensity and timing. Some days, such as 3rd, 5th, 11th and 12th October, see particularly high spikes in the mid-morning, which may correspond to critical events, decision points, or heightened urgency. The sharp dip on October 8th and 13th, immediately after a period of "surge" (3rd - 7th and 9th to 12th October), points to possible responses to interruptions, lulls, or triggering incidents. Overall, although the daily messaging routine is remarkably stable, these bursts and brief lulls provide clues to changing circumstances or stress points in the operation—an analytical signal that warrants closer inspection of event logs or external triggers for those dates.
+
+2.  Another notable change in the communication pattern is observed during the weekends. In the first week, weekend communication peaks occurred earlier, typically between 10:00 AM and 11:30 AM, closely mirroring the weekday rhythm. However, in the second week, the weekend peaks shifted noticeably later, with the highest message volumes concentrated around 12:00 PM and 1:00 PM. This shift not only marks a departure from the otherwise stable early-morning communication structure but also suggests an adaptive or reactive operational schedule—potentially in response to evolving events, increased coordination needs, or changing priorities as the observation period progressed. The contrast between the two weekends is clear in the heatmap, underscoring the importance of monitoring such shifts as possible indicators of underlying changes in group behavior or external pressures.
+:::
+
+## 5 - Task 1c: Focus on a Particular Entity - "Nadia Conti"
+
+::: callout-note
+## VAST Challenge Task & Question 1c
+
+Clepper found that messages frequently came in at around the same time each day.
+
+1.  Focus on a specific entity and use this information to determine who has influence over them.
+:::
+
+### 5.1 Data Preparation for "Nadia Conti" Influence Analysis
+
+We first extracted the relevant communication edges from the dataset, pairing “sent” and “received” communication events to form entity-to-entity links. We retained only those edges where both nodes represent real-world entities (Person, Organization, Vessel, Group, or Location), ensuring that our analysis focuses on the meaningful actors in the Oceanus network.
+
+```{r}
+#| code-fold: true
+
+# Extract sent and received communication event edges
+sent_edges <- mc3_edges_cleaned %>%
+  filter(type == "sent") %>%
+  select(source_entity = from_id, event = to_id)
+
+received_edges <- mc3_edges_cleaned %>%
+  filter(type == "received") %>%
+  select(event = from_id, target_entity = to_id)
+
+# Pair sent and received to form communication edges
+paired_edges <- sent_edges %>%
+  inner_join(received_edges, by = "event") %>%
+  select(from = source_entity, to = target_entity)
+
+# Add unmatched sent and received edges (optional, for completeness)
+single_sent_edges <- sent_edges %>%
+  select(from = source_entity, to = event)
+single_received_edges <- received_edges %>%
+  select(from = event, to = target_entity)
+
+all_edges <- bind_rows(paired_edges, single_sent_edges, single_received_edges) %>%
+  distinct()
+
+# Identify entity nodes (Person, Organization, Vessel, Group, Location)
+entity_ids <- mc3_nodes_cleaned %>%
+  filter(sub_type %in% c("Person", "Organization", "Vessel", "Group", "Location")) %>%
+  pull(id) %>% as.character()
+
+entity_edges <- all_edges %>%
+  filter(as.character(from) %in% entity_ids, as.character(to) %in% entity_ids)
+
+entity_nodes <- mc3_nodes_cleaned %>%
+  filter(sub_type %in% c("Person", "Organization", "Vessel", "Group", "Location")) %>%
+  select(id, label, sub_type)
+
+```
+
+### 5.2 Build the Global Network and Compute Centrality
+
+Using these cleaned and filtered edges and nodes, we built a global directed graph representing the Oceanus community. We then computed key network centrality metrics for each node—PageRank, betweenness, and degree—quantifying the influence and connectivity of every entity in the overall network.
+
+```{r}
+#| code-fold: true
+library(igraph)
+
+g <- graph_from_data_frame(d = entity_edges, vertices = entity_nodes, directed = TRUE)
+
+# Compute centralities
+V(g)$pagerank <- page_rank(g)$vector
+V(g)$betweenness <- betweenness(g)
+V(g)$degree <- degree(g)
+
+```
+
+### 5.3 Extract "Nadia Conti" Ego Network (2-hop Neighbourhood)
+
+Focusing on "Nadia Conti", we identified her node and extracted her two-step ego network, capturing both direct and indirect connections within the broader network. This local subgraph reveals Nadia’s immediate sphere of influence and the key players connected to her.
+
+```{r}
+#| code-fold: true
+nadia_label <- "Nadia Conti"
+target_index <- which(V(g)$label == nadia_label)
+
+ego_graph <- make_ego_graph(g, order = 2, nodes = target_index, mode = "all")[[1]]
+
+```
+
+### 5.4 Visualize Nadia Conti’s Ego Network (Interactive)
+
+We visualized Nadia’s ego network using node size, shape, and color to represent centrality and entity type. We also summarized centrality metrics in clear tables, ranking all ego network members by PageRank, Betweenness, and Degree. This allows for direct identification of the most influential, best-connected, and most strategic actors in Nadia Conti’s communication environment.
+
+```{r}
+#| code-fold: true
+
+nodes_df <- data.frame(
+  id = V(ego_graph)$name,
+  label = V(ego_graph)$label,
+  group = V(ego_graph)$sub_type,
+  title = paste0("<b>", V(ego_graph)$label, "</b><br>",
+                 "Degree: ", round(V(ego_graph)$degree, 2), "<br>",
+                 "Betweenness: ", round(V(ego_graph)$betweenness, 2), "<br>",
+                 "PageRank: ", round(V(ego_graph)$pagerank, 4)),
+  shape = ifelse(V(ego_graph)$sub_type == "Person", "dot",
+                 ifelse(V(ego_graph)$sub_type == "Organization", "square",
+                        ifelse(V(ego_graph)$sub_type == "Vessel", "triangle",
+                               ifelse(V(ego_graph)$sub_type == "Group", "star", "diamond")))),
+  value = V(ego_graph)$pagerank * 30 + 5
+)
+
+edges_df <- as_data_frame(ego_graph, what = "edges") %>%
+  rename(from = from, to = to)
+
+library(visNetwork)
+visNetwork(nodes_df, edges_df, width = "100%", height = "700px") %>%
+  visNodes(scaling = list(min = 5, max = 30)) %>%
+  visEdges(
+    arrows = list(to = list(enabled = TRUE, scaleFactor = 0.3)),
+    color = list(color = "gray")
+  ) %>%
+  visOptions(
+    highlightNearest = TRUE,
+    nodesIdSelection = TRUE,
+    manipulation = FALSE
+  ) %>%
+  visInteraction(
+    dragNodes = FALSE,
+    dragView = FALSE,
+    zoomView = FALSE
+  ) %>%
+  visLegend() %>%
+  visLayout(randomSeed = 1818)
+
+```
+
+### 5.5 Centrality Tables for Nadia’s Ego Network
+
+On both the global and Nadia-focused ego networks, we computed standard network centrality metrics for all nodes:
+
+-   **PageRank** (overall influence),
+-   **Betweenness** (information brokerage/intermediary role), and
+-   **Degree** (number of direct connections).
+
+These measures quantify the importance and structural roles of each entity relative to Nadia and the broader community.
+
+```{r}
+#| code-fold: true
+
+# PageRank table
+pagerank_df <- data.frame(
+  label = V(ego_graph)$label,
+  sub_type = V(ego_graph)$sub_type,
+  pagerank = round(V(ego_graph)$pagerank, 4)
+) %>% arrange(desc(pagerank))
+
+# Betweenness table
+betweenness_df <- data.frame(
+  label = V(ego_graph)$label,
+  sub_type = V(ego_graph)$sub_type,
+  betweenness = round(V(ego_graph)$betweenness, 2)
+) %>% arrange(desc(betweenness))
+
+# Degree table
+degree_df <- data.frame(
+  label = V(ego_graph)$label,
+  sub_type = V(ego_graph)$sub_type,
+  degree = V(ego_graph)$degree
+) %>% arrange(desc(degree))
+
+
+```
+
+```{r}
+knitr::kable(pagerank_df, caption = "PageRank Centrality (Nadia's Ego Network)")
+```
+
+```{r}
+knitr::kable(betweenness_df, caption = "Betweenness Centrality (Nadia's Ego Network)")
+```
+
+```{r}
+knitr::kable(degree_df, caption = "Degree Centrality (Nadia's Ego Network)")
+```
+
 ## Unused Plots
 
-```{}
-```
-
 ```{r}
-#| code-fold: true
 
+pagerank_df <- data.frame(
+  label = V(ego_graph)$label,
+  sub_type = V(ego_graph)$sub_type,
+  pagerank = round(V(ego_graph)$pagerank, 4)
+) %>% arrange(desc(pagerank))
 
+betweenness_df <- data.frame(
+  label = V(ego_graph)$label,
+  sub_type = V(ego_graph)$sub_type,
+  betweenness = round(V(ego_graph)$betweenness, 2)
+) %>% arrange(desc(betweenness))
 
-```
-
-```{r}
-#| code-fold: true
-
-
-```
-
-```{r}
-#| code-fold: true
-
+degree_df <- data.frame(
+  label = V(ego_graph)$label,
+  sub_type = V(ego_graph)$sub_type,
+  degree = V(ego_graph)$degree
+) %>% arrange(desc(degree))
 
 ```
