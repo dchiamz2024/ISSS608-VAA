@@ -546,9 +546,9 @@ comm_events <- mc3_nodes_final %>%
 
 ```
 
-### Step 2: Visualize the Communication Volume for Analysis 
+### Step 2: Visualize the Communication Volume for Analysis
 
-#### **6.1 - Bar Plot of daily communication volume over the 2 weeks period:**
+#### **4.1 - Bar Plot of daily communication volume over the 2 weeks period:**
 
 ```{r}
 #| code-fold: true
@@ -604,7 +604,7 @@ ggplot(daily_message_volume, aes(x = date_label, y = message_count)) +
 
 ```
 
-#### **6.2 - Interactive Table of daily communication volume variation(message count)** 
+#### **4.2 - Interactive Table of daily communication volume variation(message count)**
 
 ```{r}
 #| code-fold: true
@@ -635,32 +635,70 @@ datatable(
 
 ```
 
-#### **6.3 - Heat Map of hourly message volume for each day over the 2 weeks period:** 
+#### **4.3a - Heat Map of hourly message volume for each day over the 2 weeks period:**
+
+This heat map is interactive and you may choose to hover on the tile to display the **date, time, and message count**
 
 ```{r}
 #| code-fold: true
 
 library(forcats)
+library(plotly)
 
-# Ensure timestamp and extract hour + formatted date
-comm_heatmap <- mc3_nodes_final %>%
+# Step 1: Reconstruct sender–receiver–timestamp structure
+comm_events_raw <- mc3_nodes_final %>%
   filter(type == "Event", sub_type == "Communication") %>%
-  mutate(
-    timestamp = ymd_hms(timestamp),
-    hour = hour(timestamp),
-    date_label = format(timestamp, "%d/%m/%Y (%a)")
-  ) %>%
+  select(event_id = id, timestamp) %>%
+  mutate(timestamp = ymd_hms(timestamp),
+         hour = hour(timestamp),
+         date_label = format(timestamp, "%d/%m/%Y (%a)"))
+
+# Step 2: Get sender (sent) and receiver (received) links
+comm_edges_sent <- mc3_edges_cleaned %>%
+  filter(type == "sent") %>%
+  select(event_id = to_id, sender_id = from_id)
+
+comm_edges_recv <- mc3_edges_cleaned %>%
+  filter(type == "received") %>%
+  select(event_id = from_id, receiver_id = to_id)
+
+# Step 3: Join all together into sender–receiver–timestamp
+comm_links <- comm_events_raw %>%
+  left_join(comm_edges_sent, by = "event_id") %>%
+  left_join(comm_edges_recv, by = "event_id") %>%
+  left_join(mc3_nodes_cleaned %>% select(sender_id = id, sender_label = label), by = "sender_id") %>%
+  left_join(mc3_nodes_cleaned %>% select(receiver_id = id, receiver_label = label), by = "receiver_id")
+
+# Step 4: Aggregate total messages per hour/day
+comm_heatmap <- comm_links %>%
   group_by(date_label, hour) %>%
-  summarise(count = n(), .groups = "drop")
+  summarise(
+    count = n(),
+    top_sender = names(sort(table(sender_label), decreasing = TRUE))[1],
+    sender_count = max(table(sender_label)),
+    top_receiver = names(sort(table(receiver_label), decreasing = TRUE))[1],
+    receiver_count = max(table(receiver_label)),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    tooltip = paste0(
+      "📅 Date: ", date_label,
+      "<br>⏰ Hour: ", sprintf("%02d:00", hour),
+      "<br>📨 Messages: ", count,
+      "<br>🔴 Top Sender: ", top_sender, " (", sender_count, ")",
+      "<br>🟢 Top Receiver: ", top_receiver, " (", receiver_count, ")"
+    )
+  )
 
-
-ggplot(comm_heatmap, aes(x = hour, y = fct_rev(factor(date_label)), fill = count)) +
+# Step 5: Static ggplot
+p <- ggplot(comm_heatmap, aes(
+  x = hour,
+  y = fct_rev(factor(date_label)),
+  fill = count,
+  text = tooltip
+)) +
   geom_tile(color = "white") +
-  scale_fill_viridis_c(
-    option = "inferno",       # or try "plasma" or "magma"
-    direction = -1,           # reverses the color scale
-    name = "Message Count"
-  ) +
+  scale_fill_viridis_c(option = "inferno", direction = -1, name = "Message Count") +
   scale_x_continuous(
     breaks = 0:23,
     labels = function(x) sprintf("%02d:00", x)
@@ -668,42 +706,87 @@ ggplot(comm_heatmap, aes(x = hour, y = fct_rev(factor(date_label)), fill = count
   labs(
     title = "Hourly Heatmap of Radio Communications by Day",
     x = "Hour of Day",
-    y = "Date"
+    y = NULL
   ) +
   theme_minimal(base_size = 10) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
-    strip.text = element_text(face = "bold"),
     panel.grid = element_blank()
   )
+
+# Step 6: Make interactive
+ggplotly(p, tooltip = "text")
+
 ```
 
-#### **6.4 - Heat Map of half-hourly message volume for each day over the 2 weeks period:** 
+We will increase the resolution to half-hour time slots.
+
+#### **4.4b - Heat Map of half-hourly message volume for each day over the 2 weeks period:**
+
+This heat map is interactive and you may choose to hover on the tile to display the **date, time, and message count**.
 
 ```{r}
 #| code-fold: true
 
 library(forcats)
+library(plotly)
 
-# Prepare half-hour bin
-comm_heatmap <- mc3_nodes_final %>%
+# Step 1: Fix sender and receiver edges
+comm_edges_sent <- mc3_edges_cleaned %>%
+  filter(type == "sent") %>%
+  select(event_id = to_id, sender_id = from_id)
+
+comm_edges_recv <- mc3_edges_cleaned %>%
+  filter(type == "received") %>%
+  select(event_id = from_id, receiver_id = to_id)  # ✅ fixed receiver_id
+
+# Step 2: Reconstruct sender–receiver–event linkage
+comm_events_raw <- mc3_nodes_final %>%
   filter(type == "Event", sub_type == "Communication") %>%
+  select(event_id = id, timestamp) %>%
   mutate(
     timestamp = ymd_hms(timestamp),
-    date_label = format(timestamp, "%d/%m/%Y (%a)"),
     hour = hour(timestamp),
     minute = minute(timestamp),
-    time_bin = hour + ifelse(minute < 30, 0, 0.5)
+    time_bin = hour + ifelse(minute < 30, 0, 0.5),
+    date_label = format(timestamp, "%d/%m/%Y (%a)"),
+    time_label = sprintf("%02d:%02d", floor(time_bin), ifelse(time_bin %% 1 == 0, 0, 30))
+  )
+
+# Step 3: Join to get sender/receiver labels
+comm_links <- comm_events_raw %>%
+  left_join(comm_edges_sent, by = "event_id") %>%
+  left_join(comm_edges_recv, by = "event_id") %>%
+  left_join(mc3_nodes_cleaned %>% select(id, sender_label = label), by = c("sender_id" = "id")) %>%
+  left_join(mc3_nodes_cleaned %>% select(id, receiver_label = label), by = c("receiver_id" = "id"))
+
+# Step 4: Aggregate by half-hour + label top actors
+comm_heatmap <- comm_links %>%
+  group_by(date_label, time_bin, time_label) %>%
+  summarise(
+    count = n(),
+    top_sender = names(sort(table(sender_label), decreasing = TRUE))[1],
+    sender_count = max(table(sender_label)),
+    top_receiver = names(sort(table(receiver_label), decreasing = TRUE))[1],
+    receiver_count = max(table(receiver_label)),
+    .groups = "drop"
   ) %>%
-  group_by(date_label, time_bin) %>%
-  summarise(count = n(), .groups = "drop")
+  mutate(
+    tooltip = paste0(
+      "📅 Date: ", date_label,
+      "<br>🕒 Time: ", time_label,
+      "<br>📨 Messages: ", count,
+      "<br>🔴 Top Sender: ", top_sender, " (", sender_count, ")",
+      "<br>🟢 Top Receiver: ", top_receiver, " (", receiver_count, ")"
+    )
+  )
 
-
-ggplot(comm_heatmap, aes(x = time_bin, y = fct_rev(factor(date_label)), fill = count)) +
+# Step 5: ggplot
+p <- ggplot(comm_heatmap, aes(x = time_bin, y = fct_rev(factor(date_label)), fill = count, text = tooltip)) +
   geom_tile(color = "white") +
   scale_fill_viridis_c(
-    option = "inferno",       # or try "plasma" or "magma"
-    direction = -1,           # reverses the color scale
+    option = "inferno",
+    direction = -1,
     name = "Message Count"
   ) +
   scale_x_continuous(
@@ -713,17 +796,966 @@ ggplot(comm_heatmap, aes(x = time_bin, y = fct_rev(factor(date_label)), fill = c
   labs(
     title = "Half-Hourly Heatmap of Radio Communications by Day",
     x = "Time of Day",
-    y = "Date"
+    y = NULL
   ) +
   theme_minimal(base_size = 10) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
-    strip.text = element_text(face = "bold"),
     panel.grid = element_blank()
   )
+
+# Step 6: Convert to interactive Plotly plot
+ggplotly(p, tooltip = "text")
 ```
 
-### Step 3: Plot Combined Hourly and Half-hourly Communication Volume 
+#### **4.4c - Density plot of Daily half-hourly message volume over the 2 weeks period:**
+
+The faceted density plot that shows the **distribution of communication events by time of day**, broken down for each day in the dataset. It helps to visually detect **temporal communication patterns**, intensity, and consistency over multiple days.
+
+::: panel-tabset
+### Overview of the 2 week period
+
+```{r}
+#| code-fold: true
+# Step 1: Preprocess communication events
+comm_events <- mc3_nodes_final %>%
+  filter(type == "Event", sub_type == "Communication") %>%
+  mutate(timestamp = ymd_hms(timestamp)) %>%
+  filter(!is.na(timestamp)) %>%
+  mutate(
+    date_label = format(timestamp, "%d/%m/%Y (%a)"),
+    hour = hour(timestamp),
+    minute = minute(timestamp),
+    time_bin = hour + ifelse(minute < 30, 0, 0.5)
+  )
+
+# Step 2: Summarise daily medians and counts
+daily_stats <- comm_events %>%
+  group_by(date_label) %>%
+  summarise(
+    median_time = median(time_bin),
+    msg_count = n(),
+    .groups = "drop"
+  )
+
+# Step 3: Plot
+ggplot(comm_events, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = daily_stats, aes(xintercept = median_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(
+    data = daily_stats,
+    aes(x = 20.5, y = 0.25, label = paste("Total:", msg_count)),
+    inherit.aes = FALSE,
+    size = 3,
+    color = "grey20",
+    hjust = 1
+  ) +
+  facet_wrap(~ date_label, ncol = 4) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = NULL  # suppress all x-axis labels
+  ) +
+  labs(
+    title = "Daily Communication Patterns (Half-Hourly)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+
+```
+
+### Day 1 - 01/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "01/10/2040 (Mon)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 2 - 02/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "02/10/2040 (Tue)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 3 - 03/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "03/10/2040 (Wed)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 4 - 04/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "04/10/2040 (Thu)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 5 - 05/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "05/10/2040 (Fri)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 6 - 06/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "06/10/2040 (Sat)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 7 - 07/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "07/10/2040 (Sun)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 8 - 08/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "08/10/2040 (Mon)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 9 - 09/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "09/10/2040 (Tue)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 10 - 10/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "10/10/2040 (Wed)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 11 - 11/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "11/10/2040 (Thu)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 12 - 12/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "12/10/2040 (Fri)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 13 - 13/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "13/10/2040 (Sat)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+### Day 14 - 14/10/2040
+
+```{r}
+#| code-fold: true
+
+# Filter for selected date
+daily_data <- filter(comm_events, date_label == "14/10/2040 (Sun)")
+
+# Build density data to find full curve
+density_data <- ggplot_build(
+  ggplot(daily_data, aes(x = time_bin)) +
+    geom_density()
+)$data[[1]]
+
+# Identify peaks within ±10% of the maximum density
+max_y <- max(density_data$y)
+peak_threshold <- 0.9 * max_y
+
+major_peaks <- density_data %>%
+  filter(y >= peak_threshold) %>%
+  group_by(grp = cumsum(c(1, diff(x) > 0.5))) %>%  # group close bins
+  summarise(
+    peak_time = x[which.max(y)],
+    peak_density = max(y),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    label = sprintf("Peak: %02d:%02d",
+                    floor(peak_time),
+                    ifelse(peak_time %% 1 == 0, 0, 30))
+  )
+
+# Message count
+msg_count <- nrow(daily_data)
+
+# Final plot
+ggplot(daily_data, aes(x = time_bin)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(data = major_peaks, aes(xintercept = peak_time),
+             color = "red", linetype = "dashed", linewidth = 0.6) +
+  geom_text(data = major_peaks,
+            aes(x = peak_time, y = 0.23, label = label),
+            color = "red", size = 3.5, hjust = -0.1, inherit.aes = FALSE) +
+  annotate("text", x = 20.5, y = 0.25,
+           label = paste("Total messages communicated:", msg_count),
+           hjust = 1, size = 4, color = "grey30") +
+  labs(
+    title = "Half-Hourly Communication Density (Multiple Peaks Highlighted)",
+    x = "Time of Day",
+    y = "Density"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 23.5, by = 0.5),
+    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+:::
+
+📈 **Insights This Visualization Offers**
+
+### Step 3: Plot Combined Hourly and Half-hourly Communication Volume
 
 **Bar Plot of combined hourly message volume over the 2 weeks period:**
 
@@ -803,91 +1835,26 @@ ggplot(comm_halfhour, aes(x = time_bin, y = n)) +
 
 ```
 
-### Step 2c: Plot a Daily Facet Graph (Heatmap / Bar)
-
-Step 2c: Faceted Daily Graphs (One Plot per Day)
-
-```         
-```
-
 ## Unused Plots
 
-```{r}
-
-comm_events <- mc3_nodes_final %>%
-  filter(type == "Event", sub_type == "Communication") %>%
-  mutate(timestamp = ymd_hms(timestamp)) %>%
-  filter(!is.na(timestamp)) %>%
-  mutate(
-    date_label = format(timestamp, "%d/%m/%Y (%a)"),
-    hour = hour(timestamp),
-    minute = minute(timestamp),
-    time_bin = hour + ifelse(minute < 30, 0, 0.5)
-  )
-
-ggplot(comm_events, aes(x = time_bin)) +
-  geom_density(fill = "steelblue", alpha = 0.7) +
-  facet_wrap(~ date_label, ncol = 4) +
-  scale_x_continuous(
-    breaks = seq(0, 23.5, by = 0.5),
-    labels = function(x) sprintf("%02d:%02d", floor(x), ifelse(x %% 1 == 0, 0, 30))
-  ) +
-  labs(
-    title = "Daily Communication Patterns (Half-Hourly)",
-    x = "Time of Day",
-    y = "Density"
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    strip.text = element_text(face = "bold")
-  )
+```{}
 ```
 
 ```{r}
-library(visNetwork)
+#| code-fold: true
 
-# Step 1: Summarize communication edges
-comm_edges_vis <- participants_named %>%
-  count(sender_id, receiver_id, sort = TRUE) %>%
-  rename(from = sender_id, to = receiver_id, value = n)
 
-# Step 2: Compute messages sent per person (by sender)
-message_counts <- comm_edges_vis %>%
-  group_by(from) %>%
-  summarise(sent_count = sum(value), .groups = "drop")
 
-# Step 3: Prepare nodes with label, subtype, and scaled size
-nodes_vis <- mc3_nodes_cleaned %>%
-  filter(id %in% unique(c(comm_edges_vis$from, comm_edges_vis$to))) %>%
-  select(id, label, sub_type) %>%
-  left_join(message_counts, by = c("id" = "from")) %>%
-  mutate(
-    size = if_else(
-      sub_type == "Person",
-      rescale(sent_count, to = c(10, 40), na.rm = TRUE),
-      15  # default size for other node types
-    ),
-    title = paste0(label, "<br>Sub-type: ", sub_type,
-                   ifelse(!is.na(sent_count), paste0("<br>Sent: ", sent_count, " messages"), ""))
-  )
+```
 
-# Step 4: Format edges
-edges_vis <- comm_edges_vis %>%
-  mutate(
-    arrows = "to",
-    width = rescale(value, to = c(1, 6)),
-    title = paste("Messages:", value)
-  )
+```{r}
+#| code-fold: true
 
-# Step 5: Render the network with layout_on_sphere
-visNetwork(nodes_vis, edges_vis, width = "100%", height = "900px") %>%
-  visNodes(size = nodes_vis$size) %>%
-  visEdges(smooth = FALSE) %>%
-  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
-  visIgraphLayout(layout = "layout_on_sphere") %>%
-  visPhysics(enabled = FALSE) %>%
-  visLayout(randomSeed = 42)
+
+```
+
+```{r}
+#| code-fold: true
 
 
 ```
