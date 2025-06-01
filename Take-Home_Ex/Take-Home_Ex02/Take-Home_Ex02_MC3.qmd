@@ -316,6 +316,15 @@ Focuses on what kinds of actors are in the graph — Person, Vessel, Organizatio
 ```{r}
 #| code-fold: true
 
+# Define color mapping
+subtype_colors <- c(
+  "Person" = "#2ca5ff",
+  "Organization" = "#f5ee15",
+  "Vessel" = "#FB7E81",
+  "Group" = "#25e158",
+  "Location" = "#ec4bff"
+)
+
 mc3_nodes_final %>%
   filter(type == "Entity") %>%
   count(sub_type, sort = TRUE) %>%
@@ -431,11 +440,11 @@ nodes_vis <- mc3_nodes_cleaned %>%
     title = paste0(label, "<br>Sub-type: ", sub_type,
                    ifelse(!is.na(sent_count), paste0("<br>Sent: ", sent_count, " messages"), "")),
     color = case_when(
-      sub_type == "Person" ~ "royalblue",
-      sub_type == "Organization" ~ "darkorange",
-      sub_type == "Vessel" ~ "forestgreen",
-      sub_type == "Group" ~ "purple",
-      sub_type == "Location" ~ "grey40",
+      sub_type == "Person" ~ "#2ca5ff",
+      sub_type == "Organization" ~ "#f5ee15",
+      sub_type == "Vessel" ~ "#FB7E81",
+      sub_type == "Group" ~ "#25e158",
+      sub_type == "Location" ~ "#ec4bff",
       TRUE ~ "black"
     ),
     shape = case_when(
@@ -445,7 +454,7 @@ nodes_vis <- mc3_nodes_cleaned %>%
       sub_type == "Group" ~ "star",
       sub_type == "Location" ~ "diamond",
       TRUE ~ "dot"
-    )
+    ),
   ) %>%
   arrange(desc(size))
 
@@ -460,7 +469,7 @@ edges_vis <- comm_edges_vis %>%
 # Step 5: Define legend items
 legend_nodes <- data.frame(
   label = c("Person", "Organization", "Vessel", "Group", "Location"),
-  color = c("royalblue", "darkorange", "forestgreen", "purple", "grey40"),
+  color = c("#2ca5ff", "#f5ee15", "#FB7E81", "#25e158", "#ec4bff"),
   shape = c("dot", "square", "triangle", "star", "diamond"),
   stringsAsFactors = FALSE
 )
@@ -492,7 +501,7 @@ visNetwork(nodes_vis, edges_vis, width = "100%", height = "1000px") %>%
 
 **Ver 2: Layout_on_sphere**
 
-From this plot, we note that Miranda Jordan and Clepper jensen are isolated communications between themselves.s
+From this plot, it reveals that some pairs (e.g., Miranda Jordan and Clepper Jensen) mainly communicate with each other, suggesting isolated or private channels outside the broader network.
 
 ```{r}
 #| code-fold: true
@@ -522,11 +531,11 @@ nodes_vis <- mc3_nodes_cleaned %>%
     title = paste0(label, "<br>Sub-type: ", sub_type,
                    ifelse(!is.na(sent_count), paste0("<br>Sent: ", sent_count, " messages"), "")),
     color = case_when(
-      sub_type == "Person" ~ "royalblue",
-      sub_type == "Organization" ~ "darkorange",
-      sub_type == "Vessel" ~ "forestgreen",
-      sub_type == "Group" ~ "purple",
-      sub_type == "Location" ~ "grey40",
+      sub_type == "Person" ~ "#2ca5ff",
+      sub_type == "Organization" ~ "#f5ee15",
+      sub_type == "Vessel" ~ "#FB7E81",
+      sub_type == "Group" ~ "#25e158",
+      sub_type == "Location" ~ "#ec4bff",
       TRUE ~ "black"
     ),
     shape = case_when(
@@ -550,7 +559,7 @@ edges_vis <- comm_edges_vis %>%
 # Step 5: Legend mapping
 legend_nodes <- data.frame(
   label = c("Person", "Organization", "Vessel", "Group", "Location"),
-  color = c("royalblue", "darkorange", "forestgreen", "purple", "grey40"),
+  color = c("#2ca5ff", "#f5ee15", "#FB7E81", "#25e158", "#ec4bff"),
   shape = c("dot", "square", "triangle", "star", "diamond"),
   stringsAsFactors = FALSE
 )
@@ -1948,7 +1957,7 @@ Clepper found that messages frequently came in at around the same time each day.
 1.  Focus on a specific entity and use this information to determine who has influence over them.
 :::
 
-### 5.1 Data Preparation for "Nadia Conti" Influence Analysis
+### 5.1 **-** Data Preparation for "Nadia Conti" Influence Analysis
 
 We first extracted the relevant communication edges from the dataset, pairing “sent” and “received” communication events to form entity-to-entity links. We retained only those edges where both nodes represent real-world entities (Person, Organization, Vessel, Group, or Location), ensuring that our analysis focuses on the meaningful actors in the Oceanus network.
 
@@ -1992,7 +2001,7 @@ entity_nodes <- mc3_nodes_cleaned %>%
 
 ```
 
-### 5.2 Build the Global Network and Compute Centrality
+### 5.2 **-** Build the Global Network and Compute Centrality
 
 Using these cleaned and filtered edges and nodes, we built a global directed graph representing the Oceanus community. We then computed key network centrality metrics for each node—PageRank, betweenness, and degree—quantifying the influence and connectivity of every entity in the overall network.
 
@@ -2009,7 +2018,7 @@ V(g)$degree <- degree(g)
 
 ```
 
-### 5.3 Extract "Nadia Conti" Ego Network (2-hop Neighbourhood)
+### 5.3 **-** Extract "Nadia Conti" Ego Network (2-hop Neighbourhood)
 
 Focusing on "Nadia Conti", we identified her node and extracted her two-step ego network, capturing both direct and indirect connections within the broader network. This local subgraph reveals Nadia’s immediate sphere of influence and the key players connected to her.
 
@@ -2022,7 +2031,7 @@ ego_graph <- make_ego_graph(g, order = 2, nodes = target_index, mode = "all")[[1
 
 ```
 
-### 5.4 Visualize Nadia Conti’s Ego Network (Interactive)
+### 5.4 **-** Visualize Nadia Conti’s Ego Network (Interactive)
 
 We visualized Nadia’s ego network using node size, shape, and color to represent centrality and entity type. We also summarized centrality metrics in clear tables, ranking all ego network members by PageRank, Betweenness, and Degree. This allows for direct identification of the most influential, best-connected, and most strategic actors in Nadia Conti’s communication environment.
 
@@ -2069,7 +2078,13 @@ visNetwork(nodes_df, edges_df, width = "100%", height = "700px") %>%
 
 ```
 
-### 5.5 Centrality Tables for Nadia’s Ego Network
+::: callout-note
+## Global and Ego-Network Structure
+
+The overview network visualization reveals that **Nadia Conti** is centrally embedded in the Oceanus communication web, maintaining direct and indirect connections with major actors such as Neptune (Vessel), V. Miesel Shipping (Organization), Elise (Person), and others. The use of color and shape coding in the network allows for quick identification of the different types of entities in Nadia’s influence neighborhood.
+:::
+
+### 5.5 **-** Centrality Tables for Nadia’s Ego Network
 
 On both the global and Nadia-focused ego networks, we computed standard network centrality metrics for all nodes:
 
@@ -2118,26 +2133,193 @@ knitr::kable(betweenness_df, caption = "Betweenness Centrality (Nadia's Ego Netw
 knitr::kable(degree_df, caption = "Degree Centrality (Nadia's Ego Network)")
 ```
 
-## Unused Plots
+::: callout-note
+## Centrality Metrics and Direct & Indirect Influences
+
+By calculating centrality metrics within Nadia’s two-hop ego network, we observe that the most influential nodes in her environment—by PageRank, betweenness, and degree—are Neptune, V. Miesel Shipping, and Elise. Nadia herself consistently ranks among the top nodes by these measures, highlighting her role as both an influencer and an information bridge. Entities such as Neptune and V. Miesel Shipping, which also score highly in centrality, exert considerable influence over Nadia’s information flow and access to other parts of the network.
+
+Degree centrality analysis shows Nadia maintains multiple direct connections, particularly with other highly active nodes, ensuring she is closely linked to key hubs in the network. Betweenness centrality further reveals that Nadia is not only well-connected but also acts as an important intermediary, facilitating communication between otherwise distant parts of the network. PageRank confirms that her immediate environment is composed of actors with significant structural power, increasing the likelihood that Nadia is both influenced by, and exerts influence upon, the most pivotal players in Oceanus.
+:::
+
+#### **5.5.1 - PageRank for Nadia Conti**
 
 ```{r}
+#| code-fold: true
 
-pagerank_df <- data.frame(
-  label = V(ego_graph)$label,
-  sub_type = V(ego_graph)$sub_type,
-  pagerank = round(V(ego_graph)$pagerank, 4)
-) %>% arrange(desc(pagerank))
+library(igraph)
+library(visNetwork)
 
-betweenness_df <- data.frame(
-  label = V(ego_graph)$label,
-  sub_type = V(ego_graph)$sub_type,
-  betweenness = round(V(ego_graph)$betweenness, 2)
-) %>% arrange(desc(betweenness))
+# -- Build the global network g as in your earlier code (using your entity_nodes/entity_edges) --
 
-degree_df <- data.frame(
-  label = V(ego_graph)$label,
-  sub_type = V(ego_graph)$sub_type,
-  degree = V(ego_graph)$degree
-) %>% arrange(desc(degree))
+g <- graph_from_data_frame(
+  d = entity_edges, 
+  vertices = entity_nodes, 
+  directed = TRUE
+)
+
+# -- Get Nadia's index in g --
+nadia_label <- "Nadia Conti"
+target_index <- which(V(g)$label == nadia_label)
+
+# -- Extract Nadia's 1-hop ego network (all direct neighbors) --
+ego_1 <- make_ego_graph(g, order = 1, nodes = target_index, mode = "all")[[1]]
+
+
+# 1. Compute PageRank for the ego network
+V(ego_1)$pagerank <- page_rank(ego_1)$vector
+
+# 2. Prepare node data frame with your consistent color scheme
+nodes_df_pagerank <- data.frame(
+  id = V(ego_1)$name,
+  label = V(ego_1)$label,
+  group = V(ego_1)$sub_type,
+  title = paste0("<b>", V(ego_1)$label, "</b><br>PageRank: ", round(V(ego_1)$pagerank, 4)),
+  shape = ifelse(V(ego_1)$sub_type == "Person", "dot",
+                 ifelse(V(ego_1)$sub_type == "Organization", "square",
+                        ifelse(V(ego_1)$sub_type == "Vessel", "triangle",
+                               ifelse(V(ego_1)$sub_type == "Group", "star", "diamond")))),
+  color = case_when(
+    V(ego_1)$sub_type == "Person" ~ "#2ca5ff",
+    V(ego_1)$sub_type == "Organization" ~ "#f5ee15",
+    V(ego_1)$sub_type == "Vessel" ~ "#FB7E81",
+    V(ego_1)$sub_type == "Group" ~ "#25e158",
+    V(ego_1)$sub_type == "Location" ~ "#ec4bff",
+    TRUE ~ "black"
+  ),
+  value = V(ego_1)$pagerank * 30 + 5
+)
+
+# 3. Prepare edges
+edges_df <- as_data_frame(ego_1, what = "edges") %>%
+  rename(from = from, to = to)
+
+# 4. Plot with visNetwork
+visNetwork(nodes_df_pagerank, edges_df, width = "100%", height = "400px") %>%
+  visNodes(
+    scaling = list(min = 5, max = 30),
+    color = list(background = nodes_df_pagerank$color, border = "black"),
+    shape = nodes_df_pagerank$shape
+  ) %>%
+  visEdges(arrows = list(to = list(enabled = TRUE, scaleFactor = 0.3)), color = list(color = "gray")) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE, manipulation = FALSE) %>%
+  visInteraction(dragNodes = FALSE, dragView = FALSE, zoomView = FALSE) %>%
+  visLegend() %>%
+  visLayout(randomSeed = 1818)
 
 ```
+
+#### **5.5.2 - Betweenness for Nadia Conti**
+
+```{r}
+#| code-fold: true
+
+# 1. Compute Betweenness for the ego network
+V(ego_1)$betweenness <- betweenness(ego_1, directed = TRUE)
+
+# 2. Prepare node data frame
+nodes_df_betweenness <- data.frame(
+  id = V(ego_1)$name,
+  label = V(ego_1)$label,
+  group = V(ego_1)$sub_type,
+  title = paste0("<b>", V(ego_1)$label, "</b><br>Betweenness: ", round(V(ego_1)$betweenness, 2)),
+  shape = ifelse(V(ego_1)$sub_type == "Person", "dot",
+                 ifelse(V(ego_1)$sub_type == "Organization", "square",
+                        ifelse(V(ego_1)$sub_type == "Vessel", "triangle",
+                               ifelse(V(ego_1)$sub_type == "Group", "star", "diamond")))),
+  color = case_when(
+    V(ego_1)$sub_type == "Person" ~ "#2ca5ff",
+    V(ego_1)$sub_type == "Organization" ~ "#f5ee15",
+    V(ego_1)$sub_type == "Vessel" ~ "#FB7E81",
+    V(ego_1)$sub_type == "Group" ~ "#25e158",
+    V(ego_1)$sub_type == "Location" ~ "#ec4bff",
+    TRUE ~ "black"
+  ),
+  value = V(ego_1)$betweenness * 2 + 5
+)
+
+# 3. Edges (same as before)
+# edges_df already prepared
+
+# 4. Plot
+visNetwork(nodes_df_betweenness, edges_df, width = "100%", height = "400px") %>%
+  visNodes(
+    scaling = list(min = 5, max = 30),
+    color = list(background = nodes_df_betweenness$color, border = "black"),
+    shape = nodes_df_betweenness$shape
+  ) %>%
+  visEdges(arrows = list(to = list(enabled = TRUE, scaleFactor = 0.3)), color = list(color = "gray")) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE, manipulation = FALSE) %>%
+  visInteraction(dragNodes = FALSE, dragView = FALSE, zoomView = FALSE) %>%
+  visLegend() %>%
+  visLayout(randomSeed = 1818)
+
+```
+
+#### **5.5.3 - Degree for Nadia Conti**
+
+```{r}
+#| code-fold: true
+
+# 1. Compute Degree for the ego network
+V(ego_1)$degree <- degree(ego_1, mode = "all")
+
+# 2. Prepare node data frame
+nodes_df_degree <- data.frame(
+  id = V(ego_1)$name,
+  label = V(ego_1)$label,
+  group = V(ego_1)$sub_type,
+  title = paste0("<b>", V(ego_1)$label, "</b><br>Degree: ", round(V(ego_1)$degree, 2)),
+  shape = ifelse(V(ego_1)$sub_type == "Person", "dot",
+                 ifelse(V(ego_1)$sub_type == "Organization", "square",
+                        ifelse(V(ego_1)$sub_type == "Vessel", "triangle",
+                               ifelse(V(ego_1)$sub_type == "Group", "star", "diamond")))),
+  color = case_when(
+    V(ego_1)$sub_type == "Person" ~ "#2ca5ff",
+    V(ego_1)$sub_type == "Organization" ~ "#f5ee15",
+    V(ego_1)$sub_type == "Vessel" ~ "#FB7E81",
+    V(ego_1)$sub_type == "Group" ~ "#25e158",
+    V(ego_1)$sub_type == "Location" ~ "#ec4bff",
+    TRUE ~ "black"
+  ),
+  value = V(ego_1)$degree * 5 + 5
+)
+
+# 3. Edges (same as before)
+# edges_df already prepared
+
+# 4. Plot
+visNetwork(nodes_df_degree, edges_df, width = "100%", height = "400px") %>%
+  visNodes(
+    scaling = list(min = 5, max = 30),
+    color = list(background = nodes_df_degree$color, border = "black"),
+    shape = nodes_df_degree$shape
+  ) %>%
+  visEdges(arrows = list(to = list(enabled = TRUE, scaleFactor = 0.3)), color = list(color = "gray")) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE, manipulation = FALSE) %>%
+  visInteraction(dragNodes = FALSE, dragView = FALSE, zoomView = FALSE) %>%
+  visLegend() %>%
+  visLayout(randomSeed = 1818)
+
+```
+
+::: callout-tip
+## 1c. With a focus on "Nadia Conti",  the visuals above could determine who has influence over this person.
+
+1.  Degree centrality reveals that Nadia Conti is well-connected within her local network, with a degree of 17. However, she is not the most connected node; vessels such as Mako (37), Reef Guardian (27), and Remora (21), as well as organizations like Oceanus City Council (28) and V. Miesel Shipping (19), have even higher degrees. This indicates that while Nadia is an important hub, her sphere of direct interaction is embedded within a dense mesh of other highly connected entities.
+
+2.  Several other individuals (e.g., Davis with 16, Boss with 13, Mrs. Money with 12) and vessels (e.g., Neptune with 19, Sentinel with 16) also play significant roles in Nadia’s network. The presence of organizations (e.g., Green Guardians, Sailor Shifts Team), multiple vessels, and key persons shows that **Nadia’s environment is both diverse and robust**.
+
+3.  **Direct Connections**
+
+    These direct connections are clearly shown as nodes that have edges (arrows) going into or out of Nadia Conti’s node in the network diagrams. Nadia Conti directly connects to several core entities across different types:
+
+    -   **People:** Elise, Liam Thorne, Davis, Rodriguez
+    -   **Organization:** V. Miesel Shipping, Oceanus City Council, Sailor Shifts Team
+    -   **Vessel:** Neptune, Marlin, Remora, Sentinel
+    -   **Location:** Haacklee Harbor
+
+    **Interpretation:**
+    The PageRank, Betweenness, and Degree centrality plots all consistently show **Nadia Conti as a major hub**, with a large node size reflecting her high centrality. Her immediate network includes influential vessels (Neptune, Remora), organizations (V. Miesel Shipping, Oceanus City Council), and several persons (Elise, Davis, Rodriguez).
+
+    Nadia’s position suggests she is a **key connector and influencer** but is herself surrounded by even larger hubs, particularly among vessels and organizations. Her ability to influence—and be influenced—is amplified by these connections, as these high-degree entities are likely sources and conduits of critical information and operational coordination. This structure points to a tightly interwoven community, where central actors such as Mako, Oceanus City Council, and V. Miesel Shipping may exert the most substantial influence over Nadia’s access to information, resources, and strategic decisions.
+:::
