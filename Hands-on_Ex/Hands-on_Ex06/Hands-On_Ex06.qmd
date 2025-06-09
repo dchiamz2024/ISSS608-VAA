@@ -13,7 +13,7 @@ execute:
   freeze: true
 ---
 
-# **07 - Visualising and Analysing Time-oriented Data**
+# **10 - Visualising and Analysing Time-oriented Data**
 
 ## **10.1 Hands-on Exercise Outcome**
 
