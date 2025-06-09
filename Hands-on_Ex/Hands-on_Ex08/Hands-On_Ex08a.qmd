@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise 8"
+title: "Hands-on Exercise 8a"
 description: ""
 author: "David Chiam"
 date: "9 June 2025"
@@ -311,4 +311,104 @@ tm_shape(mpsz_pop2020)+
   tm_polygons("DEPENDENCY",
           breaks = c(0, 0.60, 0.70, 0.80, 0.90, 1.00)) +
   tm_borders(fill_alpha = 0.5)
+```
+
+### **11.4.4 Colour Scheme**
+
+**tmap** supports colour ramps either defined by the user or a set of predefined colour ramps from the **RColorBrewer** package.
+
+#### 11.4.4.1 Using ColourBrewer palette
+
+To change the colour, we assign the preferred colour to *values* argument of *tm_scale_intervals()* as shown in the code chunk below.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "quantile",
+        n = 5,
+        values = "brewer.greens")) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+Notice that the choropleth map is shaded in green.
+
+To reverse the colour shading, add a “-” prefix.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "quantile",
+        n = 5,
+        values = "-brewer.greens")) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+Notice that the colour scheme has been reversed.
+
+### **11.4.5 Map Layouts**
+
+Map layout refers to the combination of all map elements into a cohensive map. Map elements include among others the objects to be mapped, the title, the scale bar, the compass, margins and aspects ratios. Colour settings and data classification methods covered in the previous section relate to the palette and break-points are used to affect how the map looks.
+
+#### 11.4.5.1 Map Legend
+
+In **tmap**, several `tm_legend()` options are provided to change the placement, format and appearance of the legend.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "jenks",
+        n = 5,
+        values = "brewer.greens"),
+      fill.legend = tm_legend(
+        title = "Dependency ratio")) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("Distribution of Dependency Ratio by planning subzone \n(Jenks classification)")
+```
+
+#### 11.4.5.2 Map style
+
+**tmap** allows a wide variety of layout settings to be changed. They can be called by using *tmap_style()*.
+
+The code chunk below shows the *classic* style is used.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "-Greens") +
+  tm_borders(alpha = 0.5) +
+  tmap_style("classic")
+```
+
+#### 11.4.5.3 Cartographic Furniture
+
+Beside map style, **tmap** also also provides arguments to draw other map furniture such as compass, scale bar and grid lines.
+
+In the code chunk below, `tm_compass()`, `tm_scale_bar()` and `tm_grid()` are used to add compass, scale bar and grid lines onto the choropleth map.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons(fill = "DEPENDENCY", 
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 5,
+                values = "brewer.blues"),
+              fill.legend = tm_legend(
+                title = "Dependency ratio")) +
+  tm_title("Distribution of Dependency Ratio by planning subzone") +
+  tm_layout(frame = TRUE) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```
+
+To reset the default style, refer to the code chunk below.
+
+```{r}
+tmap_style("white")
 ```
