@@ -3,7 +3,7 @@ title: "Take-Home Assignment 3"
 description: ""
 author: "David Chiam"
 date: "13 May 2025"
-date-modified: "13 May 2025"
+date-modified: "last-modified"
 format: html
 editor: visual
 execute: 
