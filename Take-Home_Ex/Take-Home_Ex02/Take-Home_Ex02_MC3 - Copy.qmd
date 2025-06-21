@@ -3140,7 +3140,7 @@ datatable(
 -   Use `igraph::cluster_louvain()` on the communication network built in 2a (undirected).
 -   Assign a `community` ID to each node (`nodes_vis$community`).
 
-### Step 2: **Inspect and Interpret Communities** 
+### Step 2: **Inspect and Interpret Communities**
 
 -   Summarize the composition of each community by:
 
