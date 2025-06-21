@@ -15,7 +15,7 @@ execute:
   freeze: true
 ---
 
-# Take-home Exercise 3: Prototype Module Designing – Community Detection and Pseudonym Network Exploration
+# Take-home Exercise 3: Prototype Module Designing for Vast Challenge 2025 MC3
 
 ## **The Task**
 
@@ -174,9 +174,9 @@ To inform the visual language and layout of the Shiny application, our team desi
 
 This mock-up establishes the visual identity and thematic branding for the dashboard. It reflects both the investigative tone of the VAST Challenge and our team’s creative approach. It includes a left navigation menu that guides users to each of the core question modules (Q1 to Q4), providing a consistent sidebar layout throughout the app.
 
-![](pictures/1.png)
+![](images/clipboard-2344820935.png)
 
-![](pictures/2.png)
+![](images/clipboard-1431140066.png)
 
 #### 2. **Daily Radio Communication Volume (Q1A & Q1B)**
 
@@ -187,7 +187,7 @@ This section visualizes message frequency over time to detect periodicity or ano
 
 *This template serves as a reference for time-series visualizations to be integrated in future timeline-driven modules of the application.*
 
-![](pictures/3.png)
+![](images/clipboard-1147334972.png)
 
 #### 3. **Entity Network Focus View – “Nadia Conti” (Q1C)**
 
@@ -198,7 +198,7 @@ This visual emphasizes network centrality and ego relationships. It includes:
 
 *This model informed the modular network layout used in our prototype for community and pseudonym analysis.*
 
-![](pictures/4.png)
+![](images/clipboard-4139703879.png)
 
 #### 4. **Storyboard Sketch (Module Wireframe)**
 
@@ -290,7 +290,7 @@ This supports investigation workflows such as:
 By embedding this alongside the network graph, the application delivers both **relational context** and **tabulated drilldown** capabilities, bridging visual insight with attribute-level data access.
 
 | UI Component | Purpose |
-|----|----|
+|----------------------------------|--------------------------------------|
 | `selectInput("algo")` | Choose detection algorithm (Louvain/Walktrap) |
 | `checkboxGroupInput("type")` | Filter node types (person, vessel, place) |
 | `sliderInput("weight")` | Filter connections below weight threshold |
@@ -310,7 +310,7 @@ To make the Shiny application more engaging and insightful, we expand beyond cor
 ### User Inputs:
 
 |  |  |
-|----|----|
+|----------------------------------|--------------------------------------|
 | **Input Control** | **Description** |
 | `selectInput("algo")` | Community detection method selector (Louvain or Walktrap) |
 | `checkboxGroupInput("type")` | Entity type filter (Person, Vessel, Place) |
@@ -323,7 +323,7 @@ To make the Shiny application more engaging and insightful, we expand beyond cor
 ### Application Outputs:
 
 |  |  |
-|----|----|
+|---------------------------------|---------------------------------------|
 | **Output Component** | **Description** |
 | `visNetworkOutput("net")` | Interactive network showing colored clusters and filtered edges |
 | `verbatimTextOutput("info")` | Metadata of selected node (e.g., name, type, degree) |
