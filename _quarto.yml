@@ -61,6 +61,8 @@ website:
       menu:
         - text: "Exercise 1 (on Mini Challenge 1 data)"
           href: "In-Class_Ex/In-Class_Ex01/In-Class_Ex01.html"
+        - text: "Exercise 10 (Quarto Dashboard)"
+          href: "In-Class_Ex/In-Class_Ex10/In-Class_Ex10_Dashboard.html"
     right:
       - href: index.qmd
         text: Home
